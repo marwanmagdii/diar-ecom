@@ -1,6 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-const translations = {
+export const translations = {
   en: {
     home: 'Offers',
     shop: 'Shop',
@@ -386,38 +384,3 @@ const translations = {
     addDistrict: 'إضافة منطقة'
   }
 };
-
-const LanguageContext = createContext();
-
-export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState('en');
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem('storeLanguage');
-    if (savedLang && (savedLang === 'en' || savedLang === 'ar')) {
-      setLanguage(savedLang);
-    }
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.lang = language;
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    localStorage.setItem('storeLanguage', language);
-  }, [language]);
-
-  const toggleLanguage = () => {
-    setLanguage(prev => prev === 'en' ? 'ar' : 'en');
-  };
-
-  const t = (key) => {
-    return translations[language][key] || key;
-  };
-
-  return (
-    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
-export const useLanguage = () => useContext(LanguageContext);

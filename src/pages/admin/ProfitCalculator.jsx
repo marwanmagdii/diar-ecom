@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart2, DollarSign, Plus, Trash2 } from 'lucide-react';
-import { useLanguage } from '../../context/LanguageContext';
+import { useStore } from '../../store';
 
 export default function ProfitCalculator() {
-  const { lang } = useLanguage();
+  const { lang } = useStore();
   const isAr = lang === 'ar';
   const [costPrice, setCostPrice] = useState('');
   const [regularPrice, setRegularPrice] = useState('');

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useAdmin } from '../../context/AdminContext';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Search, Download } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
+import { useStore } from '../../store';
 
 export default function Users() {
-  const { users } = useAdmin();
+  const { users, ordersLoading: loading } = useStore();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -77,7 +77,15 @@ export default function Users() {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
+                    <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
+                    <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                    Loading customers...
+                  </td>
+                </tr>
+              ) : filteredUsers.length === 0 ? (
                 <tr><td colSpan="6" style={{ textAlign: 'center', padding: '32px' }}>No customers found.</td></tr>
               ) : (
                 filteredUsers.map(user => (

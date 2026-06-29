@@ -1,11 +1,11 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useLanguage } from '../context/LanguageContext';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { useStore } from '../store';
 
 export default function ContentPage() {
   const location = useLocation();
-  const { language } = useLanguage();
+  const { language } = useStore();
   const isContact = location.pathname.includes('contact');
   const title = isContact ? (language === 'ar' ? 'اتصل بنا' : 'Contact Us') : location.pathname.split('/').pop().replace(/-/g, ' ').toUpperCase();
 

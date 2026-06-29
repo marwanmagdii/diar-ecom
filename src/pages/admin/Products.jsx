@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useProducts } from '../../context/ProductContext';
 import { Plus, Edit, Trash2, Search, BarChart2, Download } from 'lucide-react';
-import { useAdmin } from '../../context/AdminContext';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
-import { useToast } from '../../context/ToastContext';
+import { useStore } from '../../store';
 export default function Products() {
-  const { products, deleteProduct, loading } = useProducts();
-  const { t } = useAdmin();
-  const { addToast } = useToast();
+  const { products, deleteProduct, productsLoading: loading } = useStore();
+  const { t } = useStore();
+  const { addToast } = useStore();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [analysisProduct, setAnalysisProduct] = useState(null);

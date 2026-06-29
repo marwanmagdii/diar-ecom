@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useAdmin } from '../../context/AdminContext';
-import { useLanguage } from '../../context/LanguageContext';
 import { ArrowLeft, ExternalLink, Eye } from 'lucide-react';
+import { useStore } from '../../store';
 
 export default function CustomerJourneyDetail({ orderId, onBack }) {
-  const { orders } = useAdmin();
-  const { language } = useLanguage();
+  const { orders } = useStore();
+  const { language } = useStore();
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const clearCustomerTracking = async () => {

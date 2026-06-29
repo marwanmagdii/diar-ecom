@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ProductCard from '../components/ProductCard';
-import { useProducts } from '../context/ProductContext';
-import { useStoreConfig } from '../context/StoreConfigContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Clock, LayoutGrid, ArrowRight } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useStore } from '../store';
+import CustomerReviewsMarquee from '../components/CustomerReviewsMarquee';
 
 const CountdownTimer = ({ targetDate, t }) => {
   const calculateTimeLeft = () => {
@@ -13,7 +12,6 @@ const CountdownTimer = ({ targetDate, t }) => {
 
     if (difference > 0) {
       timeLeft = {
-        d: Math.floor(difference / (1000 * 60 * 60 * 24)),
         h: Math.floor((difference / (1000 * 60 * 60)) % 24),
         m: Math.floor((difference / 1000 / 60) % 60),
         s: Math.floor((difference / 1000) % 60)
@@ -59,11 +57,12 @@ const CountdownTimer = ({ targetDate, t }) => {
 };
 
 export default function Home() {
-  const { products, loading, error } = useProducts();
-  const { config } = useStoreConfig();
-  const { t, language } = useLanguage();
+  const { products, productsLoading: loading, productsError: error } = useStore();
+  const { config } = useStore();
+  const { t, language } = useStore();
   const navigate = useNavigate();
   const location = useLocation();
+
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -159,7 +158,16 @@ export default function Home() {
             <div className="product-grid" style={{ paddingBottom: '16px' }}>
               {otherOffers.map(p => <ProductCard key={p.id} product={p} />)}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '24px', gap: '16px' }}>
+            </section>
+        )}
+
+        
+
+        {/* Global Customer Reviews */}
+        <CustomerReviewsMarquee reviews={config.globalReviewImages} />
+
+        {otherOffers.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '24px', gap: '16px' }}>
               <p style={{ color: '#64748b', fontSize: '15px', textAlign: 'center', margin: 0, fontStyle: 'italic' }}>
                 {language === 'ar' ? 'استمر في التمرير لأسفل لاستكشاف المتجر، أو مرر لأعلى لمشاهدة أفضل العروض' : 'Keep scrolling down to explore our shop, or scroll up for top offers'}
               </p>
@@ -183,42 +191,11 @@ export default function Home() {
                 {language === 'ar' ? 'اذهب إلى المتجر' : 'Go to Shop'}
               </button>
             </div>
-          </section>
-        )}
-
-        {/* Global Customer Reviews */}
-        {config.globalReviewImages && config.globalReviewImages.length > 0 && (
-          <section style={{ margin: '48px 0' }}>
-            <h2 className="headline-lg" style={{ textAlign: 'center', marginBottom: '32px', fontWeight: 800 }}>
-              ⭐ {t('customerReviews')}
-            </h2>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', 
-              gap: '16px' 
-            }}>
-              {config.globalReviewImages.map((img, idx) => (
-                <div 
-                  key={idx} 
-                  style={{ 
-                    borderRadius: '16px', 
-                    overflow: 'hidden', 
-                    border: '1px solid var(--outline-variant)', 
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s, box-shadow 0.2s'
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)'; }}
-                  onClick={() => window.open(img, '_blank')}
-                >
-                  <img src={img} alt={`Customer review ${idx + 1}`} style={{ width: '100%', display: 'block' }} />
-                </div>
-              ))}
-            </div>
-          </section>
+          
         )}
         
+
+
         <div ref={bottomRef} style={{ textAlign: 'center', margin: '48px 0' }}>
           <Link to="/shop" className="btn btn-primary" style={{ backgroundColor: 'var(--on-surface)', padding: '16px 32px', fontSize: '16px', borderRadius: '999px' }}>
             {t('shopAll')}

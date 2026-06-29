@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Users, ShoppingCart, Eye, DollarSign, Calendar, Target, Activity, Download } from 'lucide-react';
-import { useProducts } from '../../context/ProductContext';
-import { useAdmin } from '../../context/AdminContext';
 import { exportToExcel } from '../../utils/excelExport';
+import { useStore } from '../../store';
 
 export default function ProductAnalysis() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products } = useProducts();
-  const { orders } = useAdmin();
+  const { products } = useStore();
+  const { orders } = useStore();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('All Time');

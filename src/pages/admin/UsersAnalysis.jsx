@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import { useAdmin } from '../../context/AdminContext';
 import { Users, TrendingUp, DollarSign, Star, Calendar, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
+import { useStore } from '../../store';
 
 export default function UsersAnalysis() {
-  const { users, orders } = useAdmin();
+  const { users, orders } = useStore();
 
   const metrics = useMemo(() => {
     const customers = users.filter(u => !u.isInfluencer);

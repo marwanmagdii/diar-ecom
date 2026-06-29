@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Tag, Search, ShoppingBag, User } from 'lucide-react';
-import { useCart } from '../context/CartContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useStore } from '../store';
 
 export default function BottomNav() {
   const location = useLocation();
-  const { cartCount } = useCart();
-  const { t } = useLanguage();
+  const { cartCount } = useStore();
+  const { t } = useStore();
 
   const isActive = (path) => {
     if (path === '/' && location.pathname !== '/') return false;

@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
-import { useProducts } from '../../context/ProductContext';
 import * as LucideIcons from 'lucide-react';
 import { Settings, Search, Trash2 } from 'lucide-react';
-import { useToast } from '../../context/ToastContext';
-import { useLanguage } from '../../context/LanguageContext';
+import { useStore } from '../../store';
 
 export default function CategorySettings() {
-  const { config, updateCategories } = useStoreConfig();
-  const { products } = useProducts();
-  const { addToast } = useToast();
-  const { t } = useLanguage();
+  const { config, updateCategories } = useStore();
+  const { products } = useStore();
+  const { addToast } = useStore();
+  const { t } = useStore();
 
   const normalizeCategories = (cats) => {
     return cats.map(c => typeof c === 'string' 

@@ -1,25 +1,22 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ShoppingBag } from 'lucide-react';
-import { useProducts } from '../context/ProductContext';
-import { useCart } from '../context/CartContext';
-import { useToast } from '../context/ToastContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useCustomerTracking } from '../context/CustomerTrackingContext';
 import { Check, Sparkles } from 'lucide-react';
 import { getColorHex } from '../utils/colors';
 import ProductCard from '../components/ProductCard';
+import CustomerReviewsMarquee from '../components/CustomerReviewsMarquee';
+import { useStore } from '../store';
 
 
 
 export default function Product() {
   const { id } = useParams();
-  const { products, loading, error } = useProducts();
+  const { products, productsLoading: loading, productsError: error } = useStore();
   const productData = products.find(p => p.id === id) || products[0]; // fallback
-  const { cart, addToCart, updateQuantity } = useCart();
-  const { trackEvent } = useCustomerTracking();
-  const { addToast } = useToast();
-  const { language, t } = useLanguage();
+  const { cart, addToCart, updateQuantity } = useStore();
+  const trackEvent = useStore(state => state.trackEvent);
+  const { addToast } = useStore();
+  const { language, t } = useStore();
   const navigate = useNavigate();
   
   // Synthesize a virtual variant for the main product (Basic Information) so it acts like a variant
@@ -654,42 +651,11 @@ export default function Product() {
           </div>
         </div>
 
+        {/* Comparison Table */}
+        <ComparisonTable />
+
         {/* Customer Gallery */}
-        {product.reviewImages && product.reviewImages.length > 0 && (
-          <section style={{ maxWidth: '1200px', margin: '64px auto 0', padding: '0 16px', animation: 'pageSlideUpIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '28px', fontWeight: 800, color: 'var(--on-surface)', marginBottom: '8px' }}>
-                ⭐ {t('customerReviews')}
-              </h2>
-            </div>
-            
-            <div style={{ overflow: 'hidden', width: '100%', padding: '16px 0' }}>
-              <div className="marquee-track">
-                {[...product.reviewImages, ...product.reviewImages].map((img, idx) => (
-                  <div 
-                    key={idx} 
-                    style={{ 
-                      borderRadius: '16px', 
-                      overflow: 'hidden', 
-                      flexShrink: 0,
-                      width: '280px',
-                      height: '280px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                      cursor: 'zoom-in',
-                      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      position: 'relative'
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.15)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'; }}
-                    onClick={() => setLightboxImage(img)}
-                  >
-                    <img src={img} alt={`Customer review ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+        <CustomerReviewsMarquee reviews={product.reviewImages} />
 
         {/* Lightbox */}
         {lightboxImage && (

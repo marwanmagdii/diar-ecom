@@ -1,24 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useProducts } from '../../context/ProductContext';
-import { useStoreConfig } from '../../context/StoreConfigContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, UploadCloud, X, Tag, Plus, BarChart2, Trash2, Crop } from 'lucide-react';
-import { useToast } from '../../context/ToastContext';
 
 import ProductOptionsBuilder, { VariantOptionSelector } from './ProductOptionsBuilder';
 import ImageLightbox from '../../components/ImageLightbox';
 import ImageCropperModal from '../../components/ImageCropperModal';
 import { compressImage } from '../../utils/imageCompression';
 import { defaultOptions } from '../../utils/constants';
-import { useLanguage } from '../../context/LanguageContext';
+import { useStore } from '../../store';
 
 export default function ProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, loading, addProduct, updateProduct } = useProducts();
-  const { config } = useStoreConfig();
-  const { addToast } = useToast();
-  const { t, language } = useLanguage();
+  const { products, productsLoading: loading, addProduct, updateProduct } = useStore();
+  const { config } = useStore();
+  const { addToast } = useStore();
+  const { t, language } = useStore();
   const fileInputRef = useRef(null);
   
   const isEditing = Boolean(id);
@@ -143,7 +140,7 @@ export default function ProductForm() {
       return;
     }
     
-    if (!formData.image) {
+    if (!formData.image && formData.images.length === 0) {
       addToast('A main product image is required.', 'error');
       return;
     }
@@ -242,7 +239,11 @@ export default function ProductForm() {
     for (const file of files) {
       try {
         const compressedBase64 = await compressImage(file);
-        setFormData(prev => ({ ...prev, images: [...prev.images, compressedBase64] }));
+        setFormData(prev => ({ 
+          ...prev, 
+          images: [...prev.images, compressedBase64],
+          image: prev.images.length === 0 ? compressedBase64 : prev.image 
+        }));
       } catch (err) {
         console.error('Error compressing image:', err);
       }

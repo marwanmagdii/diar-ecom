@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useStore } from '../store';
 
 export default function Success() {
-  const { t } = useLanguage();
+  const { t } = useStore();
   const location = useLocation();
   const navigate = useNavigate();
   const orderNumber = location.state?.orderId;

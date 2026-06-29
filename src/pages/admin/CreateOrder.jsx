@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useAdmin } from '../../context/AdminContext';
-import { useProducts } from '../../context/ProductContext';
-import { useStoreConfig } from '../../context/StoreConfigContext';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Plus, Trash2 } from 'lucide-react';
+import { useStore } from '../../store';
 
 export default function CreateOrder() {
-  const { addOrder } = useAdmin();
-  const { products } = useProducts();
-  const { config } = useStoreConfig();
+  const { addOrder } = useStore();
+  const { products } = useStore();
+  const { config } = useStore();
   const navigate = useNavigate();
 
   const [deliveryData, setDeliveryData] = useState({

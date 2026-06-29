@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
-import { useToast } from '../../context/ToastContext';
 import { Plus, Edit, Trash2, Star, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
+import { useStore } from '../../store';
 
 export default function Influencers() {
-  const { config, updatePromoCodes } = useStoreConfig();
-  const { addToast } = useToast();
+  const { config, updatePromoCodes, configLoading: loading } = useStore();
+  const { addToast } = useStore();
   const navigate = useNavigate();
   const promos = config.promoCodes || [];
   
@@ -121,9 +120,17 @@ export default function Influencers() {
             </tr>
           </thead>
           <tbody>
-            {influencers.length === 0 ? (
+            {loading ? (
               <tr>
-                <td colSpan="8" style={{ textAlign: 'center', padding: '32px', color: 'var(--on-surface-variant)' }}>
+                <td colSpan="9" style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
+                  <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
+                  <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                  Loading influencers...
+                </td>
+              </tr>
+            ) : influencers.length === 0 ? (
+              <tr>
+                <td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: 'var(--on-surface-variant)' }}>
                   No influencers found. Click "Add Influencer" to get started.
                 </td>
               </tr>

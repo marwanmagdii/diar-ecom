@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useAdmin } from '../../context/AdminContext';
-import { useLanguage } from '../../context/LanguageContext';
-import { useStoreConfig } from '../../context/StoreConfigContext';
-import { useProducts } from '../../context/ProductContext';
 import { User, ExternalLink, Search, Filter, Download, Activity } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
 import { Link } from 'react-router-dom';
 import CustomerAnalytics from './CustomerAnalytics';
+import { useStore } from '../../store';
 
 export default function ActivityLogs() {
-  const { currentAdmin, setAdmin } = useAdmin();
-  const { config, updateLoggingSettings } = useStoreConfig();
-  const { products } = useProducts();
-  const { language } = useLanguage();
+  const { currentAdmin, setAdmin } = useStore();
+  const { config, updateLoggingSettings } = useStore();
+  const { products } = useStore();
+  const { language } = useStore();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');

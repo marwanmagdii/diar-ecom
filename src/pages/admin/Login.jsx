@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { useLanguage } from '../../context/LanguageContext';
 import { ShieldAlert, Lock, User, LogIn } from 'lucide-react';
+import { useStore } from '../../store';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -10,8 +9,8 @@ export default function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
-  const { language, t } = useLanguage();
+  const { login } = useStore();
+  const { language, t } = useStore();
 
   const from = location.state?.from?.pathname || '/admin';
 

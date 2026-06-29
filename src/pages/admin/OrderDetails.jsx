@@ -1,21 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useAdmin } from '../../context/AdminContext';
-import { useProducts } from '../../context/ProductContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronRight, ChevronDown, Trash2, Edit, Check, X, Plus, Copy, Search } from 'lucide-react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
 import { PremiumInput } from '../../components/AdminUI';
-import { useToast } from '../../context/ToastContext';
+import { useStore } from '../../store';
 
 export default function OrderDetails() {
   const { id } = useParams();
-  const { orders, updateOrder, deleteOrder, t, lang, loading } = useAdmin();
-  const { products } = useProducts();
+  const { orders, updateOrder, deleteOrder, t, lang, ordersLoading: loading } = useStore();
+  const { products } = useStore();
   const navigate = useNavigate();
-  const { addToast } = useToast();
+  const { addToast } = useStore();
 
   const order = orders.find(o => o.id === id);
-  const { config } = useStoreConfig();
+  const { config } = useStore();
 
   const getArabicGov = (govId) => {
     const gov = config.locations?.find(l => l.id === govId || l.nameEn === govId);

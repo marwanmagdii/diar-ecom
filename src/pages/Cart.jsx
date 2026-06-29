@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useLanguage } from '../context/LanguageContext';
 import { Trash2 } from 'lucide-react';
+import { useStore } from '../store';
 
 export default function Cart() {
-  const { cart, removeFromCart, updateQuantity, cartTotal } = useCart();
-  const { t, language } = useLanguage();
+  const { cart, removeFromCart, updateQuantity, cartTotal } = useStore();
+  const { t, language } = useStore();
   const navigate = useNavigate();
 
   const getLocalizedText = (text) => {

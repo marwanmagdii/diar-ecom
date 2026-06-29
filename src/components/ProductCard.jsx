@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { useCart } from '../context/CartContext';
-import { useToast } from '../context/ToastContext';
 import { Link } from 'react-router-dom';
-import { useLanguage } from '../context/LanguageContext';
+import { useStore } from '../store';
 
 export default function ProductCard({ product }) {
-  const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
-  const { addToast } = useToast();
-  const { language, t } = useLanguage();
+  const { cart, addToCart, updateQuantity, removeFromCart } = useStore();
+  const { addToast } = useStore();
+  const { language, t } = useStore();
   
   // Find color options
   const colorOption = product.options?.find(opt => opt.name.toLowerCase() === 'color' || opt.name.toLowerCase() === 'لون');

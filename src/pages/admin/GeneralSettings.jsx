@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
-import { useLanguage } from '../../context/LanguageContext';
 import { Save, Phone, Mail, MapPin, Link as LinkIcon, MessageCircle } from 'lucide-react';
-import { useToast } from '../../context/ToastContext';
+import { useStore } from '../../store';
 
 export default function GeneralSettings() {
-  const { config, updateStoreInfo, updateConfig } = useStoreConfig();
-  const { language, t } = useLanguage();
-  const { addToast } = useToast();
+  const { config, updateStoreInfo, updateConfig } = useStore();
+  const { language, t } = useStore();
+  const { addToast } = useStore();
 
   const [storeInfo, setStoreInfo] = useState({
     email: '',
     phone: '',
     address: '',
     facebook: '',
+    facebookActive: true,
     instagram: '',
+    instagramActive: true,
     twitter: '',
-    tiktok: ''
+    twitterActive: true,
+    tiktok: '',
+    tiktokActive: true
   });
 
   const [clarityProjectId, setClarityProjectId] = useState('');
 
   useEffect(() => {
     if (config?.storeInfo) {
-      setStoreInfo(config.storeInfo);
+      setStoreInfo({
+        ...config.storeInfo,
+        facebookActive: config.storeInfo.facebookActive !== false,
+        instagramActive: config.storeInfo.instagramActive !== false,
+        twitterActive: config.storeInfo.twitterActive !== false,
+        tiktokActive: config.storeInfo.tiktokActive !== false,
+      });
     }
     if (config?.clarityProjectId !== undefined) {
       setClarityProjectId(config.clarityProjectId);
@@ -115,10 +123,21 @@ export default function GeneralSettings() {
           </h2>
           
           <div style={{ display: 'grid', gap: '16px' }}>
-            <div className="form-group">
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
-                <LinkIcon size={16} /> Facebook URL
-              </label>
+            {/* Facebook */}
+            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
+                  <LinkIcon size={16} /> Facebook URL
+                </label>
+                <label className="toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    checked={storeInfo.facebookActive}
+                    onChange={(e) => setStoreInfo(prev => ({ ...prev, facebookActive: e.target.checked }))}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
               <input 
                 type="url" 
                 name="facebook"
@@ -126,12 +145,26 @@ export default function GeneralSettings() {
                 onChange={handleChange}
                 className="premium-input"
                 placeholder="https://facebook.com/..."
+                style={{ width: '100%', opacity: storeInfo.facebookActive ? 1 : 0.5 }}
+                disabled={!storeInfo.facebookActive}
               />
             </div>
-            <div className="form-group">
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
-                <LinkIcon size={16} /> Instagram URL
-              </label>
+
+            {/* Instagram */}
+            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
+                  <LinkIcon size={16} /> Instagram URL
+                </label>
+                <label className="toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    checked={storeInfo.instagramActive}
+                    onChange={(e) => setStoreInfo(prev => ({ ...prev, instagramActive: e.target.checked }))}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
               <input 
                 type="url" 
                 name="instagram"
@@ -139,12 +172,26 @@ export default function GeneralSettings() {
                 onChange={handleChange}
                 className="premium-input"
                 placeholder="https://instagram.com/..."
+                style={{ width: '100%', opacity: storeInfo.instagramActive ? 1 : 0.5 }}
+                disabled={!storeInfo.instagramActive}
               />
             </div>
-            <div className="form-group">
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
-                <LinkIcon size={16} /> Twitter / X URL
-              </label>
+
+            {/* Twitter */}
+            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
+                  <LinkIcon size={16} /> Twitter / X URL
+                </label>
+                <label className="toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    checked={storeInfo.twitterActive}
+                    onChange={(e) => setStoreInfo(prev => ({ ...prev, twitterActive: e.target.checked }))}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
               <input 
                 type="url" 
                 name="twitter"
@@ -152,12 +199,26 @@ export default function GeneralSettings() {
                 onChange={handleChange}
                 className="premium-input"
                 placeholder="https://twitter.com/..."
+                style={{ width: '100%', opacity: storeInfo.twitterActive ? 1 : 0.5 }}
+                disabled={!storeInfo.twitterActive}
               />
             </div>
-            <div className="form-group">
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
-                <MessageCircle size={16} /> TikTok URL
-              </label>
+
+            {/* TikTok */}
+            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
+                  <MessageCircle size={16} /> TikTok URL
+                </label>
+                <label className="toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    checked={storeInfo.tiktokActive}
+                    onChange={(e) => setStoreInfo(prev => ({ ...prev, tiktokActive: e.target.checked }))}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
               <input 
                 type="url" 
                 name="tiktok"
@@ -165,6 +226,8 @@ export default function GeneralSettings() {
                 onChange={handleChange}
                 className="premium-input"
                 placeholder="https://tiktok.com/@..."
+                style={{ width: '100%', opacity: storeInfo.tiktokActive ? 1 : 0.5 }}
+                disabled={!storeInfo.tiktokActive}
               />
             </div>
           </div>

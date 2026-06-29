@@ -1,14 +1,27 @@
 import React, { useState } from 'react';
 import { Eye, Plus, Search, Filter, Download } from 'lucide-react';
-import { useAdmin } from '../../context/AdminContext';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
+import { useStore } from '../../store';
 
 export default function Orders() {
-  const { orders, t, lang, loading } = useAdmin();
+  const { orders, t, lang, ordersLoading: loading } = useStore();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [showColumnsMenu, setShowColumnsMenu] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState({
+    id: true,
+    date: true,
+    time: true,
+    customer: true,
+    status: true,
+    promoCode: true,
+    influencer: true,
+    total: true,
+    actions: true
+  });
+
   
   const openWhatsapp = (order) => {
     const targetPhone = '+201019600026';
@@ -83,7 +96,9 @@ export default function Orders() {
       const matchesSearch = 
         (order.id && order.id.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (order.customer && order.customer.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (order.phone && order.phone.includes(searchTerm));
+        (order.phone && order.phone.includes(searchTerm)) ||
+        (order.promoCode && order.promoCode.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (order.influencerName && order.influencerName.toLowerCase().includes(searchTerm.toLowerCase()));
       
       const matchesStatus = statusFilter === 'All' || order.status === statusFilter;
       
@@ -149,6 +164,30 @@ export default function Orders() {
             <Filter size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)', pointerEvents: 'none' }} />
           </div>
 
+                    <div style={{ position: 'relative' }}>
+            <button 
+              className="btn btn-secondary" 
+              style={{ display: 'flex', alignItems: 'center', gap: '8px' }} 
+              onClick={() => setShowColumnsMenu(!showColumnsMenu)}
+            >
+              <Filter size={18} /> {lang === 'ar' ? 'الأعمدة' : 'Columns'}
+            </button>
+            {showColumnsMenu && (
+              <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', background: 'var(--surface)', border: '1px solid var(--outline)', borderRadius: '8px', padding: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 10, width: '200px' }}>
+                {Object.keys(visibleColumns).map(key => (
+                  <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={visibleColumns[key]} 
+                      onChange={(e) => setVisibleColumns({...visibleColumns, [key]: e.target.checked})}
+                    />
+                    {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+          
           <button 
             className="btn btn-secondary" 
             style={{ display: 'flex', alignItems: 'center', gap: '8px' }} 
@@ -172,12 +211,15 @@ export default function Orders() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>{t('orderId')}</th>
-                <th>{t('date')}</th>
-                <th>{t('customer')}</th>
-                <th>{t('status')}</th>
-                <th>{t('total')}</th>
-                <th>{lang === 'ar' ? 'الإجراءات' : 'Actions'}</th>
+                {visibleColumns.id && <th>{t('orderId')}</th>}
+                {visibleColumns.date && <th>{t('date')}</th>}
+                {visibleColumns.time && <th>{lang === 'ar' ? 'الوقت' : 'Time'}</th>}
+                {visibleColumns.customer && <th>{t('customer')}</th>}
+                {visibleColumns.status && <th>{t('status')}</th>}
+                {visibleColumns.promoCode && <th>{lang === 'ar' ? 'كود الخصم' : 'Promo Code'}</th>}
+                {visibleColumns.influencer && <th>{lang === 'ar' ? 'المؤثر' : 'Influencer'}</th>}
+                {visibleColumns.total && <th>{t('total')}</th>}
+                {visibleColumns.actions && <th>{lang === 'ar' ? 'الإجراءات' : 'Actions'}</th>}
               </tr>
             </thead>
             <tbody>
@@ -211,19 +253,24 @@ export default function Orders() {
                     style={{ cursor: 'pointer' }}
                     className="hover-row"
                   >
-                    <td style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</td>
-                    <td>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString() : 'Unknown'}</td>
-                    <td>
+                    {visibleColumns.id && <td style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</td>}
+                    {visibleColumns.date && <td>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US') : new Date(order.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')}</td>}
+                    {visibleColumns.time && <td>{order.createdAt instanceof Date ? order.createdAt.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' }) : new Date(order.createdAt).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</td>}
+                    {visibleColumns.customer && <td>
                       <div>{order.customer}</div>
                       <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{order.phone}</div>
-                    </td>
-                    <td>
+                    </td>}
+                    {visibleColumns.status && <td>
                       <span className={`status-pill status-${order.status?.toLowerCase()}`}>
                         {t(order.status?.toLowerCase()) || order.status}
                       </span>
-                    </td>
-                    <td>{order.total?.toFixed(2)} EGP</td>
-                    <td>
+                    </td>}
+                    {visibleColumns.promoCode && <td>
+                      {order.promoCode ? <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>{order.promoCode}</span> : '-'}
+                    </td>}
+                    {visibleColumns.influencer && <td>{order.influencerName || '-'}</td>}
+                    {visibleColumns.total && <td>{order.total?.toFixed(2)} EGP</td>}
+                    {visibleColumns.actions && <td>
                       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end' }}>
                         <button 
                           className="btn btn-secondary"
@@ -237,7 +284,7 @@ export default function Orders() {
                           <Eye size={18} />
                         </button>
                       </div>
-                    </td>
+                    </td>}
                   </tr>
                 ));
               })()}

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingBag, ArrowLeft, Menu, X, Globe, Search } from 'lucide-react';
-import { useCart } from '../context/CartContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useStore } from '../store';
 
 export default function Header() {
-  const { cartCount } = useCart();
-  const { language, toggleLanguage, t } = useLanguage();
+  const { cartCount } = useStore();
+  const { language, toggleLanguage, t } = useStore();
   const location = useLocation();
   const navigate = useNavigate();
 

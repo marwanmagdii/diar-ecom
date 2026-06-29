@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
-import { useAdmin } from '../../context/AdminContext';
-import { useToast } from '../../context/ToastContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronRight, Save, X, Search, Trash2 } from 'lucide-react';
+import { useStore } from '../../store';
 
 export default function CreateInfluencer() {
-  const { config, updatePromoCodes } = useStoreConfig();
-  const { users } = useAdmin();
-  const { addToast } = useToast();
+  const { config, updatePromoCodes } = useStore();
+  const { users } = useStore();
+  const { addToast } = useStore();
   const navigate = useNavigate();
   const { id } = useParams(); // If editing
 

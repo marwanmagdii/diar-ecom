@@ -1,12 +1,12 @@
 import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import Header from '../components/Header';
-import { useLanguage } from '../context/LanguageContext';
 import { Send } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
+import { useStore } from '../store';
 
 function Footer() {
-  const { t, language } = useLanguage();
+  const { t, language } = useStore();
   
   return (
     <footer className="footer-premium" style={{ padding: '32px 0 24px 0', borderTop: '1px solid var(--outline-variant)' }}>

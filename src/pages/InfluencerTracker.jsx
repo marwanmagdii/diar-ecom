@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useStoreConfig } from '../context/StoreConfigContext';
-import { useLanguage } from '../context/LanguageContext';
 import { Search, TrendingUp, DollarSign, Users, Award } from 'lucide-react';
+import { useStore } from '../store';
 
 export default function InfluencerTracker() {
-  const { config } = useStoreConfig();
-  const { t } = useLanguage();
+  const { config } = useStore();
+  const { t } = useStore();
   const [promoInput, setPromoInput] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');

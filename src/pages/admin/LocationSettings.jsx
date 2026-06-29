@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
-import { useToast } from '../../context/ToastContext';
-import { useLanguage } from '../../context/LanguageContext';
 import { Plus, Trash2, Save, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { useStore } from '../../store';
 
 export default function LocationSettings() {
-  const { config, updateConfig, configLoading } = useStoreConfig();
-  const { addToast } = useToast();
-  const { t, language } = useLanguage();
+  const { config, updateConfig, configLoading } = useStore();
+  const { addToast } = useStore();
+  const { t, language } = useStore();
   const [locations, setLocations] = useState(config.locations || []);
   const [shippingCost, setShippingCost] = useState(config.shippingCost ?? 35);
   const [shippingActive, setShippingActive] = useState(config.shippingActive ?? true);

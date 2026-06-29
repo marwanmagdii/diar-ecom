@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import { useAdmin } from '../../context/AdminContext';
-import { useProducts } from '../../context/ProductContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, Phone, MapPin, ShoppingBag, Target, Merge, Sparkles, ChevronDown, ChevronUp, Search, X, Package, Trash2, Download } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
-import { useToast } from '../../context/ToastContext';
+import { useStore } from '../../store';
 
 export default function UserDetails() {
   const { id } = useParams();
-  const { users, mergeUsers, lang, deleteOrder } = useAdmin();
-  const { products } = useProducts();
-  const { addToast } = useToast();
+  const { users, mergeUsers, lang, deleteOrder } = useStore();
+  const { products } = useStore();
+  const { addToast } = useStore();
   const navigate = useNavigate();
   
   // Merge Modal State

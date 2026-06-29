@@ -1,15 +1,25 @@
 import React from 'react';
 import { DollarSign, ShoppingBag, Users, TrendingUp, BarChart2, Eye, Download } from 'lucide-react';
-import { useAdmin } from '../../context/AdminContext';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../context/LanguageContext';
 import { exportToExcel } from '../../utils/excelExport';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useStore } from '../../store';
 export default function Dashboard() {
-  const { orders, users, error } = useAdmin();
-  const { language } = useLanguage();
+  const { orders, users, ordersError, usersError, ordersLoading: loading } = useStore();
+  const error = ordersError || usersError;
+  const { language } = useStore();
   const navigate = useNavigate();
   
+  if (loading) {
+    return (
+      <div style={{ padding: '48px', textAlign: 'center', color: '#64748b' }}>
+        <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
+        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+        Loading dashboard...
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div style={{ padding: '40px', backgroundColor: '#fef2f2', borderRadius: '12px', border: '1px solid #fecaca', color: '#ef4444', textAlign: 'center' }}>

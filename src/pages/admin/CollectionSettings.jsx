@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
-import { useProducts } from '../../context/ProductContext';
 import { Save, Eye, EyeOff, GripVertical, Trash2, Plus, X, Search, ChevronDown, ChevronUp } from 'lucide-react';
-import { useToast } from '../../context/ToastContext';
 import { PremiumInput } from '../../components/AdminUI';
-import { useLanguage } from '../../context/LanguageContext';
+import { useStore } from '../../store';
 
 export default function CollectionSettings() {
-  const { config, updateCollections } = useStoreConfig();
-  const { products } = useProducts();
-  const { addToast } = useToast();
-  const { t } = useLanguage();
+  const { config, updateCollections } = useStore();
+  const { products } = useStore();
+  const { addToast } = useStore();
+  const { t } = useStore();
 
   const [collectionsForm, setCollectionsForm] = useState(config.collections || []);
 

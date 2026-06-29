@@ -1,16 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import { useAdmin } from '../../context/AdminContext';
-import { useProducts } from '../../context/ProductContext';
 import { ArrowLeft, Search, TrendingUp, Package, DollarSign, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
-import { useLanguage } from '../../context/LanguageContext';
+import { useStore } from '../../store';
 
 export default function ProductsAnalysis() {
-  const { orders } = useAdmin();
-  const { products } = useProducts();
+  const { orders } = useStore();
+  const { products } = useStore();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t } = useStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState('revenue-desc');

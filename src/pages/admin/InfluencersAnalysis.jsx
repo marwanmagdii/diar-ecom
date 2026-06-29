@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
 import { Users, TrendingUp, DollarSign, Star, Award, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
+import { useStore } from '../../store';
 
 export default function InfluencersAnalysis() {
-  const { config } = useStoreConfig();
+  const { config } = useStore();
   const promos = config?.promoCodes || [];
   
   // Filter promos to only those that look like influencers

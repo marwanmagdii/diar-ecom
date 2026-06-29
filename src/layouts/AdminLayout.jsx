@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity } from 'lucide-react';
-import { useAdmin } from '../context/AdminContext';
+import { useStore } from '../store';
 
 export default function AdminLayout() {
   const location = useLocation();
-  const { lang, setLang, t } = useAdmin();
+  const { lang, setLang, t } = useStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(location.pathname.startsWith('/admin/settings'));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);

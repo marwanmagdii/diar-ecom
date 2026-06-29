@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
-import { useCart } from '../context/CartContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, Truck, CreditCard } from 'lucide-react';
 import SearchableSelect from '../components/SearchableSelect';
-import { useAdmin } from '../context/AdminContext';
-import { useStoreConfig } from '../context/StoreConfigContext';
-import { useToast } from '../context/ToastContext';
-import { useCustomerTracking } from '../context/CustomerTrackingContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useStore } from '../store';
 
 export default function Checkout() {
-  const { cart, cartTotal, clearCart } = useCart();
-  const { addOrder, updateOrder, orders } = useAdmin();
-  const { config, updatePromoCodes } = useStoreConfig();
-  const { addToast } = useToast();
-  const { getTrackingData, clearTrackingData, trackEvent } = useCustomerTracking();
+  const { cart, cartTotal, clearCart, config, addToast, language: lang, t, getTrackingData, clearTrackingData, addOrder, orders, updatePromoCodes, trackEvent } = useStore();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -44,9 +35,6 @@ export default function Checkout() {
   }
   const shippingCost = 0;
   const finalTotal = cartTotal - discountAmount + shippingCost;
-
-  const { language: lang, t } = useLanguage();
-
   const govOptions = (config.locations || [])
     .filter(loc => loc.isActive !== false)
     .map(loc => ({

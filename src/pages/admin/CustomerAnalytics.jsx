@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { useAdmin } from '../../context/AdminContext';
-import { useLanguage } from '../../context/LanguageContext';
 import { Search, Download, User, Calendar, MapPin, Eye, Phone, ExternalLink } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
 import CustomerJourneyDetail from './CustomerJourneyDetail';
+import { useStore } from '../../store';
 
 export default function CustomerAnalytics({ isEmbedded = false }) {
-  const { orders } = useAdmin();
-  const { language } = useLanguage();
+  const { orders, ordersLoading: loading } = useStore();
+  const { language } = useStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [viewingJourneyFor, setViewingJourneyFor] = useState(null);
 
@@ -181,7 +180,15 @@ export default function CustomerAnalytics({ isEmbedded = false }) {
               </tr>
             </thead>
             <tbody>
-              {filteredCustomers.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan="4" style={{ padding: '48px', textAlign: 'center', color: '#64748b' }}>
+                    <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
+                    <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                    Loading analytics...
+                  </td>
+                </tr>
+              ) : filteredCustomers.length === 0 ? (
                 <tr>
                   <td colSpan="4" style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>No tracked customers found.</td>
                 </tr>

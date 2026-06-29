@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useCustomerTracking } from '../context/CustomerTrackingContext';
+import { useStore } from '../store';
 
 export default function PageTracker() {
   const location = useLocation();
-  const { trackEvent } = useCustomerTracking();
+  const trackEvent = useStore(state => state.trackEvent);
 
   useEffect(() => {
     // Only track store pages, ignore admin

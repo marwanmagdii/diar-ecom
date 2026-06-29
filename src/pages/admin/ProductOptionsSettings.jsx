@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import { useStoreConfig } from '../../context/StoreConfigContext';
-import { useToast } from '../../context/ToastContext';
-import { useLanguage } from '../../context/LanguageContext';
 import { Save, Plus, Trash2, Tag, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { getColorHex } from '../../utils/colors';
 import { defaultOptions } from '../../utils/constants';
+import { useStore } from '../../store';
 
 export default function ProductOptionsSettings() {
-  const { config, updateConfig, configLoading } = useStoreConfig();
-  const { addToast } = useToast();
-  const { language } = useLanguage();
+  const { config, updateConfig, configLoading } = useStore();
+  const { addToast } = useStore();
+  const { language } = useStore();
 
   let initialOptions = defaultOptions;
   if (config && config.productOptions && config.productOptions.length > 0) {

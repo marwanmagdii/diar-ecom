@@ -41,26 +41,27 @@ import ProductsAnalysis from './pages/admin/ProductsAnalysis';
 import ReviewSettings from './pages/admin/ReviewSettings';
 import ProfitCalculator from './pages/admin/ProfitCalculator';
 
-import { CartProvider } from './context/CartContext';
-import { ToastProvider } from './context/ToastContext';
-import { ProductProvider } from './context/ProductContext';
-import { AdminProvider } from './context/AdminContext';
-import { StoreConfigProvider } from './context/StoreConfigContext';
-import { LanguageProvider } from './context/LanguageContext';
-import { AuthProvider } from './context/AuthContext';
-import { CustomerTrackingProvider } from './context/CustomerTrackingContext';
 import PageTracker from './components/PageTracker';
+import ToastContainer from './components/ToastContainer';
+import { useStore } from './store';
+import { useEffect } from 'react';
 
 function App() {
+  const fetchConfig = useStore(state => state.fetchConfig);
+  const fetchProducts = useStore(state => state.fetchProducts);
+  const fetchOrders = useStore(state => state.fetchOrders);
+  const setLanguage = useStore(state => state.setLanguage);
+
+  useEffect(() => {
+    fetchConfig();
+    fetchProducts();
+    fetchOrders();
+    const savedLang = localStorage.getItem('storeLanguage');
+    if (savedLang) setLanguage(savedLang);
+    else setLanguage('en');
+  }, [fetchConfig, setLanguage]);
+
   return (
-    <StoreConfigProvider>
-      <LanguageProvider>
-      <AuthProvider>
-      <ProductProvider>
-      <AdminProvider>
-        <ToastProvider>
-          <CustomerTrackingProvider>
-          <CartProvider>
           <BrowserRouter>
           <PageTracker />
           <Routes>
@@ -117,15 +118,8 @@ function App() {
             {/* Catch-all redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <ToastContainer />
           </BrowserRouter>
-          </CartProvider>
-        </CustomerTrackingProvider>
-        </ToastProvider>
-      </AdminProvider>
-      </ProductProvider>
-      </AuthProvider>
-      </LanguageProvider>
-    </StoreConfigProvider>
   );
 }
 

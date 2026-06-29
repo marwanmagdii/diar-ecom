@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useProducts } from '../context/ProductContext';
-import { useStoreConfig } from '../context/StoreConfigContext';
 import ProductCard from '../components/ProductCard';
 import { Search, Filter, X, LayoutGrid, Smartphone, Shirt, Home as HomeIcon, Sparkles, Watch, Droplet, Tag } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
 import { useSearchParams, Link, useNavigate, useLocation } from 'react-router-dom';
+import { useStore } from '../store';
 
 export default function Shop() {
-  const { products, loading, error } = useProducts();
-  const { config } = useStoreConfig();
-  const { t, language } = useLanguage();
+  const { products, productsLoading: loading, productsError: error } = useStore();
+  const { config } = useStore();
+  const { t, language } = useStore();
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const navigate = useNavigate();
