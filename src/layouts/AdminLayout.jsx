@@ -106,7 +106,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/general') ? 700 : 500
                           }}
                         >
-                          {language === 'ar' ? 'الإعدادات العامة' : 'General Settings'}
+                          <span className="nav-link-text">{language === 'ar' ? 'الإعدادات العامة' : 'General Settings'}</span>
                         </Link>
                         <Link 
                           to="/diaradmin26/settings/logs" 
@@ -119,7 +119,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/logs') ? 700 : 500
                           }}
                         >
-                          {language === 'ar' ? 'سجل النشاطات' : 'Activity Logs'}
+                          <span className="nav-link-text">{language === 'ar' ? 'سجل النشاطات' : 'Activity Logs'}</span>
                         </Link>
                         <Link 
                           to="/diaradmin26/settings/collections" 
@@ -132,7 +132,7 @@ export default function AdminLayout() {
                             fontWeight: (location.pathname.includes('/settings/collections') || location.pathname === '/diaradmin26/settings') ? 700 : 500
                           }}
                         >
-                          {t('collectionBuilder')}
+                          <span className="nav-link-text">{t('collectionBuilder')}</span>
                         </Link>
                         <Link 
                           to="/diaradmin26/settings/categories" 
@@ -145,7 +145,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/categories') ? 700 : 500
                           }}
                         >
-                          {t('categoryManagement')}
+                          <span className="nav-link-text">{t('categoryManagement')}</span>
                         </Link>
                         <Link 
                           to="/diaradmin26/settings/locations" 
@@ -158,7 +158,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/locations') ? 700 : 500
                           }}
                         >
-                          {t('locationsShipping')}
+                          <span className="nav-link-text">{t('locationsShipping')}</span>
                         </Link>
                         <Link 
                           to="/diaradmin26/settings/options" 
@@ -171,7 +171,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/options') ? 700 : 500
                           }}
                         >
-                          {t('productOptions')}
+                          <span className="nav-link-text">{t('productOptions')}</span>
                         </Link>
                         <Link 
                           to="/diaradmin26/settings/reviews" 
@@ -184,7 +184,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/reviews') ? 700 : 500
                           }}
                         >
-                          {t('globalReviews')}
+                          <span className="nav-link-text">{t('globalReviews')}</span>
                         </Link>
                         <Link 
                           to="/diaradmin26/settings/calculator" 
