@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 import mongoose from 'mongoose';
-import Order from './api/models/Order.js';
+import Order from './api/_models/Order.js';
 
 async function wipeAllTracking() {
   await mongoose.connect(process.env.MONGODB_URI);

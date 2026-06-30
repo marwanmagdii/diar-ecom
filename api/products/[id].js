@@ -1,7 +1,7 @@
-import dbConnect from '../utils/dbConnect.js';
-import Product from '../models/Product.js';
+import dbConnect from '../_utils/dbConnect.js';
+import Product from '../_models/Product.js';
 import mongoose from 'mongoose';
-import { logger } from '../utils/logger.js';
+import { logger } from '../_utils/logger.js';
 
 export default async function handler(req, res) {
   const { method, query: { id } } = req;

@@ -1,5 +1,5 @@
-import dbConnect from './api/utils/dbConnect.js';
-import StoreConfig from './api/models/StoreConfig.js';
+import dbConnect from './api/_utils/dbConnect.js';
+import StoreConfig from './api/_models/StoreConfig.js';
 
 async function test() {
   await dbConnect();

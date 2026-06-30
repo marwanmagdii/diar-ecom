@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
-import Product from '../api/models/Product.js';
+import Product from '../api/_models/Product.js';
 
 config({ path: '.env.local' });
 

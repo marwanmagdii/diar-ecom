@@ -1,6 +1,6 @@
-import dbConnect from './utils/dbConnect.js';
-import Log from './models/Log.js';
-import { logger } from './utils/logger.js';
+import dbConnect from './_utils/dbConnect.js';
+import Log from './_models/Log.js';
+import { logger } from './_utils/logger.js';
 
 export default async function handler(req, res) {
   const { method } = req;

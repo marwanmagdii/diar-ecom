@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
 import { products } from '../src/data.js';
-import Product from '../api/models/Product.js';
+import Product from '../api/_models/Product.js';
 
 // Load .env.local
 config({ path: '.env.local' });
