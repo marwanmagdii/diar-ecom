@@ -652,7 +652,7 @@ export default function Product() {
         </div>
 
         {/* Comparison Table */}
-        <ComparisonTable />
+        {/* <ComparisonTable /> */}
 
         {/* Customer Gallery */}
         <CustomerReviewsMarquee reviews={product.reviewImages} />
