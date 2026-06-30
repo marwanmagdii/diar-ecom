@@ -44,10 +44,10 @@ export default function UserDetails() {
     setExpandedOrders(prev => ({ ...prev, [orderId]: !prev[orderId] }));
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (deleteInput.trim().toLowerCase() === 'delete') {
       try {
-        user.orders.forEach(order => deleteOrder(order.id));
+        await Promise.all(user.orders.map(order => deleteOrder(order.id)));
         addToast('Customer and orders deleted successfully', 'success');
         navigate('/admin/users');
       } catch (e) {
