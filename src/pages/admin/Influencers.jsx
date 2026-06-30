@@ -5,7 +5,7 @@ import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
 
 export default function Influencers() {
-  const { config, updatePromoCodes, configLoading: loading } = useStore();
+  const { config, updatePromoCodes, configLoading: loading, language } = useStore();
   const { addToast } = useStore();
   const navigate = useNavigate();
   const promos = config.promoCodes || [];
@@ -87,14 +87,14 @@ export default function Influencers() {
         <div className="admin-page-header-left"></div>
         <div className="admin-page-header-right">
           <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-            <Download size={18} /> Export
+            <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
           </button>
           <button className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-            Influencer Analysis
+            {language === 'ar' ? 'تحليل المؤثرين' : 'Influencer Analysis'}
           </button>
           <button className="btn btn-primary" onClick={() => navigate('/diaradmin26/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-            <Plus size={18} /> Add Influencer
+            <Plus size={18} /> {language === 'ar' ? 'إضافة مؤثر' : 'Add Influencer'}
           </button>
         </div>
       </div>
@@ -104,15 +104,15 @@ export default function Influencers() {
           <table className="admin-table">
           <thead>
             <tr>
-              <th>Influencer Name</th>
-              <th>Promo Code</th>
-              <th>Commission Rate</th>
-              <th>Uses</th>
-              <th>Max Uses</th>
-              <th>Sales Generated</th>
-              <th>Commission Owed</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>{language === 'ar' ? 'اسم المؤثر' : 'Influencer Name'}</th>
+              <th>{language === 'ar' ? 'كود الخصم' : 'Promo Code'}</th>
+              <th>{language === 'ar' ? 'نسبة العمولة' : 'Commission Rate'}</th>
+              <th>{language === 'ar' ? 'الاستخدامات' : 'Uses'}</th>
+              <th>{language === 'ar' ? 'أقصى استخدام' : 'Max Uses'}</th>
+              <th>{language === 'ar' ? 'المبيعات المحققة' : 'Sales Generated'}</th>
+              <th>{language === 'ar' ? 'العمولة المستحقة' : 'Commission Owed'}</th>
+              <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
+              <th>{language === 'ar' ? 'الإجراءات' : 'Actions'}</th>
             </tr>
           </thead>
           <tbody>
@@ -121,13 +121,13 @@ export default function Influencers() {
                 <td colSpan="9" style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
                   <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
                   <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                  Loading influencers...
+                  {language === 'ar' ? 'جاري تحميل بيانات المؤثرين...' : 'Loading influencers...'}
                 </td>
               </tr>
             ) : influencers.length === 0 ? (
               <tr>
                 <td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: 'var(--on-surface-variant)' }}>
-                  No influencers found. Click "Add Influencer" to get started.
+                  {language === 'ar' ? 'لا يوجد مؤثرين. انقر على "إضافة مؤثر" للبدء.' : 'No influencers found. Click "Add Influencer" to get started.'}
                 </td>
               </tr>
             ) : (

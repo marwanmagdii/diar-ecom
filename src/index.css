@@ -1370,8 +1370,6 @@ html[dir="rtl"] .variant-circle {
 /* Admin Responsive & Mobile Styles */
 .table-responsive {
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-menu-overlay {

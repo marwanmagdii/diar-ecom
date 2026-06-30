@@ -212,28 +212,28 @@ export default function Dashboard() {
         {/* Recent Activity */}
         <div className="admin-table-container" style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '24px', borderBottom: '1px solid var(--outline-variant)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 className="title-md m-0">Recent Orders</h2>
+            <h2 className="title-md m-0">{language === 'ar' ? 'أحدث الطلبات' : 'Recent Orders'}</h2>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={handleExport}>
-                <Download size={16} /> Export
+                <Download size={16} /> {language === 'ar' ? 'تصدير' : 'Export'}
               </button>
-              <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px' }} onClick={() => navigate('/diaradmin26/orders')}>View All</button>
+              <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px' }} onClick={() => navigate('/diaradmin26/orders')}>{language === 'ar' ? 'عرض الكل' : 'View All'}</button>
             </div>
           </div>
           <div className="table-responsive">
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Status</th>
-                  <th>Total</th>
+                  <th>{language === 'ar' ? 'رقم الطلب' : 'Order ID'}</th>
+                  <th>{language === 'ar' ? 'العميل' : 'Customer'}</th>
+                  <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
+                  <th>{language === 'ar' ? 'المجموع' : 'Total'}</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 {recentOrders.length === 0 ? (
-                  <tr><td colSpan="5" style={{ textAlign: 'center', padding: '32px' }}>No orders yet.</td></tr>
+                  <tr><td colSpan="5" style={{ textAlign: 'center', padding: '32px' }}>{language === 'ar' ? 'لا توجد طلبات بعد.' : 'No orders yet.'}</td></tr>
                 ) : (
                   recentOrders.map(order => (
                     <tr key={order.id}>

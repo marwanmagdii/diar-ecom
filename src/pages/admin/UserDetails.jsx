@@ -255,20 +255,20 @@ export default function UserDetails() {
 
       {/* Order History */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-        <h3 className="title-lg m-0">{user.isInfluencer ? 'Generated Orders History' : 'Order History'}</h3>
+        <h3 className="title-lg m-0">{user.isInfluencer ? (lang === 'ar' ? 'سجل الطلبات المحققة' : 'Generated Orders History') : (lang === 'ar' ? 'سجل الطلبات' : 'Order History')}</h3>
         <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', fontSize: '14px' }}>
-          <Download size={16} /> Export
+          <Download size={16} /> {lang === 'ar' ? 'تصدير' : 'Export'}
         </button>
       </div>
       <div className="admin-table-container">
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Order ID</th>
-              <th>Date</th>
-              <th>Phone</th>
-              <th>Status</th>
-              <th>Total</th>
+              <th>{lang === 'ar' ? 'رقم الطلب' : 'Order ID'}</th>
+              <th>{lang === 'ar' ? 'التاريخ' : 'Date'}</th>
+              <th>{lang === 'ar' ? 'الهاتف' : 'Phone'}</th>
+              <th>{lang === 'ar' ? 'الحالة' : 'Status'}</th>
+              <th>{lang === 'ar' ? 'المجموع' : 'Total'}</th>
               <th style={{ width: '40px' }}></th>
             </tr>
           </thead>

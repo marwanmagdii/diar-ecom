@@ -7,8 +7,7 @@ import { useStore } from '../../store';
 export default function ProductAnalysis() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products } = useStore();
-  const { orders } = useStore();
+  const { products, orders, language } = useStore();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('All Time');
@@ -261,10 +260,10 @@ export default function ProductAnalysis() {
       {/* Recent Orders Table */}
       <div className="premium-card" style={{ marginTop: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Recent Orders</h3>
+          <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'أحدث الطلبات' : 'Recent Orders'}</h3>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', height: '40px' }}>
-              <Download size={16} /> Export
+              <Download size={16} /> {language === 'ar' ? 'تصدير' : 'Export'}
             </button>
             <select 
               className="premium-input" 
@@ -285,12 +284,12 @@ export default function ProductAnalysis() {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Order ID</th>
-                  <th>Date</th>
-                  <th>Customer</th>
-                  <th>Quantity</th>
-                  <th>Order Total</th>
-                  <th>Status</th>
+                  <th>{language === 'ar' ? 'رقم الطلب' : 'Order ID'}</th>
+                  <th>{language === 'ar' ? 'التاريخ' : 'Date'}</th>
+                  <th>{language === 'ar' ? 'العميل' : 'Customer'}</th>
+                  <th>{language === 'ar' ? 'الكمية' : 'Quantity'}</th>
+                  <th>{language === 'ar' ? 'إجمالي الطلب' : 'Order Total'}</th>
+                  <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
                 </tr>
               </thead>
               <tbody>

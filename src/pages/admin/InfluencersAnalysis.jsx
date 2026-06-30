@@ -5,7 +5,7 @@ import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
 
 export default function InfluencersAnalysis() {
-  const { config } = useStore();
+  const { config, getInfluencerSalesData, language } = useStore();
   const promos = config?.promoCodes || [];
   
   // Filter promos to only those that look like influencers
@@ -71,8 +71,8 @@ export default function InfluencersAnalysis() {
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '24px' }}>
         <div>
-          <h2 className="headline-lg m-0">Influencer Analysis</h2>
-          <p className="text-on-surface-variant m-0" style={{ marginTop: '4px' }}>Performance metrics and ROI for your influencer partnerships.</p>
+          <h2 className="headline-lg m-0">{language === 'ar' ? 'تحليل المؤثرين' : 'Influencer Analysis'}</h2>
+          <p className="text-on-surface-variant m-0" style={{ marginTop: '4px' }}>{language === 'ar' ? 'مقاييس الأداء وعائد الاستثمار لشراكات المؤثرين.' : 'Performance metrics and ROI for your influencer partnerships.'}</p>
         </div>
       </div>
 
@@ -82,10 +82,10 @@ export default function InfluencersAnalysis() {
             <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: '#e0f2fe', color: '#0284c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Users size={20} />
             </div>
-            <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: 0 }}>Total Influencers</h3>
+            <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: 0 }}>{language === 'ar' ? 'إجمالي المؤثرين' : 'Total Influencers'}</h3>
           </div>
           <div style={{ fontSize: '28px', fontWeight: 700, color: '#0f172a' }}>{metrics.totalInfluencers}</div>
-          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>{metrics.activeInfluencers} currently active</div>
+          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>{metrics.activeInfluencers} {language === 'ar' ? 'نشط حالياً' : 'currently active'}</div>
         </div>
 
         <div className="metric-card" style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '12px' }}>
@@ -93,10 +93,10 @@ export default function InfluencersAnalysis() {
             <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: '#fce7f3', color: '#db2777', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <TrendingUp size={20} />
             </div>
-            <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: 0 }}>Total Conversions</h3>
+            <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: 0 }}>{language === 'ar' ? 'إجمالي التحويلات' : 'Total Conversions'}</h3>
           </div>
           <div style={{ fontSize: '28px', fontWeight: 700, color: '#0f172a' }}>{metrics.totalConversions}</div>
-          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>successful promo code uses</div>
+          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>{language === 'ar' ? 'استخدام ناجح للكود' : 'successful promo code uses'}</div>
         </div>
 
         <div className="metric-card" style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '12px' }}>
@@ -104,10 +104,10 @@ export default function InfluencersAnalysis() {
             <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: '#dcfce7', color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <DollarSign size={20} />
             </div>
-            <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: 0 }}>Generated Revenue</h3>
+            <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: 0 }}>{language === 'ar' ? 'الإيرادات المحققة' : 'Generated Revenue'}</h3>
           </div>
           <div style={{ fontSize: '28px', fontWeight: 700, color: '#0f172a' }}>{metrics.totalRevenue.toFixed(2)}</div>
-          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>EGP from influencer sales</div>
+          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>{language === 'ar' ? 'جنيه من مبيعات المؤثرين' : 'EGP from influencer sales'}</div>
         </div>
 
         <div className="metric-card" style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '12px' }}>
@@ -115,32 +115,32 @@ export default function InfluencersAnalysis() {
             <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: '#ffedd5', color: '#ea580c', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Star size={20} />
             </div>
-            <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: 0 }}>Total Commission Owed</h3>
+            <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: 0 }}>{language === 'ar' ? 'العمولات المستحقة' : 'Total Commission Owed'}</h3>
           </div>
           <div style={{ fontSize: '28px', fontWeight: 700, color: '#0f172a' }}>{metrics.totalCommissions.toFixed(2)}</div>
-          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>EGP to payout</div>
+          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>{language === 'ar' ? 'جنيه للدفع' : 'EGP to payout'}</div>
         </div>
       </div>
 
       <div className="card" style={{ backgroundColor: '#ffffff', borderRadius: '12px', padding: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Award size={20} color="#8b5cf6" /> Top Performers
+            <Award size={20} color="#8b5cf6" /> {language === 'ar' ? 'الأفضل أداءً' : 'Top Performers'}
           </h3>
           <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', fontSize: '14px' }}>
-            <Download size={16} /> Export
+            <Download size={16} /> {language === 'ar' ? 'تصدير' : 'Export'}
           </button>
         </div>
         <div className="table-responsive">
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Influencer</th>
-                <th>Promo Code</th>
-                <th>Conversions</th>
-                <th>Revenue Generated</th>
-                <th>Commission Owed</th>
-                <th>Action</th>
+                <th>{language === 'ar' ? 'المؤثر' : 'Influencer'}</th>
+                <th>{language === 'ar' ? 'كود الخصم' : 'Promo Code'}</th>
+                <th>{language === 'ar' ? 'التحويلات' : 'Conversions'}</th>
+                <th>{language === 'ar' ? 'الإيرادات المحققة' : 'Revenue Generated'}</th>
+                <th>{language === 'ar' ? 'العمولة المستحقة' : 'Commission Owed'}</th>
+                <th>{language === 'ar' ? 'الإجراءات' : 'Action'}</th>
               </tr>
             </thead>
             <tbody>

@@ -4,7 +4,7 @@ import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
 
 export default function PromoSettings() {
-  const { config, updatePromoCodes } = useStore();
+  const { config, updatePromoCodes, language } = useStore();
   const { addToast } = useStore();
   const [promoCodes, setPromoCodes] = useState(config.promoCodes || []);
   
@@ -160,10 +160,10 @@ export default function PromoSettings() {
         {!isEditing && (
           <div className="admin-page-header-right">
             <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-              <Download size={18} /> Export
+              <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
             </button>
             <button className="btn btn-primary" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-              <Plus size={18} /> Add Promo Code
+              <Plus size={18} /> {language === 'ar' ? 'إضافة كود خصم' : 'Add Promo Code'}
             </button>
           </div>
         )}
@@ -274,14 +274,14 @@ export default function PromoSettings() {
             <table className="admin-table">
             <thead>
               <tr>
-                <th>Code</th>
-                <th>Discount</th>
-                <th>Commission</th>
-                <th>Usage Count</th>
-                <th>Revenue Generated</th>
-                <th>Total Owed</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>{language === 'ar' ? 'الكود' : 'Code'}</th>
+                <th>{language === 'ar' ? 'الخصم' : 'Discount'}</th>
+                <th>{language === 'ar' ? 'العمولة' : 'Commission'}</th>
+                <th>{language === 'ar' ? 'الاستخدامات' : 'Usage Count'}</th>
+                <th>{language === 'ar' ? 'الإيرادات المحققة' : 'Revenue Generated'}</th>
+                <th>{language === 'ar' ? 'إجمالي المستحق' : 'Total Owed'}</th>
+                <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
+                <th>{language === 'ar' ? 'الإجراءات' : 'Actions'}</th>
               </tr>
             </thead>
             <tbody>
@@ -289,7 +289,7 @@ export default function PromoSettings() {
                 <tr>
                   <td colSpan="8" style={{ textAlign: 'center', padding: '48px 0', color: '#64748b' }}>
                     <Tag size={48} style={{ opacity: 0.2, margin: '0 auto 16px auto', display: 'block' }} />
-                    <p>No promo codes found.</p>
+                    <p>{language === 'ar' ? 'لا توجد أكواد خصم. أنشئ كودًا للبدء.' : 'No promo codes found. Create one to get started.'}</p>
                   </td>
                 </tr>
               ) : (

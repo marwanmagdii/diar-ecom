@@ -3,9 +3,9 @@ import { Plus, Edit, Trash2, Search, BarChart2, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
+
 export default function Products() {
-  const { products, deleteProduct, productsLoading: loading } = useStore();
-  const { t } = useStore();
+  const { products, deleteProduct, productsLoading: loading, language, t } = useStore();
   const { addToast } = useStore();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,12 +26,12 @@ export default function Products() {
     if (productToDelete && deleteInput.trim().toLowerCase() === 'delete') {
       try {
         await deleteProduct(productToDelete);
-        addToast('Product deleted successfully', 'success');
+        addToast(language === 'ar' ? 'تم حذف المنتج بنجاح' : 'Product deleted successfully', 'success');
         setProductToDelete(null);
         setDeleteModalOpen(false);
         setDeleteInput('');
       } catch (e) {
-        addToast('Failed to delete product', 'error');
+        addToast(language === 'ar' ? 'فشل حذف المنتج' : 'Failed to delete product', 'error');
       }
     }
   };
@@ -72,7 +72,7 @@ export default function Products() {
             <input 
               type="text" 
               className="input-field" 
-              placeholder="Search products..." 
+              placeholder={language === 'ar' ? "البحث عن المنتجات..." : "Search products..."} 
               style={{ width: '250px', paddingLeft: '36px' }} 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -83,7 +83,7 @@ export default function Products() {
             style={{ width: '200px' }}
             onChange={(e) => setSearchTerm(e.target.value === 'all' ? '' : e.target.value)}
           >
-            <option value="all">All Categories</option>
+            <option value="all">{language === 'ar' ? 'جميع الفئات' : 'All Categories'}</option>
             {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(cat => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
@@ -91,13 +91,13 @@ export default function Products() {
         </div>
         <div className="admin-page-header-right">
           <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={handleExport}>
-            <Download size={18} /> Export
+            <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
           </button>
           <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/analysis')}>
-            <BarChart2 size={18} /> Global Analysis
+            <BarChart2 size={18} /> {language === 'ar' ? 'تحليل شامل' : 'Global Analysis'}
           </button>
           <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/new')}>
-            <Plus size={18} /> Add Product
+            <Plus size={18} /> {language === 'ar' ? 'إضافة منتج' : 'Add Product'}
           </button>
         </div>
       </div>
@@ -107,29 +107,29 @@ export default function Products() {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Status</th>
-                  <th style={{ textAlign: 'right' }}>Actions</th>
+                  <th>{language === 'ar' ? 'الصورة' : 'Image'}</th>
+                  <th>{language === 'ar' ? 'الاسم' : 'Name'}</th>
+                  <th>{language === 'ar' ? 'الفئة' : 'Category'}</th>
+                  <th>{language === 'ar' ? 'السعر' : 'Price'}</th>
+                  <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
+                  <th style={{ textAlign: 'right' }}>{language === 'ar' ? 'الإجراءات' : 'Actions'}</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.map(product => (
                   <tr key={product.id}>
-                    <td data-label="Image">
+                    <td data-label={language === 'ar' ? 'الصورة' : 'Image'}>
                       <img src={product.image || 'https://placehold.co/40x40?text=IMG'} alt={product.title} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
                     </td>
-                    <td data-label="Product" style={{ fontWeight: 500 }}>
+                    <td data-label={language === 'ar' ? 'الاسم' : 'Name'} style={{ fontWeight: 500 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         {product.title}
                         {product.featured && <span style={{ backgroundColor: '#fef08a', color: '#854d0e', fontSize: '10px', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>★</span>}
                       </div>
                     </td>
-                    <td data-label="Category">{product.category || 'Uncategorized'}</td>
-                    <td data-label="Price">{product.price} EGP</td>
-                    <td data-label="Status">
+                    <td data-label={language === 'ar' ? 'الفئة' : 'Category'}>{product.category || (language === 'ar' ? 'غير مصنف' : 'Uncategorized')}</td>
+                    <td data-label={language === 'ar' ? 'السعر' : 'Price'}>{product.price} EGP</td>
+                    <td data-label={language === 'ar' ? 'الحالة' : 'Status'}>
                       <span style={{ 
                         backgroundColor: product.isActive !== false ? '#dcfce7' : '#f1f5f9', 
                         color: product.isActive !== false ? '#166534' : '#64748b', 
@@ -138,10 +138,10 @@ export default function Products() {
                         fontSize: '12px', 
                         fontWeight: 600 
                       }}>
-                        {product.isActive !== false ? 'Active' : 'Inactive'}
+                        {product.isActive !== false ? (language === 'ar' ? 'نشط' : 'Active') : (language === 'ar' ? 'غير نشط' : 'Draft')}
                       </span>
                     </td>
-                    <td data-label="Actions" style={{ textAlign: 'right' }}>
+                    <td data-label={language === 'ar' ? 'الإجراءات' : 'Actions'} style={{ textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
                         <button className="icon-btn" title="Analysis" onClick={() => navigate(`/diaradmin26/products/${product.id}/analysis`)}><BarChart2 size={16} color="var(--primary)" /></button>
                         <button className="icon-btn" onClick={() => navigate(`/diaradmin26/products/${product.id}`)}><Edit size={16} /></button>

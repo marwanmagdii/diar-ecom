@@ -8,7 +8,7 @@ export default function ProductsAnalysis() {
   const { orders } = useStore();
   const { products } = useStore();
   const navigate = useNavigate();
-  const { t } = useStore();
+  const { t, language } = useStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState('revenue-desc');
@@ -124,8 +124,8 @@ export default function ProductsAnalysis() {
             <DollarSign size={28} color="var(--primary)" />
           </div>
           <div>
-            <p style={{ margin: 0, fontSize: '14px', color: '#64748b', fontWeight: 600 }}>Total Store Revenue</p>
-            <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: '#0f172a' }}>{totalStoreRevenue.toFixed(2)} EGP</p>
+            <p style={{ margin: 0, fontSize: '14px', color: '#64748b', fontWeight: 600 }}>{language === 'ar' ? 'إجمالي إيرادات المتجر' : 'Total Store Revenue'}</p>
+            <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: '#0f172a' }}>{totalStoreRevenue.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}</p>
           </div>
         </div>
         <div className="metric-card" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -133,7 +133,7 @@ export default function ProductsAnalysis() {
             <Package size={28} color="#475569" />
           </div>
           <div>
-            <p style={{ margin: 0, fontSize: '14px', color: '#64748b', fontWeight: 600 }}>Total Units Sold</p>
+            <p style={{ margin: 0, fontSize: '14px', color: '#64748b', fontWeight: 600 }}>{language === 'ar' ? 'إجمالي الوحدات المباعة' : 'Total Units Sold'}</p>
             <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: '#0f172a' }}>{totalUnitsSold}</p>
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function ProductsAnalysis() {
             <TrendingUp size={28} color="#4f46e5" />
           </div>
           <div>
-            <p style={{ margin: 0, fontSize: '14px', color: '#64748b', fontWeight: 600 }}>Active Products</p>
+            <p style={{ margin: 0, fontSize: '14px', color: '#64748b', fontWeight: 600 }}>{language === 'ar' ? 'المنتجات النشطة' : 'Active Products'}</p>
             <p style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: '#0f172a' }}>{analysisData.length}</p>
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function ProductsAnalysis() {
             <Search size={20} color="var(--on-surface-variant)" />
             <input 
               type="text" 
-              placeholder="Search by product or category..." 
+              placeholder={language === 'ar' ? 'بحث بالمنتج أو الفئة...' : "Search by product or category..."}
               style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%' }}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -167,7 +167,7 @@ export default function ProductsAnalysis() {
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
-            <option value="all">All Categories</option>
+            <option value="all">{language === 'ar' ? 'كل الفئات' : 'All Categories'}</option>
             {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(cat => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
@@ -203,7 +203,7 @@ export default function ProductsAnalysis() {
             <option value="name-desc">Name (Z to A)</option>
           </select>
           <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '8px' }}>
-            <Download size={18} /> Export
+            <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
           </button>
         </div>
 
@@ -211,13 +211,13 @@ export default function ProductsAnalysis() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Current Stock</th>
-                <th>Units Sold</th>
-                <th>Orders</th>
-                <th style={{ textAlign: 'right' }}>Total Revenue</th>
+                <th>{language === 'ar' ? 'المنتج' : 'Product'}</th>
+                <th>{language === 'ar' ? 'الفئة' : 'Category'}</th>
+                <th>{language === 'ar' ? 'السعر' : 'Price'}</th>
+                <th>{language === 'ar' ? 'المخزون الحالي' : 'Current Stock'}</th>
+                <th>{language === 'ar' ? 'الوحدات المباعة' : 'Units Sold'}</th>
+                <th>{language === 'ar' ? 'الطلبات' : 'Orders'}</th>
+                <th style={{ textAlign: 'right' }}>{language === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue'}</th>
               </tr>
             </thead>
             <tbody>
