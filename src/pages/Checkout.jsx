@@ -218,7 +218,7 @@ export default function Checkout() {
                 'navy': 'كحلي', 'beige': 'بيج', 'orange': 'برتقالي', 'maroon': 'عنابي',
                 'teal': 'تركواز', 'metal': 'معدن', 'plastic': 'بلاستيك', 'wood': 'خشب',
                 'glass': 'زجاج', 'leather': 'جلد', 'cotton': 'قطن', 'modern': 'حديث',
-                'classic': 'كلاسيكي', 'casual': 'كاجوال', 'formal': 'رسمي', 'sport': 'رياضي'
+                'classic': 'كلاسيكي', 'casual': 'كاجوال', 'formal': 'رسمي', 'sport': 'رياضي', 'sporty': 'رياضي', 'vintage': 'عتيق'
               };
               if (valMap[lowerV]) return valMap[lowerV];
               if (String(v).includes(' / ')) return String(v).split(' / ')[1].trim() || v;

@@ -10,15 +10,14 @@ export default function CustomerReviewsMarquee({ reviews = [] }) {
   const [isHovering, setIsHovering] = useState(false);
   const animationRef = useRef(null);
 
-  if (!reviews || reviews.length === 0) return null;
-
   // We duplicate the array to allow for smooth infinite-like scrolling
   // We'll use 4 sets to be absolutely safe on ultra-wide screens
-  const displayImages = [...reviews, ...reviews, ...reviews, ...reviews]; 
-  
+  const displayImages = [...(reviews || []), ...(reviews || []), ...(reviews || []), ...(reviews || [])];
   const isRtl = document.dir === 'rtl' || language === 'ar';
 
   useEffect(() => {
+    if (!reviews || reviews.length === 0) return;
+    
     const el = scrollRef.current;
     if (!el) return;
 
@@ -60,6 +59,8 @@ export default function CustomerReviewsMarquee({ reviews = [] }) {
       scrollRef.current.scrollBy({ left: finalScrollAmount, behavior: 'smooth' });
     }
   };
+
+  if (!reviews || reviews.length === 0) return null;
 
   return (
     <>

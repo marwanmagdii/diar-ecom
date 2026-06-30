@@ -21,7 +21,7 @@ export default function Cart() {
         'gray': 'رمادي', 'silver': 'فضي', 'gold': 'ذهبي', 'pink': 'وردي', 'purple': 'بنفسجي', 'brown': 'بني',
         'navy': 'كحلي', 'beige': 'بيج', 'orange': 'برتقالي', 'maroon': 'عنابي', 'teal': 'تركواز',
         'metal': 'معدن', 'plastic': 'بلاستيك', 'wood': 'خشب', 'glass': 'زجاج', 'leather': 'جلد', 'cotton': 'قطن',
-        'modern': 'حديث', 'classic': 'كلاسيكي', 'casual': 'كاجوال', 'formal': 'رسمي', 'sport': 'رياضي'
+        'modern': 'حديث', 'classic': 'كلاسيكي', 'casual': 'كاجوال', 'formal': 'رسمي', 'sport': 'رياضي', 'sporty': 'رياضي', 'vintage': 'عتيق'
       };
       const lower = String(text).toLowerCase().trim();
       if (dict[lower]) return dict[lower];
