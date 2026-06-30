@@ -2175,7 +2175,22 @@ html[dir="rtl"] .variant-circle {
   justify-content: flex-end;
 }
 
-/* Admin Page Header & Buttons Mobile Fixes */
+/* Admin Page Header & Buttons Mobile Fixes */.columns-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  z-index: 1000;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 768px) {
   .admin-page-header {
     flex-direction: column;

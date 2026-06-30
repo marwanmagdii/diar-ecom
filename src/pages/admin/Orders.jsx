@@ -15,6 +15,7 @@ export default function Orders() {
     date: true,
     time: true,
     customer: true,
+    phone: true,
     status: true,
     promoCode: true,
     influencer: true,
@@ -135,18 +136,6 @@ export default function Orders() {
       <div className="admin-page-header">
         <div className="admin-page-header-left">
           <div style={{ position: 'relative' }}>
-            <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
-            <input 
-              type="text" 
-              className="input-field" 
-              placeholder={lang === 'ar' ? "بحث برقم الطلب، العميل أو رقم الهاتف" : "Search by ID, Customer or Phone..."} 
-              style={{ width: '280px', paddingLeft: '36px' }} 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          <div style={{ position: 'relative' }}>
             <select 
               className="input-field" 
               style={{ paddingLeft: '36px', appearance: 'none', width: '160px' }}
@@ -206,6 +195,18 @@ export default function Orders() {
         </div>
       </div>
 
+      <div style={{ marginBottom: '16px', position: 'relative' }}>
+        <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
+        <input 
+          type="text" 
+          className="input-field" 
+          placeholder={lang === 'ar' ? "بحث برقم الطلب، العميل أو رقم الهاتف" : "Search by ID, Customer or Phone..."} 
+          style={{ width: '100%', paddingLeft: '36px', maxWidth: '400px' }} 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="admin-table-container">
         <div className="table-responsive">
           <table className="admin-table">
@@ -215,6 +216,7 @@ export default function Orders() {
                 {visibleColumns.date && <th>{t('date')}</th>}
                 {visibleColumns.time && <th>{lang === 'ar' ? 'الوقت' : 'Time'}</th>}
                 {visibleColumns.customer && <th>{t('customer')}</th>}
+                {visibleColumns.phone && <th>{lang === 'ar' ? 'رقم الهاتف' : 'Phone'}</th>}
                 {visibleColumns.status && <th>{t('status')}</th>}
                 {visibleColumns.promoCode && <th>{lang === 'ar' ? 'كود الخصم' : 'Promo Code'}</th>}
                 {visibleColumns.influencer && <th>{lang === 'ar' ? 'المؤثر' : 'Influencer'}</th>}
@@ -257,11 +259,13 @@ export default function Orders() {
                     {visibleColumns.date && <td data-label={t('date')}>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US') : new Date(order.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')}</td>}
                     {visibleColumns.time && <td style={{ whiteSpace: 'nowrap' }}>{order.createdAt instanceof Date ? order.createdAt.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', {hour: '2-digit', minute:'2-digit'}) : new Date(order.createdAt).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', {hour: '2-digit', minute:'2-digit'})}</td>}
                     {visibleColumns.customer && (
-                      <td>
-                        <div style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontWeight: 500, color: 'var(--on-surface)' }}>{order.customer}</span>
-                          <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{order.phone}</span>
-                        </div>
+                      <td style={{ whiteSpace: 'nowrap', fontWeight: 500, color: 'var(--on-surface)' }}>
+                        {order.customer}
+                      </td>
+                    )}
+                    {visibleColumns.phone && (
+                      <td style={{ whiteSpace: 'nowrap', color: 'var(--on-surface-variant)' }}>
+                        {order.phone}
                       </td>
                     )}
                     {visibleColumns.status && <td data-label={t('status')}>
@@ -273,7 +277,7 @@ export default function Orders() {
                       {order.promoCode ? <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>{order.promoCode}</span> : '-'}
                     </td>}
                     {visibleColumns.influencer && <td data-label={lang === 'ar' ? 'المؤثر' : 'Influencer'}>{order.influencerName || '-'}</td>}
-                    {visibleColumns.total && <td data-label={t('total')} style={{ textAlign: 'right' }}>{order.total?.toFixed(2)} EGP</td>}
+                    {visibleColumns.total && <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--primary)', whiteSpace: 'nowrap' }}>{order.total?.toFixed(2)} EGP</td>}
                     {visibleColumns.actions && <td data-label={lang === 'ar' ? 'الإجراءات' : 'Actions'}>
                       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
                         <button 
