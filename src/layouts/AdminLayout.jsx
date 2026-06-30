@@ -5,7 +5,7 @@ import { useStore } from '../store';
 
 export default function AdminLayout() {
   const location = useLocation();
-  const { lang, setLang, t } = useStore();
+  const { language, toggleLanguage, t } = useStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(location.pathname.startsWith('/admin/settings'));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
@@ -25,7 +25,7 @@ export default function AdminLayout() {
   }, [location]);
 
   const toggleLang = () => {
-    setLang(lang === 'en' ? 'ar' : 'en');
+    toggleLanguage();
   };
 
   const navItems = [
@@ -45,7 +45,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="admin-theme" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="admin-theme" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="admin-layout">
         
         {/* Mobile Overlay */}
@@ -96,7 +96,7 @@ export default function AdminLayout() {
                       </span>
                     </button>
                     {isSettingsOpen && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px', paddingLeft: lang === 'ar' ? '0' : '44px', paddingRight: lang === 'ar' ? '44px' : '0' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px', paddingLeft: language === 'ar' ? '0' : '44px', paddingRight: language === 'ar' ? '44px' : '0' }}>
                         <Link 
                           to="/admin/settings/general" 
                           className="admin-nav-link"
@@ -108,7 +108,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/general') ? 700 : 500
                           }}
                         >
-                          {lang === 'ar' ? 'الإعدادات العامة' : 'General Settings'}
+                          {language === 'ar' ? 'الإعدادات العامة' : 'General Settings'}
                         </Link>
                         <Link 
                           to="/admin/settings/logs" 
@@ -121,7 +121,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/logs') ? 700 : 500
                           }}
                         >
-                          {lang === 'ar' ? 'سجل النشاطات' : 'Activity Logs'}
+                          {language === 'ar' ? 'سجل النشاطات' : 'Activity Logs'}
                         </Link>
                         <Link 
                           to="/admin/settings/collections" 
@@ -199,7 +199,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/calculator') ? 700 : 500
                           }}
                         >
-                          {lang === 'ar' ? 'حاسبة الأرباح' : 'Profit Calculator'}
+                          {language === 'ar' ? 'حاسبة الأرباح' : 'Profit Calculator'}
                         </Link>
                       </div>
                     )}
@@ -222,9 +222,9 @@ export default function AdminLayout() {
           </nav>
 
           <div className="admin-sidebar-footer">
-            <Link to="/" className="admin-nav-link" title={lang === 'ar' ? 'العودة للمتجر' : 'Back to Store'}>
+            <Link to="/" className="admin-nav-link" title={language === 'ar' ? 'العودة للمتجر' : 'Back to Store'}>
               <LogOut size={20} />
-              <span className="nav-link-text">{lang === 'ar' ? 'العودة للمتجر' : 'Back to Store'}</span>
+              <span className="nav-link-text">{language === 'ar' ? 'العودة للمتجر' : 'Back to Store'}</span>
             </Link>
           </div>
         </aside>
@@ -253,7 +253,7 @@ export default function AdminLayout() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <button className="btn btn-secondary" onClick={toggleLang} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px' }}>
                 <Globe size={18} />
-                {lang === 'en' ? 'عربي' : 'English'}
+                {language === 'en' ? 'عربي' : 'English'}
               </button>
               <div className="admin-user-avatar">
                 A

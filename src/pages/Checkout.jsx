@@ -230,11 +230,13 @@ export default function Checkout() {
                 opts.push(`${prefix}${translateKey(key)}: ${translateVal(val)}`);
               });
             } else {
-              if (item.selectedColor) {
-                opts.push(`${prefix}اللون: ${translateVal(item.selectedColor)}`);
+              const colorVal = item.selectedColor || item.color;
+              if (colorVal) {
+                opts.push(`${prefix}اللون: ${translateVal(colorVal)}`);
               }
-              if (item.selectedSize) {
-                opts.push(`${prefix}المقاس: ${translateVal(item.selectedSize)}`);
+              const sizeVal = item.selectedSize || item.size;
+              if (sizeVal) {
+                opts.push(`${prefix}المقاس: ${translateVal(sizeVal)}`);
               }
             }
             return opts.length > 0 ? opts.join('') : '';

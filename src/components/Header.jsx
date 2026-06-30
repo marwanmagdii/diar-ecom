@@ -4,10 +4,12 @@ import { ShoppingBag, ArrowLeft, Menu, X, Globe, Search } from 'lucide-react';
 import { useStore } from '../store';
 
 export default function Header() {
-  const { cartCount } = useStore();
+  const { cartCount, products } = useStore();
   const { language, toggleLanguage, t } = useStore();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const hasOffers = products?.some(p => p.isActive !== false && (p.hasOffer || p.offerPrice > 0 || p.oldPrice > 0));
 
   return (
     <div className="header-wrapper">
@@ -21,7 +23,7 @@ export default function Header() {
         </div>
         
         <nav className="nav-links">
-          <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>{t('home')}</Link>
+          {hasOffers && <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>{t('home')}</Link>}
           <Link to="/shop" className={`nav-link ${location.pathname === '/shop' ? 'active' : ''}`}>{t('shop')}</Link>
           <Link to="/page/contact" className={`nav-link ${location.pathname === '/page/contact' ? 'active' : ''}`}>{t('contactUs')}</Link>
         </nav>
@@ -29,9 +31,7 @@ export default function Header() {
 
         
         <div className="header-actions">
-          <Link to="/shop" className="btn btn-primary shop-header-btn" style={{ padding: '6px 16px', fontSize: '14px', height: '36px', borderRadius: '100px', textDecoration: 'none' }}>
-            {t('shop')}
-          </Link>
+
           <button onClick={toggleLanguage} className="icon-btn lang-btn" aria-label="Toggle Language" style={{ display: 'flex', alignItems: 'center', gap: '4px', width: 'auto', padding: '0 12px', fontSize: '14px', fontWeight: 600, color: 'var(--on-surface)' }}>
             <Globe size={20} />
             <span className="lang-text">{language === 'en' ? 'عربي' : 'EN'}</span>

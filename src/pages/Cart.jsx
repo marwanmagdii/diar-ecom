@@ -62,8 +62,8 @@ export default function Cart() {
                           ))
                         ) : (
                           <>
-                            {item.selectedColor && <span style={{ marginRight: '8px' }}>{t('color')}: {item.selectedColor}</span>}
-                            {item.selectedSize && <span>{t('size')}: {item.selectedSize}</span>}
+                            {(item.selectedColor || item.color) && <span style={{ marginRight: '8px' }}>{t('color')}: {item.selectedColor || item.color}</span>}
+                            {(item.selectedSize || item.size) && <span>{t('size')}: {item.selectedSize || item.size}</span>}
                           </>
                         )}
                       </div>

@@ -155,7 +155,7 @@ export default function UserDetails() {
                 <h3 className="title-md m-0">Linked Accounts</h3>
               </div>
               <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '16px', lineHeight: '1.4' }}>
-                These accounts have placed orders using the exact same device or browser as {user.name}.
+                These accounts share the same device as {user.name}, or have been manually merged into this profile.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {user.linkedAccounts.map(linkedUser => (
@@ -266,6 +266,7 @@ export default function UserDetails() {
             <tr>
               <th>Order ID</th>
               <th>Date</th>
+              <th>Phone</th>
               <th>Status</th>
               <th>Total</th>
               <th style={{ width: '40px' }}></th>
@@ -277,6 +278,7 @@ export default function UserDetails() {
                 <tr style={{ cursor: 'pointer', borderBottom: expandedOrders[order.id] ? 'none' : '1px solid #f1f5f9' }} onClick={() => navigate(`/admin/orders/${encodeURIComponent(order.id)}`)}>
                   <td style={{ fontWeight: 600, color: '#2563eb', textDecoration: 'underline' }}>{order.id}</td>
                   <td>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString() : 'Unknown Date'}</td>
+                  <td>{order.phone || 'N/A'}</td>
                   <td>
                     <span className={`status-pill status-${order.status?.toLowerCase()}`}>
                       {order.status}

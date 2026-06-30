@@ -680,15 +680,31 @@ export const useStore = create((set, get) => ({
     }
   },
 
-  mergeUsers: (targetPhone, sourcePhone) => {
-    set((state) => ({
-      orders: state.orders.map(o => {
-        const currentNorm = o.phone?.replace(/[^0-9+]/g, '');
-        const sourceNorm = sourcePhone.replace(/[^0-9+]/g, '');
-        if (currentNorm === sourceNorm) return { ...o, phone: targetPhone };
-        return o;
-      })
-    }));
+  mergeUsers: async (targetPhone, sourcePhone) => {
+    const { config, updateConfig } = get();
+    const currentMerges = config?.userMerges || {};
+    const newMerges = { ...currentMerges };
+    
+    const targetNorm = targetPhone.replace(/[^0-9+]/g, '');
+    const sourceNorm = sourcePhone.replace(/[^0-9+]/g, '');
+    
+    if (targetNorm === sourceNorm) return;
+    
+    newMerges[sourceNorm] = targetNorm;
+    
+    // Transitive merges
+    Object.keys(newMerges).forEach(key => {
+      if (newMerges[key] === sourceNorm) {
+        newMerges[key] = targetNorm;
+      }
+    });
+
+    // Update config, this will trigger the subscribe callback automatically
+    if (updateConfig) {
+      await updateConfig({ userMerges: newMerges }, `Merged profile ${sourceNorm} into ${targetNorm}`);
+    } else {
+      set({ config: { ...config, userMerges: newMerges }});
+    }
   }
 }));
 
@@ -698,9 +714,11 @@ useStore.subscribe((state, prevState) => {
     const orders = state.orders || [];
     const config = state.config || {};
     const userMap = {};
+    const userMerges = config.userMerges || {};
 
     orders.forEach(order => {
-      const normalizedPhone = order.phone?.replace(/[^0-9+]/g, '') || order.customer;
+      const originalPhone = order.phone?.replace(/[^0-9+]/g, '') || order.customer;
+      const normalizedPhone = userMerges[originalPhone] || originalPhone;
       
       if (!userMap[normalizedPhone]) {
         userMap[normalizedPhone] = {
@@ -715,6 +733,10 @@ useStore.subscribe((state, prevState) => {
           deviceIds: new Set(),
           linkedAccounts: []
         };
+      }
+      
+      if (order.phone && order.phone !== userMap[normalizedPhone].phone && !userMap[normalizedPhone].linkedAccounts.includes(order.phone)) {
+        userMap[normalizedPhone].linkedAccounts.push(order.phone);
       }
       
       userMap[normalizedPhone].totalSpent += order.total || 0;
