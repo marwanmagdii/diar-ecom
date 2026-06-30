@@ -132,8 +132,8 @@ export default function Orders() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+      <div className="admin-page-header">
+        <div className="admin-page-header-left">
           <div style={{ position: 'relative' }}>
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
             <input 
@@ -161,8 +161,11 @@ export default function Orders() {
             </select>
             <Filter size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)', pointerEvents: 'none' }} />
           </div>
+          </div>
+        </div>
 
-                    <div style={{ position: 'relative' }}>
+        <div className="admin-page-header-right">
+          <div style={{ position: 'relative' }}>
             <button 
               className="btn btn-secondary" 
               style={{ display: 'flex', alignItems: 'center', gap: '8px' }} 
@@ -195,7 +198,7 @@ export default function Orders() {
           </button>
           
           <button 
-            className="btn" 
+            className="btn btn-primary" 
             style={{ display: 'flex', alignItems: 'center', gap: '8px' }} 
             onClick={() => navigate('/diaradmin26/orders/new')}
           >

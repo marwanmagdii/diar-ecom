@@ -135,12 +135,15 @@ img {
   background-color: var(--on-primary-container);
 }
 .btn-secondary {
-  background-color: var(--secondary-container);
-  color: var(--on-secondary-container);
+  background-color: var(--surface-container-lowest);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 .btn-secondary:hover {
-  background-color: var(--secondary);
-  color: var(--on-secondary);
+  background-color: var(--surface-container);
+  color: var(--on-surface);
+  border-color: var(--outline);
 }
 .btn-outline {
   background-color: transparent;
@@ -2105,68 +2108,77 @@ html[dir="rtl"] .variant-circle {
   }
 }
 
+/* Unified Admin Page Header */
+.admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  background-color: var(--surface);
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: 1px solid var(--outline-variant);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.admin-page-header-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex: 1 1 auto;
+  align-items: center;
+}
+
+.admin-page-header-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 /* Admin Page Header & Buttons Mobile Fixes */
 @media (max-width: 768px) {
-  .admin-page > div:first-child {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 16px !important;
-    height: auto !important;
+  .admin-page-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    padding: 16px;
   }
   
-  .admin-page > div:first-child > div:last-child {
-    width: 100% !important;
-    flex-wrap: wrap !important;
+  .admin-page-header-left {
+    min-width: 100% !important;
+    flex-direction: column;
+    align-items: stretch;
   }
   
-  .admin-page h1, .admin-page .admin-title {
-    font-size: 24px !important;
-    line-height: 1.2 !important;
-    white-space: normal !important;
-    height: auto !important;
-  }
-  
-  .admin-page > div:first-child .btn {
-    flex: 1 1 auto !important;
-    justify-content: center !important;
-    padding: 8px 12px !important;
-    font-size: 13px !important;
-    width: 100%;
-  }
-  
-  .admin-header .headline-md {
-    font-size: 18px !important;
-  }
-  
-  /* Global form and input fixes for mobile */
-  .admin-page div[style*="grid-template-columns"] {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .admin-page input, .admin-page select, .admin-page .input-field {
+  /* Make search boxes and selects full width on mobile */
+  .admin-page-header-left > div,
+  .admin-page-header-left > select,
+  .admin-page-header-left > input,
+  .admin-page-header-left .input-field {
     width: 100% !important;
     max-width: 100% !important;
   }
   
-  /* Make filter sections wrap properly */
-  .admin-page > div > div > div, 
-  .admin-page > div > div > div > div {
-    flex-wrap: wrap !important;
-    gap: 8px !important;
+  .admin-page-header-right {
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
   
-  .admin-page > div:first-child > div:last-child {
-    width: 100% !important;
-    flex-wrap: nowrap !important;
-    gap: 8px !important;
+  .admin-page-header-right .btn {
+    flex: 1 1 calc(50% - 6px) !important;
+    justify-content: center !important;
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+    width: auto !important;
+    white-space: nowrap;
   }
-  
-  .admin-page > div:first-child > div:last-child .btn {
-    padding: 8px 12px !important;
-    font-size: 13px !important;
-    flex: 1 1 auto;
-  }
-  
+}  
+
   /* Fix table text overlap */
   .admin-page td > div {
     flex-wrap: wrap !important;

@@ -49,8 +49,8 @@ export default function Users() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', gap: '12px' }}>
+      <div className="admin-page-header">
+        <div className="admin-page-header-left">
           <div style={{ position: 'relative' }}>
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
             <input 
@@ -62,6 +62,8 @@ export default function Users() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+        </div>
+        <div className="admin-page-header-right">
           <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Download size={18} />
             Export
@@ -135,9 +137,8 @@ export default function Users() {
                           </span>
                         )}
                         {user.linkedAccounts && user.linkedAccounts.length > 0 && (
-                          <span title={`Also ordered from this device: ${user.linkedAccounts.map(u => u.phone).join(', ')}`} style={{ fontSize: '12px', padding: '2px 8px', backgroundColor: '#e0e7ff', color: '#4338ca', borderRadius: '100px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                            Linked
+                          <span title={`Also ordered from this device: ${user.linkedAccounts.map(u => u.phone).join(', ')}`} style={{ fontSize: '12px', padding: '4px', backgroundColor: '#e0e7ff', color: '#4338ca', borderRadius: '100px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
                           </span>
                         )}
                       </div>

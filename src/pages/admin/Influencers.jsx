@@ -83,8 +83,9 @@ export default function Influencers() {
 
   return (
     <div>
-      <div className="admin-header" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px', padding: 0, border: 'none', background: 'none' }}>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: '4px' }}>
+      <div className="admin-page-header">
+        <div className="admin-page-header-left"></div>
+        <div className="admin-page-header-right">
           <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
             <Download size={18} /> Export
           </button>
@@ -134,7 +135,7 @@ export default function Influencers() {
                 <tr key={inf.id}>
                   <td style={{ fontWeight: 600 }}>{inf.influencerName || 'Unnamed'}</td>
                   <td>
-                    <span style={{ padding: '4px 8px', backgroundColor: 'var(--surface-container-highest)', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold', letterSpacing: '1px' }}>
+                    <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>
                       {inf.code}
                     </span>
                   </td>
@@ -143,8 +144,8 @@ export default function Influencers() {
                   </td>
                   <td>{inf.usageCount || 0}</td>
                   <td>{inf.maxUses > 0 ? inf.maxUses : 'Unlimited'}</td>
-                  <td>{(inf.totalRevenue || 0).toFixed(2)} EGP</td>
-                  <td style={{ fontWeight: 'bold', color: 'var(--primary)' }}>
+                  <td style={{ textAlign: 'right' }}>{(inf.totalRevenue || 0).toFixed(2)} EGP</td>
+                  <td style={{ textAlign: 'right', fontWeight: 600, color: '#10b981' }}>
                     {calculateCommission(inf)} EGP
                   </td>
                   <td>

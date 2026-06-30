@@ -65,8 +65,8 @@ export default function Products() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+      <div className="admin-page-header">
+        <div className="admin-page-header-left">
           <div style={{ position: 'relative' }}>
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
             <input 
@@ -88,13 +88,15 @@ export default function Products() {
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
+        </div>
+        <div className="admin-page-header-right">
           <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={handleExport}>
             <Download size={18} /> Export
           </button>
           <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/analysis')}>
             <BarChart2 size={18} /> Global Analysis
           </button>
-          <button className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/new')}>
+          <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/new')}>
             <Plus size={18} /> Add Product
           </button>
         </div>

@@ -155,13 +155,14 @@ export default function PromoSettings() {
 
   return (
     <div className="admin-page">
-      <div className="admin-header" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px', padding: 0, border: 'none', background: 'none' }}>
+      <div className="admin-page-header">
+        <div className="admin-page-header-left"></div>
         {!isEditing && (
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: '4px' }}>
+          <div className="admin-page-header-right">
             <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
               <Download size={18} /> Export
             </button>
-            <button className="btn" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+            <button className="btn btn-primary" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
               <Plus size={18} /> Add Promo Code
             </button>
           </div>
@@ -263,7 +264,7 @@ export default function PromoSettings() {
             
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-end' }}>
               <button type="button" className="btn btn-secondary" onClick={() => setIsEditing(false)}>Cancel</button>
-              <button type="submit" className="btn">Save Promo Code</button>
+              <button type="submit" className="btn btn-primary">Save Promo Code</button>
             </div>
           </form>
         </div>
@@ -300,25 +301,18 @@ export default function PromoSettings() {
                           display: 'inline-flex', 
                           alignItems: 'center', 
                           gap: '6px', 
-                          cursor: 'pointer', 
-                          backgroundColor: '#0f172a', 
-                          color: '#ffffff', 
-                          padding: '6px 10px', 
-                          borderRadius: '6px', 
-                          fontSize: '13px', 
-                          fontWeight: 600,
-                          transition: 'background-color 0.2s'
+                          cursor: 'pointer'
                         }}
                         onClick={() => {
                           navigator.clipboard.writeText(promo.code);
                           addToast(`Copied ${promo.code} to clipboard!`, 'success');
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1e293b'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#0f172a'}
                         title="Click to copy promo code"
                       >
-                        {promo.code}
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
+                        <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>
+                          {promo.code}
+                        </span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
                           <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
@@ -330,12 +324,10 @@ export default function PromoSettings() {
                     <td>
                       {promo.commissionValue ? `${promo.commissionValue}${promo.commissionType === 'percentage' ? '%' : ' EGP'}` : '-'}
                     </td>
-                    <td style={{ fontWeight: 600 }}>{promo.usageCount || 0}</td>
-                    <td style={{ fontWeight: 600 }}>{(promo.totalRevenue || 0).toFixed(2)} EGP</td>
-                    <td>
-                      <span style={{ fontWeight: 700, color: '#10b981' }}>
-                        {calculateCommission(promo)} EGP
-                      </span>
+                    <td style={{ textAlign: 'right' }}>{promo.usageCount || 0}</td>
+                    <td style={{ textAlign: 'right' }}>{(promo.totalRevenue || 0).toFixed(2)} EGP</td>
+                    <td style={{ textAlign: 'right', fontWeight: 600, color: '#10b981' }}>
+                      {calculateCommission(promo)} EGP
                     </td>
                     <td>
                       <label className="toggle-switch">
