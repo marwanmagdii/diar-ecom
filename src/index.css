@@ -2125,4 +2125,31 @@ html[dir="rtl"] .variant-circle {
   .admin-header .headline-md {
     font-size: 18px !important;
   }
+  
+  /* Global form and input fixes for mobile */
+  .admin-page div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .admin-page input, .admin-page select, .admin-page .input-field {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Make filter sections wrap properly */
+  .admin-page > div > div > div, 
+  .admin-page > div > div > div > div {
+    flex-wrap: wrap !important;
+  }
+  
+  /* Fix table text overlap */
+  .admin-page td > div {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+  
+  .admin-page td span {
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
 }
