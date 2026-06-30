@@ -272,7 +272,7 @@ export default function PromoSettings() {
           </form>
         </div>
       ) : (
-        <div className="table-container card">
+        <div className="admin-table-container card">
           <table className="admin-table">
             <thead>
               <tr>

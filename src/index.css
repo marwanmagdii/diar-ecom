@@ -2140,6 +2140,13 @@ html[dir="rtl"] .variant-circle {
   .admin-page > div > div > div, 
   .admin-page > div > div > div > div {
     flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  
+  .admin-page > div:first-child > div:last-child {
+    width: 100% !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
   }
   
   /* Fix table text overlap */
