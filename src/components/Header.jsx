@@ -17,8 +17,8 @@ export default function Header() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {/* Back button removed per request */}
 
-          <Link to="/" className="logo logo-dark" style={{ color: 'var(--on-surface)' }}>
-            {language === 'ar' ? 'ديار' : 'Diar'}
+          <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.png" alt="Diar" style={{ height: '40px', width: 'auto' }} />
           </Link>
         </div>
         
