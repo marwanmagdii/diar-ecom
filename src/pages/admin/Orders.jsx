@@ -161,7 +161,6 @@ export default function Orders() {
             </select>
             <Filter size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)', pointerEvents: 'none' }} />
           </div>
-          </div>
         </div>
 
         <div className="admin-page-header-right">
