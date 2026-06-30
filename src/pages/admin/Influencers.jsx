@@ -99,7 +99,8 @@ export default function Influencers() {
       </div>
 
       <div className="admin-table-container">
-        <table className="admin-table">
+        <div className="table-responsive">
+          <table className="admin-table">
           <thead>
             <tr>
               <th>Influencer Name</th>
@@ -171,6 +172,7 @@ export default function Influencers() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {deleteModalOpen && (

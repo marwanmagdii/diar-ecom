@@ -268,8 +268,9 @@ export default function PromoSettings() {
           </form>
         </div>
       ) : (
-        <div className="admin-table-container card">
-          <table className="admin-table">
+        <div className="admin-table-container">
+          <div className="table-responsive">
+            <table className="admin-table">
             <thead>
               <tr>
                 <th>Code</th>
@@ -361,6 +362,7 @@ export default function PromoSettings() {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
