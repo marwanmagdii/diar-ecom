@@ -2092,3 +2092,37 @@ html[dir="rtl"] .variant-circle {
     width: 100%;
   }
 }
+
+/* Admin Page Header & Buttons Mobile Fixes */
+@media (max-width: 768px) {
+  .admin-page > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+    height: auto !important;
+  }
+  
+  .admin-page > div:first-child > div:last-child {
+    width: 100% !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .admin-page h1, .admin-page .admin-title {
+    font-size: 24px !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    height: auto !important;
+  }
+  
+  .admin-page > div:first-child .btn {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    width: 100%;
+  }
+  
+  .admin-header .headline-md {
+    font-size: 18px !important;
+  }
+}

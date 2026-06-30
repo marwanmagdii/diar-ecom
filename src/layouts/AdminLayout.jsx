@@ -258,7 +258,7 @@ export default function AdminLayout() {
               </div>
             </div>
           </header>
-          <div className="admin-content">
+          <div className="admin-content" style={{ overflowY: 'auto' }}>
             <Outlet />
           </div>
         </main>
