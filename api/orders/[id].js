@@ -9,7 +9,8 @@ export default async function handler(req, res) {
   await dbConnect();
 
   const isObjectId = mongoose.Types.ObjectId.isValid(id);
-  const query = isObjectId ? { $or: [{ _id: id }, { id: id }] } : { id: id };
+  const idWithHash = id.startsWith('#') ? id : `#${id}`;
+  const query = isObjectId ? { $or: [{ _id: id }, { id: id }, { id: idWithHash }] } : { $or: [{ id: id }, { id: idWithHash }] };
 
   switch (method) {
     case 'PUT':

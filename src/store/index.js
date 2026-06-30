@@ -639,7 +639,8 @@ export const useStore = create((set, get) => ({
 
   updateOrder: async (orderId, updatedFields) => {
     try {
-      const res = await fetch(`/api/orders/${encodeURIComponent(orderId)}`, {
+      const safeId = String(orderId).replace('#', '');
+      const res = await fetch(`/api/orders/${encodeURIComponent(safeId)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedFields)
@@ -663,7 +664,8 @@ export const useStore = create((set, get) => ({
 
   deleteOrder: async (orderId) => {
     try {
-      const res = await fetch(`/api/orders/${encodeURIComponent(orderId)}`, {
+      const safeId = String(orderId).replace('#', '');
+      const res = await fetch(`/api/orders/${encodeURIComponent(safeId)}`, {
         method: 'DELETE'
       });
       if (!res.ok) {
