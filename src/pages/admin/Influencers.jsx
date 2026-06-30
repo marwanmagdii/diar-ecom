@@ -83,28 +83,22 @@ export default function Influencers() {
 
   return (
     <div>
-      <div className="admin-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', padding: 0, border: 'none', background: 'none' }}>
-        <div>
-          <h1 className="admin-title" style={{ fontSize: '24px', margin: '0 0 4px 0' }}>Influencers & Partners</h1>
-          <p className="admin-subtitle" style={{ margin: 0 }}>
-            Manage your partners, assign promo codes, and track commissions.
-          </p>
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div className="admin-header" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px', padding: 0, border: 'none', background: 'none' }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: '4px' }}>
+          <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
             <Download size={18} /> Export
           </button>
-          <button className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             Influencer Analysis
           </button>
-          <button className="btn btn-primary" onClick={() => navigate('/diaradmin26/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="btn btn-primary" onClick={() => navigate('/diaradmin26/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
             <Plus size={18} /> Add Influencer
           </button>
         </div>
       </div>
 
-      <div className="admin-table-container card">
+      <div className="admin-table-container">
         <table className="admin-table">
           <thead>
             <tr>

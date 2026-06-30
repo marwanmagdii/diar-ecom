@@ -155,18 +155,14 @@ export default function PromoSettings() {
 
   return (
     <div className="admin-page">
-      <div className="admin-header">
-        <div>
-          <h1 className="admin-title">Promo Codes & Influencers</h1>
-          <p className="admin-subtitle">Manage discount codes and calculate influencer commissions.</p>
-        </div>
+      <div className="admin-header" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px', padding: 0, border: 'none', background: 'none' }}>
         {!isEditing && (
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: '4px' }}>
+            <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
               <Download size={18} /> Export
             </button>
-            <button className="btn" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Plus size={18} /> Add New Promo Code
+            <button className="btn" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+              <Plus size={18} /> Add Promo Code
             </button>
           </div>
         )}
