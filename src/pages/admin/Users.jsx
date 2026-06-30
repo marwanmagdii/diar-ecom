@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Search, Download } from 'lucide-react';
+import { ChevronRight, Search, Download, Filter } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
 
@@ -8,6 +8,17 @@ export default function Users() {
   const { users, ordersLoading: loading } = useStore();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [showColumnsMenu, setShowColumnsMenu] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState({
+    customer: true,
+    phone: true,
+    governorate: true,
+    district: true,
+    latestAddress: false,
+    orders: true,
+    totalSpent: true,
+    actions: true
+  });
 
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -60,6 +71,30 @@ export default function Users() {
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             Customer Analysis
           </button>
+          
+          <div style={{ position: 'relative' }}>
+            <button 
+              className="btn btn-secondary" 
+              style={{ display: 'flex', alignItems: 'center', gap: '8px' }} 
+              onClick={() => setShowColumnsMenu(!showColumnsMenu)}
+            >
+              <Filter size={18} /> Columns
+            </button>
+            {showColumnsMenu && (
+              <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', background: 'var(--surface)', border: '1px solid var(--outline)', borderRadius: '8px', padding: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 10, width: '200px' }}>
+                {Object.keys(visibleColumns).map(key => (
+                  <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={visibleColumns[key]}
+                      onChange={() => setVisibleColumns({...visibleColumns, [key]: !visibleColumns[key]})}
+                    />
+                    {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -68,12 +103,14 @@ export default function Users() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>Latest Address</th>
-                <th>Orders</th>
-                <th>Total Spent</th>
-                <th>Actions</th>
+                {visibleColumns.customer && <th>Customer</th>}
+                {visibleColumns.phone && <th>Phone</th>}
+                {visibleColumns.governorate && <th>Governorate</th>}
+                {visibleColumns.district && <th>District</th>}
+                {visibleColumns.latestAddress && <th>Latest Address</th>}
+                {visibleColumns.orders && <th>Orders</th>}
+                {visibleColumns.totalSpent && <th style={{ textAlign: 'right' }}>Total Spent</th>}
+                {visibleColumns.actions && <th style={{ textAlign: 'right' }}>Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -90,7 +127,7 @@ export default function Users() {
               ) : (
                 filteredUsers.map(user => (
                   <tr key={user.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/diaradmin26/users/${encodeURIComponent(user.id)}`)}>
-                    <td style={{ fontWeight: 600 }}>
+                    {visibleColumns.customer && <td style={{ fontWeight: 600 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         {user.name}
                         {user.isInfluencer && (
@@ -105,14 +142,31 @@ export default function Users() {
                           </span>
                         )}
                       </div>
-                    </td>
-                    <td>{user.phone}</td>
-                    <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.latestAddress}</td>
-                    <td>{user.orderCount} order{user.orderCount !== 1 ? 's' : ''}</td>
-                    <td style={{ fontWeight: 600, color: user.isInfluencer ? '#b45309' : 'var(--primary)' }}>{user.totalSpent?.toFixed(2)} EGP</td>
-                    <td>
-                      <button className="icon-btn" style={{ width: '32px', height: '32px' }}><ChevronRight size={16} /></button>
-                    </td>
+                    </td>}
+                    {visibleColumns.phone && <td>{user.phone}</td>}
+                    
+                    {(() => {
+                      const addressParts = (user.latestAddress || '').split(',').map(s => s.trim());
+                      const gov = addressParts.length > 1 ? addressParts[addressParts.length - 1] : '-';
+                      const dist = addressParts.length > 2 ? addressParts[addressParts.length - 2] : '-';
+                      return (
+                        <>
+                          {visibleColumns.governorate && <td>{gov}</td>}
+                          {visibleColumns.district && <td>{dist}</td>}
+                        </>
+                      );
+                    })()}
+
+                    {visibleColumns.latestAddress && <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.latestAddress}</td>}
+                    {visibleColumns.orders && <td>{user.orderCount} order{user.orderCount !== 1 ? 's' : ''}</td>}
+                    {visibleColumns.totalSpent && <td style={{ fontWeight: 600, color: user.isInfluencer ? '#b45309' : 'var(--primary)', textAlign: 'right' }}>
+                      {user.totalSpent?.toFixed(2)} EGP
+                    </td>}
+                    {visibleColumns.actions && <td style={{ textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
+                        <ChevronRight size={18} style={{ color: 'var(--on-surface-variant)' }} />
+                      </div>
+                    </td>}
                   </tr>
                 ))
               )}
