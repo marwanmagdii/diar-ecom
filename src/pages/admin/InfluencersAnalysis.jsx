@@ -154,21 +154,19 @@ export default function InfluencersAnalysis() {
 
                 return (
                   <tr key={inf.id}>
-                    <td>
+                    <td style={{ whiteSpace: 'nowrap' }}>
                       <div style={{ fontWeight: 600, color: '#0f172a' }}>{inf.influencerName}</div>
                       <div style={{ fontSize: '12px', color: '#64748b', textTransform: 'capitalize', display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '4px' }}>
                         {inf.socialAccounts && inf.socialAccounts.length > 0 ? (
                           inf.socialAccounts.map((acc, idx) => (
-                            <span key={idx}>
-                              {acc.platform} {acc.handle && `(${acc.handle})`}
-                            </span>
+                            <span key={idx}>{acc.platform}: {acc.handle}</span>
                           ))
                         ) : (
                           <span>{inf.socialPlatform} {inf.socialHandle && `(${inf.socialHandle})`}</span>
                         )}
                       </div>
                     </td>
-                    <td>
+                    <td style={{ whiteSpace: 'nowrap' }}>
                       <span style={{ fontWeight: 600, color: 'var(--primary)', backgroundColor: 'var(--primary-container)', padding: '4px 8px', borderRadius: '4px', fontSize: '13px' }}>
                         {inf.code}
                       </span>

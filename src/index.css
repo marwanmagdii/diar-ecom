@@ -2198,12 +2198,15 @@ html[dir="rtl"] .variant-circle {
   /* Make search boxes and selects scroll horizontally instead of stacking */
   .admin-page-header-left > div,
   .admin-page-header-left > select,
-  .admin-page-header-left > input,
-  .admin-page-header-left .input-field {
-    width: auto !important;
+  .admin-page-header-left > input {
     flex: 0 0 auto;
     min-width: 150px;
     max-width: 250px !important;
+  }
+  
+  .admin-page-header-left .input-field {
+    width: 100% !important;
+    max-width: 100% !important;
   }
   
   .admin-page-header-right {
@@ -2221,6 +2224,8 @@ html[dir="rtl"] .variant-circle {
     width: auto !important;
     white-space: nowrap;
   }
-
-
+  
+  .admin-table th, .admin-table td {
+    padding: 12px 8px !important;
+  }
 }

@@ -255,11 +255,15 @@ export default function Orders() {
                   >
                     {visibleColumns.id && <td data-label={t('orderId')} style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</td>}
                     {visibleColumns.date && <td data-label={t('date')}>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US') : new Date(order.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')}</td>}
-                    {visibleColumns.time && <td data-label={lang === 'ar' ? 'الوقت' : 'Time'}>{order.createdAt instanceof Date ? order.createdAt.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' }) : new Date(order.createdAt).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</td>}
-                    {visibleColumns.customer && <td data-label={t('customer')}>
-                      <div>{order.customer}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{order.phone}</div>
-                    </td>}
+                    {visibleColumns.time && <td style={{ whiteSpace: 'nowrap' }}>{order.createdAt instanceof Date ? order.createdAt.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', {hour: '2-digit', minute:'2-digit'}) : new Date(order.createdAt).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', {hour: '2-digit', minute:'2-digit'})}</td>}
+                    {visibleColumns.customer && (
+                      <td>
+                        <div style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontWeight: 500, color: 'var(--on-surface)' }}>{order.customer}</span>
+                          <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{order.phone}</span>
+                        </div>
+                      </td>
+                    )}
                     {visibleColumns.status && <td data-label={t('status')}>
                       <span className={`status-pill status-${order.status?.toLowerCase()}`}>
                         {t(order.status?.toLowerCase()) || order.status}
