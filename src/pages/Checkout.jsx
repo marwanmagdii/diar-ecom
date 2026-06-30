@@ -128,15 +128,11 @@ export default function Checkout() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const nextOrderId = (orders?.length || 0) + 1;
-    const newOrderId = '#' + nextOrderId;
-    
     const govLabel = govOptions.find(o => o.value === formData.gov)?.label || formData.gov;
     const distLabel = formData.district === 'other' ? formData.customDistrict : (districtOptions.find(o => o.value === formData.district)?.label || formData.district);
     const fullAddress = `${formData.address}, ${distLabel}, ${govLabel}`;
 
     const newOrder = {
-      id: newOrderId,
       customer: `${formData.firstName} ${formData.lastName}`,
       phone: formData.phone,
       address: fullAddress,
@@ -166,6 +162,8 @@ export default function Checkout() {
         setIsSubmitting(false);
         return;
       }
+      
+      const assignedOrderId = result.data.id;
       
       if (appliedPromo) {
         const updatedPromos = (config.promoCodes || []).map(p => {
@@ -246,7 +244,7 @@ export default function Checkout() {
           const tgItemText = cart.map(item => `\u200F- (${item.qty}) ${item.titleAr || item.title} - \u200E${item.price.toFixed(2)} ج.م${buildItemOptionsText(item, true)}`).join('\n');
 
           const waText = `مرحباً ${newOrder.customer}،
-لقد استلمنا طلبك رقم ${newOrder.id}.
+لقد استلمنا طلبك رقم ${assignedOrderId}.
 
 *المنتجات:*
 ${waItemText}
@@ -266,8 +264,8 @@ ${newOrder.shipping > 0 ? `الشحن: ${newOrder.shipping.toFixed(2)} ج.م\n` 
           const waMessage = encodeURIComponent(waText);
           const waLink = `https://wa.me/${waPhone}?text=${waMessage}`;
 
-          const orderLink = `${window.location.origin}/admin/orders/${encodeURIComponent(newOrder.id)}`;
-          const message = `🛒 <b>طلب جديد #${newOrder.id}</b>
+          const orderLink = `${window.location.origin}/admin/orders/${encodeURIComponent(assignedOrderId)}`;
+          const message = `🛒 <b>طلب جديد ${assignedOrderId}</b>
 👤 <b>العميل:</b> ${newOrder.customer}
 📞 <b>رقم الهاتف:</b> <a href="${waLink}">\u200E+${waPhone}</a>
 \u200F📍 <b>المحافظة:</b> \u200E${govAr}
@@ -304,7 +302,7 @@ ${orderLink}`;
             
             // Save link to order
             if (updateOrder) {
-              await updateOrder(newOrderId, { telegramMessageUrl });
+              await updateOrder(assignedOrderId, { telegramMessageUrl });
             }
           }
         }
@@ -314,7 +312,7 @@ ${orderLink}`;
 
       clearCart();
       clearTrackingData();
-      navigate('/success', { state: { orderId: newOrderId } });
+      navigate('/success', { state: { orderId: assignedOrderId } });
     };
 
     submitOrder();
