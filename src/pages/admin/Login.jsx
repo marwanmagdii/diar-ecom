@@ -12,7 +12,7 @@ export default function Login() {
   const { login } = useStore();
   const { language, t } = useStore();
 
-  const from = location.state?.from?.pathname || '/admin';
+  const from = location.state?.from?.pathname || '/diaradmin26';
 
   const handleSubmit = (e) => {
     e.preventDefault();

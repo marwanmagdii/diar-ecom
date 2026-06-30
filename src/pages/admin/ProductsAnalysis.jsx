@@ -109,7 +109,7 @@ export default function ProductsAnalysis() {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-        <button className="icon-btn" onClick={() => navigate('/admin/products')} style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+        <button className="icon-btn" onClick={() => navigate('/diaradmin26/products')} style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <ArrowLeft size={20} />
         </button>
         <div>

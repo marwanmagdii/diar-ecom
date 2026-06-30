@@ -101,7 +101,7 @@ export default function CreateInfluencer() {
     }
 
     updatePromoCodes(updatedPromos);
-    navigate('/admin/influencers');
+    navigate('/diaradmin26/influencers');
   };
 
   return (
@@ -110,9 +110,9 @@ export default function CreateInfluencer() {
         <h2 style={{ fontSize: '24px', fontWeight: 700, margin: 0 }}>{id ? 'Edit Influencer' : 'Add Influencer'}</h2>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/admin')}>Dashboard</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26')}>Dashboard</span>
           <ChevronRight size={14} />
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/admin/influencers')}>Influencers</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26/influencers')}>Influencers</span>
           <ChevronRight size={14} />
           <span style={{ color: '#0f172a', fontWeight: 500 }}>{id ? 'Edit' : 'New'}</span>
         </div>
@@ -264,7 +264,7 @@ export default function CreateInfluencer() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}>
-            <button type="button" className="btn btn-secondary" onClick={() => navigate('/admin/influencers')}>
+            <button type="button" className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers')}>
               <X size={18} style={{ marginRight: '8px' }} /> Cancel
             </button>
             <button type="submit" className="btn btn-primary">

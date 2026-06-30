@@ -94,11 +94,11 @@ export default function Influencers() {
           <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Download size={18} /> Export
           </button>
-          <button className="btn btn-secondary" onClick={() => navigate('/admin/influencers/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             Influencer Analysis
           </button>
-          <button className="btn btn-primary" onClick={() => navigate('/admin/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="btn btn-primary" onClick={() => navigate('/diaradmin26/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Plus size={18} /> Add Influencer
           </button>
         </div>
@@ -164,7 +164,7 @@ export default function Influencers() {
                   </td>
                   <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      <button className="icon-btn" onClick={() => navigate(`/admin/influencers/edit/${inf.id}`)} title="Edit">
+                      <button className="icon-btn" onClick={() => navigate(`/diaradmin26/influencers/edit/${inf.id}`)} title="Edit">
                         <Edit size={16} />
                       </button>
                       <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={() => handleDelete(inf.id)} title="Delete">

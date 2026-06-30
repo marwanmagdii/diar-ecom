@@ -78,8 +78,8 @@ function App() {
             </Route>
 
             {/* Admin Routes */}
-            <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin" element={
+            <Route path="/diaradmin26/login" element={<Login />} />
+            <Route path="/diaradmin26" element={
               <ProtectedRoute>
                 <AdminLayout />
               </ProtectedRoute>
@@ -112,7 +112,7 @@ function App() {
               <Route path="influencers/new" element={<CreateInfluencer />} />
               <Route path="influencers/edit/:id" element={<CreateInfluencer />} />
               {/* Fallback settings page to collections */}
-              <Route path="settings" element={<Navigate to="/admin/settings/collections" replace />} />
+              <Route path="settings" element={<Navigate to="/diaradmin26/settings/collections" replace />} />
             </Route>
             
             {/* Catch-all redirect */}

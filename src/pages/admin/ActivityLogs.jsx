@@ -45,7 +45,7 @@ export default function ActivityLogs() {
         const product = products.find(p => p.id === id);
         targetName = product ? (product.title || product.titleAr) : id;
         updateText = log.description.replace(id, '').replace(/product:?\s*/i, 'Product ').trim();
-        link = `/admin/products/${id}`;
+        link = `/diaradmin26/products/${id}`;
       } else if (log.description) {
         targetName = log.description.replace(/Added product:?/i, '').trim();
         updateText = 'Added new product';
@@ -55,12 +55,12 @@ export default function ActivityLogs() {
       if (match && log.description) {
         targetName = `Order #${match[1]}`;
         updateText = log.description.replace(match[0], '').replace(/order\s*/i, 'Order ').trim();
-        link = `/admin/orders/${match[1]}`;
+        link = `/diaradmin26/orders/${match[1]}`;
       }
     } else if (log.actionType === 'update_settings') {
       targetName = 'Store Settings';
       updateText = log.description;
-      link = '/admin/settings';
+      link = '/diaradmin26/settings';
     } else if (log.actionType === 'login') {
       targetName = 'System Auth';
       updateText = log.description;

@@ -158,7 +158,7 @@ export default function UsersAnalysis() {
                     {customer.lastOrderDate ? customer.lastOrderDate.toLocaleDateString() : 'Never'}
                   </td>
                   <td>
-                    <Link to={`/admin/users/${customer.id}`} className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                    <Link to={`/diaradmin26/users/${customer.id}`} className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }}>
                       View Profile
                     </Link>
                   </td>

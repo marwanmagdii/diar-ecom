@@ -26,7 +26,7 @@ export default function UserDetails() {
     return (
       <div style={{ padding: '32px', textAlign: 'center' }}>
         <p>User not found.</p>
-        <button className="btn" onClick={() => navigate('/admin/users')}>Back to Users</button>
+        <button className="btn" onClick={() => navigate('/diaradmin26/users')}>Back to Users</button>
       </div>
     );
   }
@@ -49,7 +49,7 @@ export default function UserDetails() {
       try {
         await Promise.all(user.orders.map(order => deleteOrder(order.id)));
         addToast('Customer and orders deleted successfully', 'success');
-        navigate('/admin/users');
+        navigate('/diaradmin26/users');
       } catch (e) {
         addToast('Failed to delete customer', 'error');
       }
@@ -83,7 +83,7 @@ export default function UserDetails() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button className="icon-btn" onClick={() => navigate('/admin/users')}><ArrowLeft size={20} /></button>
+          <button className="icon-btn" onClick={() => navigate('/diaradmin26/users')}><ArrowLeft size={20} /></button>
           <h2 className="headline-md m-0">{user.isInfluencer ? 'Influencer Profile' : 'Customer Profile'}</h2>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -162,7 +162,7 @@ export default function UserDetails() {
                   <div 
                     key={linkedUser.id} 
                     style={{ padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
-                    onClick={() => navigate(`/admin/users/${encodeURIComponent(linkedUser.id)}`)}
+                    onClick={() => navigate(`/diaradmin26/users/${encodeURIComponent(linkedUser.id)}`)}
                     className="hover-row"
                   >
                     <div>
@@ -275,7 +275,7 @@ export default function UserDetails() {
           <tbody>
             {user.orders.map(order => (
               <React.Fragment key={order.id}>
-                <tr style={{ cursor: 'pointer', borderBottom: expandedOrders[order.id] ? 'none' : '1px solid #f1f5f9' }} onClick={() => navigate(`/admin/orders/${encodeURIComponent(order.id)}`)}>
+                <tr style={{ cursor: 'pointer', borderBottom: expandedOrders[order.id] ? 'none' : '1px solid #f1f5f9' }} onClick={() => navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`)}>
                   <td style={{ fontWeight: 600, color: '#2563eb', textDecoration: 'underline' }}>{order.id}</td>
                   <td>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString() : 'Unknown Date'}</td>
                   <td>{order.phone || 'N/A'}</td>

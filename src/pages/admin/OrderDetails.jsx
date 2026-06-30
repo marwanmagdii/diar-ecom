@@ -166,7 +166,7 @@ export default function OrderDetails() {
     return (
       <div style={{ padding: '32px', textAlign: 'center' }}>
         <p>Order not found.</p>
-        <button className="btn" onClick={() => navigate('/admin/orders')}>Back to Orders</button>
+        <button className="btn" onClick={() => navigate('/diaradmin26/orders')}>Back to Orders</button>
       </div>
     );
   }
@@ -185,7 +185,7 @@ export default function OrderDetails() {
       try {
         await deleteOrder(id);
         addToast('Order deleted successfully', 'success');
-        navigate('/admin/orders');
+        navigate('/diaradmin26/orders');
       } catch (e) {
         addToast('Failed to delete order', 'error');
       }
@@ -370,9 +370,9 @@ export default function OrderDetails() {
         
         {/* Breadcrumbs */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/admin')}>{t('dashboard')}</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26')}>{t('dashboard')}</span>
           <ChevronRight size={14} style={{ transform: lang === 'ar' ? 'rotate(180deg)' : 'none' }} />
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/admin/orders')}>{t('orders')}</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26/orders')}>{t('orders')}</span>
           <ChevronRight size={14} style={{ transform: lang === 'ar' ? 'rotate(180deg)' : 'none' }} />
           <span style={{ color: '#0f172a', fontWeight: 500 }}>{t('orderDetail')}</span>
         </div>
@@ -458,7 +458,7 @@ export default function OrderDetails() {
                 return (
                   <div key={idx} className="admin-item-card">
                     <div 
-                      onClick={() => navigate(`/admin/products/${item.id}`)}
+                      onClick={() => navigate(`/diaradmin26/products/${item.id}`)}
                       style={{ width: '64px', height: '80px', backgroundColor: '#e2e8f0', borderRadius: '8px', marginRight: '24px', overflow: 'hidden', flexShrink: 0, cursor: 'pointer' }}
                     >
                       <img src={imageUrl} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -466,7 +466,7 @@ export default function OrderDetails() {
                     
                     <div style={{ flex: 2 }}>
                       <p 
-                        onClick={() => navigate(`/admin/products/${item.id}`)}
+                        onClick={() => navigate(`/diaradmin26/products/${item.id}`)}
                         style={{ fontSize: '16px', fontWeight: 600, margin: 0, color: '#0f172a', cursor: 'pointer', display: 'inline-block' }}
                         className="hover-underline"
                       >

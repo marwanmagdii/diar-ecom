@@ -199,7 +199,7 @@ export default function Orders() {
           <button 
             className="btn" 
             style={{ display: 'flex', alignItems: 'center', gap: '8px' }} 
-            onClick={() => navigate('/admin/orders/new')}
+            onClick={() => navigate('/diaradmin26/orders/new')}
           >
             <Plus size={20} /> {lang === 'ar' ? "إنشاء طلب" : "Create Order"}
           </button>
@@ -249,7 +249,7 @@ export default function Orders() {
                 return filteredOrders.map(order => (
                   <tr 
                     key={order.id}
-                    onClick={() => navigate(`/admin/orders/${encodeURIComponent(order.id)}`)}
+                    onClick={() => navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`)}
                     style={{ cursor: 'pointer' }}
                     className="hover-row"
                   >
@@ -278,7 +278,7 @@ export default function Orders() {
                           title="View Details" 
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/admin/orders/${encodeURIComponent(order.id)}`);
+                            navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`);
                           }}
                         >
                           <Eye size={18} />

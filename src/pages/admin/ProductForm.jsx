@@ -225,7 +225,7 @@ export default function ProductForm() {
         await addProduct(payload);
         addToast('Product added successfully!', 'success');
       }
-      navigate('/admin/products');
+      navigate('/diaradmin26/products');
     } catch (error) {
       console.error('Error saving product:', error);
       addToast(error.message || 'Failed to save product. Please try again.', 'error');
@@ -385,7 +385,7 @@ export default function ProductForm() {
   return (
     <div style={{ width: '100%', margin: '0 auto', paddingBottom: '40px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
-        <button className="icon-btn" onClick={() => navigate('/admin/products')} style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}><ArrowLeft size={20} /></button>
+        <button className="icon-btn" onClick={() => navigate('/diaradmin26/products')} style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}><ArrowLeft size={20} /></button>
         <div style={{ flex: 1 }}>
           <h2 className="headline-md m-0">{isEditing ? 'Edit Product' : 'Add New Product'}</h2>
           <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '14px' }}>Fill in the details below to {isEditing ? 'update' : 'create'} a product.</p>
@@ -395,7 +395,7 @@ export default function ProductForm() {
             type="button"
             className="btn" 
             style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#e0e7ff', color: '#4f46e5', border: 'none' }}
-            onClick={() => navigate(`/admin/products/${id}/analysis`)}
+            onClick={() => navigate(`/diaradmin26/products/${id}/analysis`)}
           >
             <BarChart2 size={20} /> View Analysis
           </button>
@@ -906,7 +906,7 @@ export default function ProductForm() {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}>
-          <button type="button" className="btn btn-secondary" onClick={() => navigate('/admin/products')} style={{ padding: '12px 32px', backgroundColor: '#ffffff', color: '#475569', border: '1px solid #cbd5e1', borderRadius: '8px' }}>
+          <button type="button" className="btn btn-secondary" onClick={() => navigate('/diaradmin26/products')} style={{ padding: '12px 32px', backgroundColor: '#ffffff', color: '#475569', border: '1px solid #cbd5e1', borderRadius: '8px' }}>
             Cancel
           </button>
           <button type="submit" className="btn btn-primary" disabled={isSubmitting || formData.images.length === 0} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 40px', borderRadius: '8px', fontSize: '15px' }}>

@@ -104,7 +104,7 @@ export default function ProductAnalysis() {
       
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', marginBottom: '32px' }}>
-        <button className="icon-btn" onClick={() => navigate(`/admin/products/edit/${id}`)} style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+        <button className="icon-btn" onClick={() => navigate(`/diaradmin26/products/edit/${id}`)} style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <ArrowLeft size={20} />
         </button>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flex: 1 }}>

@@ -177,7 +177,7 @@ export default function InfluencersAnalysis() {
                     <td style={{ fontWeight: 600, color: '#10b981' }}>{(inf.totalRevenue || 0).toFixed(2)} EGP</td>
                     <td style={{ fontWeight: 600 }}>{commission.toFixed(2)} EGP</td>
                     <td>
-                      <Link to={`/admin/influencers/edit/${inf.id}`} className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                      <Link to={`/diaradmin26/influencers/edit/${inf.id}`} className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }}>
                         Manage
                       </Link>
                     </td>

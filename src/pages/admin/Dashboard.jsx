@@ -158,7 +158,7 @@ export default function Dashboard() {
         <div 
           className="metric-card" 
           style={{ display: 'flex', flexDirection: 'column', overflowX: 'auto', cursor: 'pointer', transition: 'box-shadow 0.2s', ':hover': { boxShadow: 'var(--elevation-2)' } }}
-          onClick={() => navigate('/admin/orders')}
+          onClick={() => navigate('/diaradmin26/orders')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <h2 className="title-md m-0">{language === 'ar' ? 'نظرة عامة على الإيرادات (آخر 7 أيام)' : 'Revenue Overview (Last 7 Days)'}</h2>
@@ -217,7 +217,7 @@ export default function Dashboard() {
               <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={handleExport}>
                 <Download size={16} /> Export
               </button>
-              <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px' }} onClick={() => navigate('/admin/orders')}>View All</button>
+              <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px' }} onClick={() => navigate('/diaradmin26/orders')}>View All</button>
             </div>
           </div>
           <div className="table-responsive">
@@ -246,7 +246,7 @@ export default function Dashboard() {
                       </td>
                       <td>{order.total?.toFixed(2)} EGP</td>
                       <td style={{ textAlign: 'right' }}>
-                        <button className="icon-btn" onClick={() => navigate(`/admin/orders/${encodeURIComponent(order.id)}`)}><Eye size={16} /></button>
+                        <button className="icon-btn" onClick={() => navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`)}><Eye size={16} /></button>
                       </td>
                     </tr>
                   ))

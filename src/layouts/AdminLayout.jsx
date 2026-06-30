@@ -6,12 +6,12 @@ import { useStore } from '../store';
 export default function AdminLayout() {
   const location = useLocation();
   const { language, toggleLanguage, t } = useStore();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(location.pathname.startsWith('/admin/settings'));
+  const [isSettingsOpen, setIsSettingsOpen] = useState(location.pathname.startsWith('/diaradmin26/settings'));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
 
   useEffect(() => {
-    if (location.pathname === '/admin/settings' && location.hash) {
+    if (location.pathname === '/diaradmin26/settings' && location.hash) {
       setTimeout(() => {
         const id = location.hash.replace('#', '');
         const element = document.getElementById(id);
@@ -29,18 +29,18 @@ export default function AdminLayout() {
   };
 
   const navItems = [
-    { name: t('dashboard'), path: '/admin', icon: <LayoutDashboard size={20} /> },
-    { name: t('orders'), path: '/admin/orders', icon: <ShoppingCart size={20} /> },
-    { name: t('users'), path: '/admin/users', icon: <Users size={20} /> },
-    { name: t('products'), path: '/admin/products', icon: <Package size={20} /> },
-    { name: t('promoCodes'), path: '/admin/promos', icon: <Ticket size={20} /> },
-    { name: t('influencers'), path: '/admin/influencers', icon: <Star size={20} /> },
-    { name: t('settings') || 'Store Settings', path: '/admin/settings', icon: <Settings size={20} /> },
+    { name: t('dashboard'), path: '/diaradmin26', icon: <LayoutDashboard size={20} /> },
+    { name: t('orders'), path: '/diaradmin26/orders', icon: <ShoppingCart size={20} /> },
+    { name: t('users'), path: '/diaradmin26/users', icon: <Users size={20} /> },
+    { name: t('products'), path: '/diaradmin26/products', icon: <Package size={20} /> },
+    { name: t('promoCodes'), path: '/diaradmin26/promos', icon: <Ticket size={20} /> },
+    { name: t('influencers'), path: '/diaradmin26/influencers', icon: <Star size={20} /> },
+    { name: t('settings') || 'Store Settings', path: '/diaradmin26/settings', icon: <Settings size={20} /> },
   ];
 
   // Helper to determine the best header title
   const getHeaderTitle = () => {
-    const currentItem = navItems.find(item => location.pathname === item.path || (location.pathname.startsWith(item.path) && item.path !== '/admin'));
+    const currentItem = navItems.find(item => location.pathname === item.path || (location.pathname.startsWith(item.path) && item.path !== '/diaradmin26'));
     return currentItem?.name || t('dashboard');
   };
 
@@ -68,12 +68,12 @@ export default function AdminLayout() {
 
           <nav className="admin-nav">
             {navItems.map(item => {
-              if (item.path === '/admin/settings') {
+              if (item.path === '/diaradmin26/settings') {
                 return (
                   <div key={item.name}>
                     <button 
                       onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                      className={`admin-nav-link ${location.pathname.startsWith('/admin/settings') ? 'active' : ''}`}
+                      className={`admin-nav-link ${location.pathname.startsWith('/diaradmin26/settings') ? 'active' : ''}`}
                       style={{ 
                         width: '100%',
                         justifyContent: 'space-between',
@@ -81,8 +81,8 @@ export default function AdminLayout() {
                         cursor: 'pointer',
                         fontFamily: 'inherit',
                         fontSize: 'inherit',
-                        backgroundColor: location.pathname.startsWith('/admin/settings') ? 'var(--primary-container)' : 'transparent',
-                        color: location.pathname.startsWith('/admin/settings') ? 'var(--on-primary-container)' : 'var(--on-surface-variant)'
+                        backgroundColor: location.pathname.startsWith('/diaradmin26/settings') ? 'var(--primary-container)' : 'transparent',
+                        color: location.pathname.startsWith('/diaradmin26/settings') ? 'var(--on-primary-container)' : 'var(--on-surface-variant)'
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }} title={item.name}>
@@ -96,7 +96,7 @@ export default function AdminLayout() {
                     {isSettingsOpen && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px', paddingLeft: language === 'ar' ? '0' : '44px', paddingRight: language === 'ar' ? '44px' : '0' }}>
                         <Link 
-                          to="/admin/settings/general" 
+                          to="/diaradmin26/settings/general" 
                           className="admin-nav-link"
                           style={{ 
                             padding: '8px 12px', 
@@ -109,7 +109,7 @@ export default function AdminLayout() {
                           {language === 'ar' ? 'الإعدادات العامة' : 'General Settings'}
                         </Link>
                         <Link 
-                          to="/admin/settings/logs" 
+                          to="/diaradmin26/settings/logs" 
                           className="admin-nav-link"
                           style={{ 
                             padding: '8px 12px', 
@@ -122,20 +122,20 @@ export default function AdminLayout() {
                           {language === 'ar' ? 'سجل النشاطات' : 'Activity Logs'}
                         </Link>
                         <Link 
-                          to="/admin/settings/collections" 
+                          to="/diaradmin26/settings/collections" 
                           className="admin-nav-link"
                           style={{ 
                             padding: '8px 12px', 
                             fontSize: '14px',
                             backgroundColor: 'transparent',
-                            color: (location.pathname.includes('/settings/collections') || location.pathname === '/admin/settings') ? 'var(--primary)' : 'inherit',
-                            fontWeight: (location.pathname.includes('/settings/collections') || location.pathname === '/admin/settings') ? 700 : 500
+                            color: (location.pathname.includes('/settings/collections') || location.pathname === '/diaradmin26/settings') ? 'var(--primary)' : 'inherit',
+                            fontWeight: (location.pathname.includes('/settings/collections') || location.pathname === '/diaradmin26/settings') ? 700 : 500
                           }}
                         >
                           {t('collectionBuilder')}
                         </Link>
                         <Link 
-                          to="/admin/settings/categories" 
+                          to="/diaradmin26/settings/categories" 
                           className="admin-nav-link"
                           style={{ 
                             padding: '8px 12px', 
@@ -148,7 +148,7 @@ export default function AdminLayout() {
                           {t('categoryManagement')}
                         </Link>
                         <Link 
-                          to="/admin/settings/locations" 
+                          to="/diaradmin26/settings/locations" 
                           className="admin-nav-link"
                           style={{ 
                             padding: '8px 12px', 
@@ -161,7 +161,7 @@ export default function AdminLayout() {
                           {t('locationsShipping')}
                         </Link>
                         <Link 
-                          to="/admin/settings/options" 
+                          to="/diaradmin26/settings/options" 
                           className="admin-nav-link"
                           style={{ 
                             padding: '8px 12px', 
@@ -174,7 +174,7 @@ export default function AdminLayout() {
                           {t('productOptions')}
                         </Link>
                         <Link 
-                          to="/admin/settings/reviews" 
+                          to="/diaradmin26/settings/reviews" 
                           className="admin-nav-link"
                           style={{ 
                             padding: '8px 12px', 
@@ -187,7 +187,7 @@ export default function AdminLayout() {
                           {t('globalReviews')}
                         </Link>
                         <Link 
-                          to="/admin/settings/calculator" 
+                          to="/diaradmin26/settings/calculator" 
                           className="admin-nav-link"
                           style={{ 
                             padding: '8px 12px', 

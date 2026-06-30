@@ -56,7 +56,7 @@ export default function Users() {
             <Download size={18} />
             Export
           </button>
-          <button className="btn btn-secondary" onClick={() => navigate('/admin/users/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="btn btn-secondary" onClick={() => navigate('/diaradmin26/users/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             Customer Analysis
           </button>
@@ -89,7 +89,7 @@ export default function Users() {
                 <tr><td colSpan="6" style={{ textAlign: 'center', padding: '32px' }}>No customers found.</td></tr>
               ) : (
                 filteredUsers.map(user => (
-                  <tr key={user.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/admin/users/${encodeURIComponent(user.id)}`)}>
+                  <tr key={user.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/diaradmin26/users/${encodeURIComponent(user.id)}`)}>
                     <td style={{ fontWeight: 600 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         {user.name}

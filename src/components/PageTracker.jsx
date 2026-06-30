@@ -8,7 +8,7 @@ export default function PageTracker() {
 
   useEffect(() => {
     // Only track store pages, ignore admin
-    if (!location.pathname.startsWith('/admin')) {
+    if (!location.pathname.startsWith('/diaradmin26')) {
       trackEvent('view_page', {
         pagePath: location.pathname,
         pageSearch: location.search

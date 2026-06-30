@@ -71,10 +71,10 @@ export default function Products() {
           <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={handleExport}>
             <Download size={20} /> Export
           </button>
-          <button className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#e0e7ff', color: '#4f46e5', border: 'none' }} onClick={() => navigate('/admin/products/analysis')}>
+          <button className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#e0e7ff', color: '#4f46e5', border: 'none' }} onClick={() => navigate('/diaradmin26/products/analysis')}>
             <BarChart2 size={20} /> Global Analysis
           </button>
-          <button className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/admin/products/new')}>
+          <button className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/new')}>
             <Plus size={20} /> Add Product
           </button>
         </div>
@@ -144,8 +144,8 @@ export default function Products() {
                       </span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      <button className="icon-btn" title="Analysis" onClick={() => navigate(`/admin/products/${product.id}/analysis`)}><BarChart2 size={16} color="var(--primary)" /></button>
-                      <button className="icon-btn" onClick={() => navigate(`/admin/products/${product.id}`)}><Edit size={16} /></button>
+                      <button className="icon-btn" title="Analysis" onClick={() => navigate(`/diaradmin26/products/${product.id}/analysis`)}><BarChart2 size={16} color="var(--primary)" /></button>
+                      <button className="icon-btn" onClick={() => navigate(`/diaradmin26/products/${product.id}`)}><Edit size={16} /></button>
                       <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={() => handleDelete(product.id)}><Trash2 size={16} /></button>
                     </td>
                   </tr>

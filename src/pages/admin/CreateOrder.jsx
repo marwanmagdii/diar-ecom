@@ -81,7 +81,7 @@ export default function CreateOrder() {
     };
     
     addOrder(newOrder);
-    navigate('/admin/orders');
+    navigate('/diaradmin26/orders');
   };
 
   return (
@@ -92,9 +92,9 @@ export default function CreateOrder() {
         
         {/* Breadcrumbs */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/admin')}>Dashboard</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26')}>Dashboard</span>
           <ChevronRight size={14} />
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/admin/orders')}>Orders</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26/orders')}>Orders</span>
           <ChevronRight size={14} />
           <span style={{ color: '#0f172a', fontWeight: 500 }}>New Order</span>
         </div>
