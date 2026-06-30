@@ -65,29 +65,15 @@ export default function Products() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h2 className="headline-md m-0">{t('products')}</h2>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px' }}>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={handleExport}>
-            <Download size={20} /> Export
-          </button>
-          <button className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#e0e7ff', color: '#4f46e5', border: 'none' }} onClick={() => navigate('/diaradmin26/products/analysis')}>
-            <BarChart2 size={20} /> Global Analysis
-          </button>
-          <button className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/new')}>
-            <Plus size={20} /> Add Product
-          </button>
-        </div>
-      </div>
-
-      <div className="metric-card" style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'var(--surface-container-lowest)', border: '1px solid var(--outline-variant)', borderRadius: '8px', flex: 1 }}>
-            <Search size={20} color="var(--on-surface-variant)" />
+          <div style={{ position: 'relative' }}>
+            <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
             <input 
               type="text" 
+              className="input-field" 
               placeholder="Search products..." 
-              style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%' }}
+              style={{ width: '250px', paddingLeft: '36px' }} 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -102,7 +88,17 @@ export default function Products() {
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
+          <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={handleExport}>
+            <Download size={18} /> Export
+          </button>
+          <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/analysis')}>
+            <BarChart2 size={18} /> Global Analysis
+          </button>
+          <button className="btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/diaradmin26/products/new')}>
+            <Plus size={18} /> Add Product
+          </button>
         </div>
+      </div>
 
         <div className="admin-table-container">
           <div className="table-responsive">
@@ -168,7 +164,6 @@ export default function Products() {
             </table>
           </div>
         </div>
-      </div>
 
       {deleteModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>

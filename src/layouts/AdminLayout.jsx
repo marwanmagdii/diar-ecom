@@ -5,7 +5,7 @@ import { useStore } from '../store';
 
 export default function AdminLayout() {
   const location = useLocation();
-  const { language, toggleLanguage, t } = useStore();
+  const { language, toggleLanguage, t, currentAdmin } = useStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(location.pathname.startsWith('/diaradmin26/settings'));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
@@ -253,8 +253,8 @@ export default function AdminLayout() {
                 <Globe size={18} />
                 {language === 'en' ? 'عربي' : 'English'}
               </button>
-              <div className="admin-user-avatar">
-                A
+              <div className="admin-user-avatar" title={currentAdmin || 'Admin'}>
+                {currentAdmin ? currentAdmin.charAt(0).toUpperCase() : 'A'}
               </div>
             </div>
           </header>
