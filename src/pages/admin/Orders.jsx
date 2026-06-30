@@ -218,8 +218,8 @@ export default function Orders() {
                 {visibleColumns.status && <th>{t('status')}</th>}
                 {visibleColumns.promoCode && <th>{lang === 'ar' ? 'كود الخصم' : 'Promo Code'}</th>}
                 {visibleColumns.influencer && <th>{lang === 'ar' ? 'المؤثر' : 'Influencer'}</th>}
-                {visibleColumns.total && <th>{t('total')}</th>}
-                {visibleColumns.actions && <th>{lang === 'ar' ? 'الإجراءات' : 'Actions'}</th>}
+                {visibleColumns.total && <th style={{ textAlign: 'right' }}>{t('total')}</th>}
+                {visibleColumns.actions && <th style={{ textAlign: 'right' }}>{lang === 'ar' ? 'الإجراءات' : 'Actions'}</th>}
               </tr>
             </thead>
             <tbody>
@@ -269,9 +269,9 @@ export default function Orders() {
                       {order.promoCode ? <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>{order.promoCode}</span> : '-'}
                     </td>}
                     {visibleColumns.influencer && <td>{order.influencerName || '-'}</td>}
-                    {visibleColumns.total && <td>{order.total?.toFixed(2)} EGP</td>}
+                    {visibleColumns.total && <td style={{ textAlign: 'right' }}>{order.total?.toFixed(2)} EGP</td>}
                     {visibleColumns.actions && <td>
-                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
                         <button 
                           className="btn btn-secondary"
                           style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}

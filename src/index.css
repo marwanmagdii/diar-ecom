@@ -1364,9 +1364,6 @@ html[dir="rtl"] .variant-circle {
 /* Admin Responsive & Mobile Styles */
 .table-responsive {
   width: 100%;
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 60vh;
 }
 
 .mobile-menu-overlay {
