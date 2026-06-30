@@ -39,21 +39,7 @@ export default function Header() {
           <Link to="/cart" className="icon-btn" aria-label={t('cart')} style={{ position: 'relative', color: 'var(--on-surface)' }} onClick={() => window.scrollTo(0, 0)}>
             <ShoppingBag size={24} color="currentColor" />
             {cartCount > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: 2,
-                right: 2,
-                backgroundColor: 'var(--error)',
-                color: 'white',
-                fontSize: '10px',
-                fontWeight: 'bold',
-                width: '16px',
-                height: '16px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
+              <span key={cartCount} className="cart-counter">
                 {cartCount}
               </span>
             )}

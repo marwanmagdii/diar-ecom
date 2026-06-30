@@ -173,7 +173,7 @@ export default function Orders() {
               <Filter size={18} /> {lang === 'ar' ? 'الأعمدة' : 'Columns'}
             </button>
             {showColumnsMenu && (
-              <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', background: 'var(--surface)', border: '1px solid var(--outline)', borderRadius: '8px', padding: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 50, width: '200px' }}>
+              <div className="columns-dropdown">
                 {Object.keys(visibleColumns).map(key => (
                   <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', cursor: 'pointer', fontSize: '14px' }}>
                     <input 
@@ -253,24 +253,24 @@ export default function Orders() {
                     style={{ cursor: 'pointer' }}
                     className="hover-row"
                   >
-                    {visibleColumns.id && <td style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</td>}
-                    {visibleColumns.date && <td>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US') : new Date(order.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')}</td>}
-                    {visibleColumns.time && <td>{order.createdAt instanceof Date ? order.createdAt.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' }) : new Date(order.createdAt).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</td>}
-                    {visibleColumns.customer && <td>
+                    {visibleColumns.id && <td data-label={t('orderId')} style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</td>}
+                    {visibleColumns.date && <td data-label={t('date')}>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US') : new Date(order.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')}</td>}
+                    {visibleColumns.time && <td data-label={lang === 'ar' ? 'الوقت' : 'Time'}>{order.createdAt instanceof Date ? order.createdAt.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' }) : new Date(order.createdAt).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</td>}
+                    {visibleColumns.customer && <td data-label={t('customer')}>
                       <div>{order.customer}</div>
                       <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{order.phone}</div>
                     </td>}
-                    {visibleColumns.status && <td>
+                    {visibleColumns.status && <td data-label={t('status')}>
                       <span className={`status-pill status-${order.status?.toLowerCase()}`}>
                         {t(order.status?.toLowerCase()) || order.status}
                       </span>
                     </td>}
-                    {visibleColumns.promoCode && <td>
+                    {visibleColumns.promoCode && <td data-label={lang === 'ar' ? 'كود الخصم' : 'Promo Code'}>
                       {order.promoCode ? <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>{order.promoCode}</span> : '-'}
                     </td>}
-                    {visibleColumns.influencer && <td>{order.influencerName || '-'}</td>}
-                    {visibleColumns.total && <td style={{ textAlign: 'right' }}>{order.total?.toFixed(2)} EGP</td>}
-                    {visibleColumns.actions && <td>
+                    {visibleColumns.influencer && <td data-label={lang === 'ar' ? 'المؤثر' : 'Influencer'}>{order.influencerName || '-'}</td>}
+                    {visibleColumns.total && <td data-label={t('total')} style={{ textAlign: 'right' }}>{order.total?.toFixed(2)} EGP</td>}
+                    {visibleColumns.actions && <td data-label={lang === 'ar' ? 'الإجراءات' : 'Actions'}>
                       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
                         <button 
                           className="btn btn-secondary"

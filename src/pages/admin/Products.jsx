@@ -118,18 +118,18 @@ export default function Products() {
               <tbody>
                 {filteredProducts.map(product => (
                   <tr key={product.id}>
-                    <td>
+                    <td data-label="Image">
                       <img src={product.image || 'https://placehold.co/40x40?text=IMG'} alt={product.title} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
                     </td>
-                    <td style={{ fontWeight: 500 }}>
+                    <td data-label="Product" style={{ fontWeight: 500 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         {product.title}
                         {product.featured && <span style={{ backgroundColor: '#fef08a', color: '#854d0e', fontSize: '10px', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>★</span>}
                       </div>
                     </td>
-                    <td>{product.category || 'Uncategorized'}</td>
-                    <td>{product.price} EGP</td>
-                    <td>
+                    <td data-label="Category">{product.category || 'Uncategorized'}</td>
+                    <td data-label="Price">{product.price} EGP</td>
+                    <td data-label="Status">
                       <span style={{ 
                         backgroundColor: product.isActive !== false ? '#dcfce7' : '#f1f5f9', 
                         color: product.isActive !== false ? '#166534' : '#64748b', 
@@ -141,10 +141,12 @@ export default function Products() {
                         {product.isActive !== false ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <button className="icon-btn" title="Analysis" onClick={() => navigate(`/diaradmin26/products/${product.id}/analysis`)}><BarChart2 size={16} color="var(--primary)" /></button>
-                      <button className="icon-btn" onClick={() => navigate(`/diaradmin26/products/${product.id}`)}><Edit size={16} /></button>
-                      <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={() => handleDelete(product.id)}><Trash2 size={16} /></button>
+                    <td data-label="Actions" style={{ textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
+                        <button className="icon-btn" title="Analysis" onClick={() => navigate(`/diaradmin26/products/${product.id}/analysis`)}><BarChart2 size={16} color="var(--primary)" /></button>
+                        <button className="icon-btn" onClick={() => navigate(`/diaradmin26/products/${product.id}`)}><Edit size={16} /></button>
+                        <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={() => handleDelete(product.id)}><Trash2 size={16} /></button>
+                      </div>
                     </td>
                   </tr>
                 ))}

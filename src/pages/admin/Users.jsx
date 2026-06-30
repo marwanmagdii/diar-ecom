@@ -82,7 +82,7 @@ export default function Users() {
               <Filter size={18} /> Columns
             </button>
             {showColumnsMenu && (
-              <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', background: 'var(--surface)', border: '1px solid var(--outline)', borderRadius: '8px', padding: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 50, width: '200px' }}>
+              <div className="columns-dropdown">
                 {Object.keys(visibleColumns).map(key => (
                   <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', cursor: 'pointer', fontSize: '14px' }}>
                     <input 
@@ -128,7 +128,7 @@ export default function Users() {
               ) : (
                 filteredUsers.map(user => (
                   <tr key={user.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/diaradmin26/users/${encodeURIComponent(user.id)}`)}>
-                    {visibleColumns.customer && <td style={{ fontWeight: 600 }}>
+                    {visibleColumns.customer && <td data-label="Customer" style={{ fontWeight: 600 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         {user.name}
                         {user.isInfluencer && (
@@ -143,7 +143,7 @@ export default function Users() {
                         )}
                       </div>
                     </td>}
-                    {visibleColumns.phone && <td>{user.phone}</td>}
+                    {visibleColumns.phone && <td data-label="Phone">{user.phone}</td>}
                     
                     {(() => {
                       const addressParts = (user.latestAddress || '').split(',').map(s => s.trim());
@@ -151,18 +151,18 @@ export default function Users() {
                       const dist = addressParts.length > 2 ? addressParts[addressParts.length - 2] : '-';
                       return (
                         <>
-                          {visibleColumns.governorate && <td>{gov}</td>}
-                          {visibleColumns.district && <td>{dist}</td>}
+                          {visibleColumns.governorate && <td data-label="Governorate">{gov}</td>}
+                          {visibleColumns.district && <td data-label="District">{dist}</td>}
                         </>
                       );
                     })()}
 
-                    {visibleColumns.latestAddress && <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.latestAddress}</td>}
-                    {visibleColumns.orders && <td>{user.orderCount} order{user.orderCount !== 1 ? 's' : ''}</td>}
-                    {visibleColumns.totalSpent && <td style={{ fontWeight: 600, color: user.isInfluencer ? '#b45309' : 'var(--primary)', textAlign: 'right' }}>
+                    {visibleColumns.latestAddress && <td data-label="Latest Address" style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.latestAddress}</td>}
+                    {visibleColumns.orders && <td data-label="Orders">{user.orderCount} order{user.orderCount !== 1 ? 's' : ''}</td>}
+                    {visibleColumns.totalSpent && <td data-label="Total Spent" style={{ fontWeight: 600, color: user.isInfluencer ? '#b45309' : 'var(--primary)', textAlign: 'right' }}>
                       {user.totalSpent?.toFixed(2)} EGP
                     </td>}
-                    {visibleColumns.actions && <td style={{ textAlign: 'right' }}>
+                    {visibleColumns.actions && <td data-label="Actions" style={{ textAlign: 'right' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
                         <ChevronRight size={18} style={{ color: 'var(--on-surface-variant)' }} />
                       </div>
