@@ -9,7 +9,7 @@ from pathlib import Path
 extraction = json.loads(Path('graphify-out/.graphify_extract.json').read_text(encoding="utf-8"))
 detection  = json.loads(Path('graphify-out/.graphify_detect.json').read_text(encoding="utf-8-sig"))
 
-G = build_from_json(extraction, root='.', directed=False)
+G = build_from_json(extraction, root='D:/web/ecom', directed=False)
 if G.number_of_nodes() == 0:
     print('ERROR: Graph is empty - extraction produced no nodes.')
     raise SystemExit(1)
@@ -21,8 +21,9 @@ surprises = surprising_connections(G, communities)
 labels = {cid: 'Community ' + str(cid) for cid in communities}
 questions = suggest_questions(G, communities, labels)
 
-wrote = to_json(G, communities, 'graphify-out/graph.json')
-report = generate(G, communities, cohesion, labels, gods, surprises, detection, tokens, '.', suggested_questions=questions)
+# Force write the JSON to bypass shrink guard (#479)
+wrote = to_json(G, communities, 'graphify-out/graph.json', force=True)
+report = generate(G, communities, cohesion, labels, gods, surprises, detection, tokens, 'D:/web/ecom', suggested_questions=questions)
 Path('graphify-out/GRAPH_REPORT.md').write_text(report, encoding="utf-8")
 analysis = {
     'communities': {str(k): v for k, v in communities.items()},
