@@ -219,7 +219,13 @@ export default function AdminLayout() {
             })}
           </nav>
 
-          <div className="admin-sidebar-footer">
+          <div className="admin-sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '0 12px' }} className={isDesktopCollapsed ? 'mobile-hidden' : ''}>
+              <div className="admin-user-avatar" title={currentAdmin || 'Admin'} style={{ width: '32px', height: '32px', fontSize: '14px', flexShrink: 0 }}>
+                {currentAdmin ? currentAdmin.charAt(0).toUpperCase() : 'A'}
+              </div>
+              <span className="nav-link-text" style={{ fontWeight: 600, fontSize: '14px', color: 'var(--on-surface)' }}>{currentAdmin || 'Admin'}</span>
+            </div>
             <Link to="/" className="admin-nav-link" title={language === 'ar' ? 'العودة للمتجر' : 'Back to Store'}>
               <LogOut size={20} />
               <span className="nav-link-text">{language === 'ar' ? 'العودة للمتجر' : 'Back to Store'}</span>
@@ -248,15 +254,7 @@ export default function AdminLayout() {
                 {getHeaderTitle()}
               </h1>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <button className="btn btn-secondary" onClick={toggleLang} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px' }}>
-                <Globe size={18} />
-                {language === 'en' ? 'عربي' : 'English'}
-              </button>
-              <div className="admin-user-avatar" title={currentAdmin || 'Admin'}>
-                {currentAdmin ? currentAdmin.charAt(0).toUpperCase() : 'A'}
-              </div>
-            </div>
+            {/* Right side removed to cleanup global toolbar */}
           </header>
           <div className="admin-content" style={{ overflowY: 'auto' }}>
             <Outlet />

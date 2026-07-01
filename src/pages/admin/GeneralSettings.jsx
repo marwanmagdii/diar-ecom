@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Phone, Mail, MapPin, Link as LinkIcon, MessageCircle } from 'lucide-react';
+import { Save, Phone, Mail, MapPin, Link as LinkIcon, MessageCircle, Globe } from 'lucide-react';
 import { useStore } from '../../store';
 
 export default function GeneralSettings() {
   const { config, updateStoreInfo, updateConfig } = useStore();
-  const { language, t } = useStore();
+  const { language, setLanguage, t } = useStore();
   const { addToast } = useStore();
 
   const [storeInfo, setStoreInfo] = useState({
@@ -66,7 +66,33 @@ export default function GeneralSettings() {
       </div>
 
       <div style={{ display: 'grid', gap: '24px' }}>
-        
+        {/* System Preferences */}
+        <div style={{ backgroundColor: 'var(--surface-container-lowest)', padding: '24px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h2 className="title-md mb-4" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {language === 'ar' ? 'تفضيلات النظام' : 'System Preferences'}
+          </h2>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+            <div className="form-group">
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
+                <Globe size={16} /> {language === 'ar' ? 'لغة لوحة التحكم' : 'Dashboard Language'}
+              </label>
+              <button 
+                className="btn" 
+                onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')} 
+                style={{ 
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', 
+                  padding: '12px', width: '100%', 
+                  backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: '8px', fontWeight: 600
+                }}
+              >
+                <Globe size={18} />
+                {language === 'en' ? 'Switch to Arabic (عربي)' : 'التبديل إلى الإنجليزية (English)'}
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Contact Information */}
         <div style={{ backgroundColor: 'var(--surface-container-lowest)', padding: '24px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <h2 className="title-md mb-4" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

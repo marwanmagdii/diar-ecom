@@ -7,11 +7,21 @@ import { useStore } from '../../store';
 export default function OrderDetails() {
   const { id } = useParams();
   const { orders, updateOrder, deleteOrder, t, lang, ordersLoading: loading } = useStore();
-  const { products } = useStore();
+  const { products, users } = useStore();
   const navigate = useNavigate();
   const { addToast } = useStore();
 
   const order = orders.find(o => o.id === id);
+
+  const handleCustomerClick = () => {
+    if (!order?.phone) return;
+    const user = users.find(u => u.phone === order.phone || u.phone === `+2${order.phone}` || `+2${u.phone}` === order.phone);
+    if (user) {
+      navigate(`/diaradmin26/users/${user.id}`);
+    } else {
+      addToast(lang === 'ar' ? 'المستخدم غير مسجل' : 'User not registered', 'error');
+    }
+  };
   const { config } = useStore();
 
   const getArabicGov = (govId) => {
@@ -326,9 +336,19 @@ export default function OrderDetails() {
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#1e293b' }}>
       <style>{mobileGridStyles}</style>
+      
+      {/* Mobile Back Button */}
+      <button 
+        onClick={() => navigate('/diaradmin26/orders')}
+        style={{ background: 'none', border: 'none', padding: '0 0 16px 0', fontSize: '14px', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+      >
+        <ChevronRight size={16} style={{ transform: lang === 'ar' ? 'rotate(0deg)' : 'rotate(180deg)' }} />
+        {t('orders')}
+      </button>
+
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div className="admin-page-header" style={{ marginBottom: '24px', padding: 0 }}>
+        <div className="admin-page-header-left" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <h2 
             style={{ fontSize: '24px', fontWeight: 700, margin: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
             onClick={() => handleCopyForDriver('ar')}
@@ -350,10 +370,12 @@ export default function OrderDetails() {
               {lang === 'ar' ? 'عرض في تليجرام' : 'View in Telegram'}
             </a>
           )}
-          
+        </div>
+        
+        <div className="admin-page-header-right" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <select 
             className="input-field" 
-            style={{ width: 'auto', padding: '4px 12px', fontSize: '13px' }}
+            style={{ width: 'auto', padding: '4px 12px', fontSize: '13px', height: '36px' }}
             value={order.status}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
@@ -366,15 +388,6 @@ export default function OrderDetails() {
           <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={handleDelete} title="Delete Order">
             <Trash2 size={18} />
           </button>
-        </div>
-        
-        {/* Breadcrumbs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26')}>{t('dashboard')}</span>
-          <ChevronRight size={14} style={{ transform: lang === 'ar' ? 'rotate(180deg)' : 'none' }} />
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26/orders')}>{t('orders')}</span>
-          <ChevronRight size={14} style={{ transform: lang === 'ar' ? 'rotate(180deg)' : 'none' }} />
-          <span style={{ color: '#0f172a', fontWeight: 500 }}>{t('orderDetail')}</span>
         </div>
       </div>
 
@@ -678,7 +691,12 @@ export default function OrderDetails() {
               )}
             </div>
             
-            <p style={{ fontWeight: 700, margin: '0 0 4px 0', fontSize: '16px', color: '#0f172a', direction: lang === 'ar' ? 'rtl' : 'ltr' }}>{order.customer}</p>
+            <p 
+              onClick={handleCustomerClick}
+              style={{ fontWeight: 700, margin: '0 0 4px 0', fontSize: '16px', color: 'var(--primary)', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px', direction: lang === 'ar' ? 'rtl' : 'ltr' }}
+            >
+              {order.customer}
+            </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
               <p style={{ color: '#64748b', margin: 0, fontSize: '15px', direction: 'ltr', textAlign: lang === 'ar' ? 'right' : 'left' }}>{order.phone}</p>
               <button 
