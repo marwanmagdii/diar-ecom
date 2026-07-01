@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, RotateCcw } from 'lucide-react';
+import { ChevronDown, ChevronRight, Filter, Search, MoreVertical, RotateCcw } from 'lucide-react';
+import Skeleton from '../ui/Skeleton';
+import BottomSheet from '../ui/BottomSheet';
 import { useStore } from '../../store';
 
 export default function DataTable({ 
@@ -19,6 +21,14 @@ export default function DataTable({
   const { lang, language } = useStore();
   const currentLang = lang || language || 'en';
   const [searchTerm, setSearchTerm] = useState('');
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   // Default visible columns: all true initially
   const defaultVisible = columns.reduce((acc, col) => ({ ...acc, [col.id]: true }), {});
@@ -125,7 +135,13 @@ export default function DataTable({
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          {filters}
+          {filters && isMobile ? (
+            <button className="btn btn-secondary" onClick={() => setIsFiltersOpen(true)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px' }}>
+              <Filter size={18} />
+            </button>
+          ) : (
+            filters
+          )}
         </div>
 
         <div className="admin-page-header-right">
@@ -197,13 +213,18 @@ export default function DataTable({
             </thead>
             <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan={columnOrder.length} style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
-                    <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
-                    <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                    {loadingMessage || (currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...')}
-                  </td>
-                </tr>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={`skeleton-${i}`}>
+                    {columnOrder.map((colId, j) => {
+                      if (visibleColumns[colId] === false) return null;
+                      return (
+                        <td key={`skeleton-${i}-${j}`} style={{ padding: '16px' }}>
+                          <Skeleton height="16px" width={j === 0 ? "80%" : j === columnOrder.length - 1 ? "40px" : "60%"} />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))
               ) : filteredData.length === 0 ? (
                 <tr>
                   <td colSpan={columnOrder.length} style={{ textAlign: 'center', padding: '32px', color: 'var(--on-surface-variant)' }}>
@@ -251,6 +272,20 @@ export default function DataTable({
           </table>
         </div>
       </div>
+      {isMobile && filters && (
+        <BottomSheet 
+          isOpen={isFiltersOpen} 
+          onClose={() => setIsFiltersOpen(false)} 
+          title={currentLang === 'ar' ? 'تصفية النتائج' : 'Filters'}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {filters}
+            <button className="btn btn-primary" onClick={() => setIsFiltersOpen(false)} style={{ marginTop: '8px', padding: '12px' }}>
+              {currentLang === 'ar' ? 'تطبيق' : 'Apply'}
+            </button>
+          </div>
+        </BottomSheet>
+      )}
     </div>
   );
 }

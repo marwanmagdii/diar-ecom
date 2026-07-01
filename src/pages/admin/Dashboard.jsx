@@ -5,19 +5,40 @@ import { exportToExcel } from '../../utils/excelExport';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../../store';
 import DataTable from '../../components/admin/DataTable';
+import Skeleton from '../../components/ui/Skeleton';
+import PullToRefresh from '../../components/ui/PullToRefresh';
 
 export default function Dashboard() {
   const { orders, users, ordersError, usersError, ordersLoading: loading } = useStore();
+  const { fetchOrders, fetchUsers } = useStore();
   const error = ordersError || usersError;
   const { language } = useStore();
   const navigate = useNavigate();
+
+  const handleRefresh = async () => {
+    if (fetchOrders) await fetchOrders();
+    if (fetchUsers) await fetchUsers();
+  };
   
   if (loading) {
     return (
-      <div style={{ padding: '48px', textAlign: 'center', color: '#64748b' }}>
-        <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
-        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-        Loading dashboard...
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '16px' }}>
+        <div className="metric-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' }}>
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '24px', border: '1px solid #f1f5f9' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <Skeleton width="40px" height="12px" />
+                <Skeleton width="32px" height="32px" borderRadius="8px" />
+              </div>
+              <Skeleton width="80%" height="24px" style={{ marginBottom: '8px' }} />
+              <Skeleton width="40%" height="12px" />
+            </div>
+          ))}
+        </div>
+        <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '24px', border: '1px solid #f1f5f9' }}>
+          <Skeleton width="120px" height="20px" style={{ marginBottom: '24px' }} />
+          <Skeleton height="200px" />
+        </div>
       </div>
     );
   }
@@ -132,7 +153,8 @@ export default function Dashboard() {
   );
 
   return (
-    <div>
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div>
       <div className="metric-grid">
         <div className="metric-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -267,6 +289,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }
