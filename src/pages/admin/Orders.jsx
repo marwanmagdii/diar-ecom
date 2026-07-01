@@ -37,7 +37,7 @@ export default function Orders() {
   const columns = [
     { id: 'id', label: t('orderId'), render: (order) => <span style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</span> },
     { id: 'date', label: t('date'), render: (order) => order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US') : new Date(order.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US') },
-    { id: 'time', label: lang === 'ar' ? 'الوقت' : 'Time', render: (order) => order.createdAt instanceof Date ? order.createdAt.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', {hour: '2-digit', minute:'2-digit'}) : new Date(order.createdAt).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', {hour: '2-digit', minute:'2-digit'}) },
+    { id: 'time', label: lang === 'ar' ? 'الوقت' : 'Time', render: (order) => <span style={{ whiteSpace: 'nowrap' }}>{order.createdAt instanceof Date ? order.createdAt.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', {hour: '2-digit', minute:'2-digit'}) : new Date(order.createdAt).toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', {hour: '2-digit', minute:'2-digit'})}</span> },
     { id: 'customer', label: t('customer'), render: (order) => <span style={{ whiteSpace: 'nowrap', fontWeight: 500, color: 'var(--on-surface)' }}>{order.customer}</span> },
     { id: 'phone', label: lang === 'ar' ? 'رقم الهاتف' : 'Phone', render: (order) => <span style={{ whiteSpace: 'nowrap', color: 'var(--on-surface-variant)' }}>{order.phone}</span> },
     { id: 'status', label: t('status'), render: (order) => <span className={`status-pill status-${order.status?.toLowerCase()}`}>{t(order.status?.toLowerCase()) || order.status}</span> },

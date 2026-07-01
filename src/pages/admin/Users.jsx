@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Download } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
@@ -8,6 +8,13 @@ import DataTable from '../../components/admin/DataTable';
 export default function Users() {
   const { users, ordersLoading: loading, lang } = useStore();
   const navigate = useNavigate();
+  const [filterType, setFilterType] = useState('all');
+
+  const filteredUsers = users.filter(u => {
+    if (filterType === 'partner') return u.isInfluencer;
+    if (filterType === 'customer') return !u.isInfluencer;
+    return true;
+  });
 
   const handleExport = () => {
     const exportColumns = [
@@ -120,14 +127,23 @@ export default function Users() {
     </React.Fragment>
   );
 
+  const filtersNode = (
+    <select className="input-field" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ padding: '8px 12px', minWidth: '150px' }}>
+      <option value="all">{lang === 'ar' ? 'كل المستخدمين' : 'All Users'}</option>
+      <option value="customer">{lang === 'ar' ? 'العملاء' : 'Customers'}</option>
+      <option value="partner">{lang === 'ar' ? 'الشركاء (المؤثرين)' : 'Partners'}</option>
+    </select>
+  );
+
   return (
     <DataTable
       tableId="users"
       columns={columns}
-      data={users}
+      data={filteredUsers}
       searchPlaceholder={lang === 'ar' ? 'بحث بالاسم، رقم الهاتف، أو المحافظة...' : "Search by name, phone or governorate..."}
       onRowClick={(user) => navigate(`/diaradmin26/users/${encodeURIComponent(user.id)}`)}
       actions={actionsNode}
+      filters={filtersNode}
       loading={loading}
       searchFunction={searchFunction}
     />

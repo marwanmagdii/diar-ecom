@@ -255,11 +255,23 @@ export default function AdminLayout() {
               </h1>
             </div>
             {/* Right side + icon for quick action on mobile */}
-            <div className="desktop-hidden" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <button className="btn btn-primary" style={{ padding: '8px', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Plus size={20} />
-              </button>
-            </div>
+            {(() => {
+              const path = location.pathname;
+              let createPath = null;
+              if (path.match(/^\/diaradmin26\/orders(\/|$)/)) createPath = '/diaradmin26/orders/new';
+              else if (path.match(/^\/diaradmin26\/products(\/|$)/)) createPath = '/diaradmin26/products/new';
+              else if (path.match(/^\/diaradmin26\/influencers(\/|$)/)) createPath = '/diaradmin26/influencers/new';
+              
+              if (!createPath) return null;
+              
+              return (
+                <div className="desktop-hidden" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <button className="btn btn-primary" style={{ padding: '8px', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => window.location.href = createPath}>
+                    <Plus size={20} />
+                  </button>
+                </div>
+              );
+            })()}
           </header>
           <div className="admin-content" style={{ overflowY: 'auto' }}>
             <Outlet />

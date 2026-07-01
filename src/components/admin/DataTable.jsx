@@ -74,6 +74,26 @@ export default function DataTable({
     savePrefs(defaultVisible, defaultOrder);
   };
 
+  const moveColumnUp = (colId) => {
+    const idx = columnOrder.indexOf(colId);
+    if (idx > 0) {
+      const newOrder = [...columnOrder];
+      [newOrder[idx - 1], newOrder[idx]] = [newOrder[idx], newOrder[idx - 1]];
+      setColumnOrder(newOrder);
+      savePrefs(visibleColumns, newOrder);
+    }
+  };
+
+  const moveColumnDown = (colId) => {
+    const idx = columnOrder.indexOf(colId);
+    if (idx < columnOrder.length - 1 && idx !== -1) {
+      const newOrder = [...columnOrder];
+      [newOrder[idx + 1], newOrder[idx]] = [newOrder[idx], newOrder[idx + 1]];
+      setColumnOrder(newOrder);
+      savePrefs(visibleColumns, newOrder);
+    }
+  };
+
   // Drag and Drop
   const handleDragStart = (e, colId) => {
     e.dataTransfer.setData('colId', colId);
@@ -157,9 +177,14 @@ export default function DataTable({
               <div className="columns-dropdown" style={{ right: 0, left: 'auto', minWidth: '200px' }}>
                 <div style={{ padding: '8px', borderBottom: '1px solid var(--outline-variant)', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--on-surface-variant)' }}>{currentLang === 'ar' ? 'الأعمدة المرئية' : 'Visible Columns'}</span>
-                  <button onClick={handleReset} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: 'var(--primary)' }} title={currentLang === 'ar' ? 'إعادة ضبط' : 'Reset'}>
-                    <RotateCcw size={14} />
-                  </button>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <button onClick={handleReset} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: 'var(--error)' }} title={currentLang === 'ar' ? 'إعادة ضبط' : 'Reset'}>
+                      <RotateCcw size={14} />
+                    </button>
+                    <button className="btn btn-primary" style={{ padding: '2px 8px', fontSize: '12px' }} onClick={() => setShowColumnsMenu(false)}>
+                      {currentLang === 'ar' ? 'حفظ' : 'Save'}
+                    </button>
+                  </div>
                 </div>
                 {columnOrder.map(colId => {
                   const colDef = columns.find(c => c.id === colId);
@@ -171,7 +196,11 @@ export default function DataTable({
                         checked={visibleColumns[colId] !== false} 
                         onChange={(e) => handleToggleColumn(colId, e.target.checked)}
                       />
-                      {colDef.label}
+                      <span style={{ flex: 1 }}>{colDef.label}</span>
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); moveColumnUp(colId); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', color: 'var(--on-surface-variant)' }}><ChevronUp size={14}/></button>
+                        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); moveColumnDown(colId); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', color: 'var(--on-surface-variant)' }}><ChevronDown size={14}/></button>
+                      </div>
                     </label>
                   );
                 })}

@@ -1235,6 +1235,7 @@ html[dir="rtl"] .variant-circle {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 .admin-header {
   height: 72px;
