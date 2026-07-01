@@ -159,7 +159,7 @@ export default function Products() {
   );
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <DataTable
         tableId="products"
         columns={columns}

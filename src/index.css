@@ -1297,7 +1297,7 @@ html[dir="rtl"] .variant-circle {
   border: 1px solid var(--outline-variant);
   overflow-x: auto;
   overflow-y: auto;
-  max-height: calc(100vh - 260px);
+  height: 100%;
 }
 .admin-table {
   width: 100%;
@@ -2324,5 +2324,31 @@ html[dir="rtl"] .variant-circle {
   .toast {
     min-width: 0 !important;
     max-width: 100% !important;
+  }
+}
+
+/* Responsive Grid Helpers */
+.create-order-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 992px) {
+  .create-order-grid {
+    grid-template-columns: 1fr 350px;
   }
 }

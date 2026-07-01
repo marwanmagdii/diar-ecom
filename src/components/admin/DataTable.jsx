@@ -141,7 +141,7 @@ export default function DataTable({
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', flex: 1, minHeight: 0 }}>
       <div className="admin-page-header">
         <div className="admin-page-header-left">
           <div style={{ position: 'relative', flex: '1 0 auto', minWidth: '250px' }}>
@@ -211,7 +211,7 @@ export default function DataTable({
         </div>
       </div>
 
-      <div className="admin-table-container">
+        <div className="admin-table-container" style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
         <div className="table-responsive">
           <table className="admin-table">
             <thead>

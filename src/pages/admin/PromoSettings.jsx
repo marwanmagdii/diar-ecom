@@ -259,7 +259,7 @@ export default function PromoSettings() {
   ) : null;
 
   return (
-    <div className="admin-page">
+    <div className="admin-page" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {isEditing ? (
         <div className="card" style={{ marginTop: '24px' }}>
           <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '24px' }}>

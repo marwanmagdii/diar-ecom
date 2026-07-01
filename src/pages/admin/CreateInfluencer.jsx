@@ -106,17 +106,7 @@ export default function CreateInfluencer() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: 700, margin: 0 }}>{id ? 'Edit Influencer' : 'Add Influencer'}</h2>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26')}>Dashboard</span>
-          <ChevronRight size={14} />
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26/influencers')}>Influencers</span>
-          <ChevronRight size={14} />
-          <span style={{ color: '#0f172a', fontWeight: 500 }}>{id ? 'Edit' : 'New'}</span>
-        </div>
-      </div>
+      {/* Header and Breadcrumbs removed as they are now in the top navbar */}
 
       <div className="metric-card" style={{ padding: '32px', backgroundColor: '#ffffff', borderRadius: '12px' }}>
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>

@@ -281,7 +281,7 @@ export default function AdminLayout() {
               );
             })()}
           </header>
-          <div className="admin-content" style={{ overflowY: 'auto' }}>
+          <div className="admin-content" style={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 72px)' }}>
             <Outlet />
           </div>
         </main>

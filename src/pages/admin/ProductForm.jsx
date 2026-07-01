@@ -387,8 +387,7 @@ export default function ProductForm() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
         <button className="icon-btn" onClick={() => navigate('/diaradmin26/products')} style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}><ArrowLeft size={20} /></button>
         <div style={{ flex: 1 }}>
-          <h2 className="headline-md m-0">{isEditing ? 'Edit Product' : 'Add New Product'}</h2>
-          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '14px' }}>Fill in the details below to {isEditing ? 'update' : 'create'} a product.</p>
+          {/* Title moved to top navbar */}
         </div>
         {isEditing && (
           <button 

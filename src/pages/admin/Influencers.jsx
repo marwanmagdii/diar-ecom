@@ -166,7 +166,7 @@ export default function Influencers() {
   );
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <DataTable
         tableId="influencers"
         columns={columns}

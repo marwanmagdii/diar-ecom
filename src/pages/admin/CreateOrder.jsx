@@ -86,22 +86,10 @@ export default function CreateOrder() {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#1e293b' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: 700, margin: 0 }}>Create New Order</h2>
-        
-        {/* Breadcrumbs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#64748b' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26')}>Dashboard</span>
-          <ChevronRight size={14} />
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/diaradmin26/orders')}>Orders</span>
-          <ChevronRight size={14} />
-          <span style={{ color: '#0f172a', fontWeight: 500 }}>New Order</span>
-        </div>
-      </div>
+      {/* Header and Breadcrumbs removed as they are now in the top navbar */}
 
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '24px' }}>
+        <div className="create-order-grid">
           
           {/* Left Column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -113,7 +101,7 @@ export default function CreateOrder() {
                 Delivery Details
               </h3>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
+              <div className="form-row">
                 <div>
                   <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>First Name</label>
                   <input type="text" className="input-field" required value={deliveryData.firstName} onChange={e => setDeliveryData({...deliveryData, firstName: e.target.value})} style={{ padding: '12px', borderRadius: '8px' }} placeholder="Jane" />
@@ -138,7 +126,7 @@ export default function CreateOrder() {
                 }} style={{ padding: '12px', borderRadius: '8px' }} placeholder="01X XXXX XXXX" />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
+              <div className="form-row">
                 <div>
                   <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>Governorate</label>
                   <select className="input-field" required style={{ padding: '12px', borderRadius: '8px' }} value={deliveryData.governorate} onChange={e => setDeliveryData({...deliveryData, governorate: e.target.value})}>
@@ -167,14 +155,14 @@ export default function CreateOrder() {
 
             {/* Order Items */}
             <div className="metric-card" style={{ padding: '24px', backgroundColor: '#ffffff', border: 'none', borderRadius: '12px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0 }}>Add Products</h3>
-                <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', gap: '16px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>Add Products</h3>
+                <div style={{ display: 'flex', flex: '1 1 auto', gap: '8px', justifyContent: 'flex-end' }}>
                   <select 
                     className="input-field" 
                     value={selectedProductId}
                     onChange={(e) => setSelectedProductId(e.target.value)}
-                    style={{ padding: '8px', minWidth: '200px' }}
+                    style={{ padding: '8px', flex: 1, minWidth: '150px', maxWidth: '300px' }}
                   >
                     <option value="">Select a product...</option>
                     {products.map(p => (
