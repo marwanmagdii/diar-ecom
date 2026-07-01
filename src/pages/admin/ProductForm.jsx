@@ -527,7 +527,7 @@ export default function ProductForm() {
                 const basicAttributes = ['Color', 'Size', 'Material', 'Weight', 'Style'];
                 
                 return basicAttributes.map(attrName => {
-                  const optData = optionsList.find(o => o.name.toLowerCase() === attrName.toLowerCase());
+                  const optData = optionsList.find(o => o.name.toLowerCase().includes(attrName.toLowerCase()));
                   if (!optData) return null;
                   
                   return (

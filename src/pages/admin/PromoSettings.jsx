@@ -8,6 +8,7 @@ export default function PromoSettings() {
   const { config, updatePromoCodes, language } = useStore();
   const { addToast } = useStore();
   const [promoCodes, setPromoCodes] = useState(config.promoCodes || []);
+  const [filterType, setFilterType] = useState('all');
   
   React.useEffect(() => {
     if (config && config.promoCodes) {
@@ -32,6 +33,12 @@ export default function PromoSettings() {
     isActive: true,
     usageCount: 0,
     totalRevenue: 0
+  });
+
+  const filteredPromos = promoCodes.filter(p => {
+    if (filterType === 'active') return p.isActive !== false;
+    if (filterType === 'inactive') return p.isActive === false;
+    return true;
   });
 
   const handleAddNew = () => {
@@ -237,10 +244,18 @@ export default function PromoSettings() {
       <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
         <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
       </button>
-      <button className="btn btn-primary" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+      <button className="btn btn-primary mobile-hidden" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
         <Plus size={18} /> {language === 'ar' ? 'إضافة كود خصم' : 'Add Promo Code'}
       </button>
     </React.Fragment>
+  ) : null;
+
+  const filtersNode = !isEditing ? (
+    <select className="input-field" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ padding: '8px 12px', minWidth: '150px' }}>
+      <option value="all">{language === 'ar' ? 'جميع الحالات' : 'All Statuses'}</option>
+      <option value="active">{language === 'ar' ? 'نشط' : 'Active'}</option>
+      <option value="inactive">{language === 'ar' ? 'غير نشط' : 'Inactive'}</option>
+    </select>
   ) : null;
 
   return (
@@ -348,9 +363,10 @@ export default function PromoSettings() {
         <DataTable
           tableId="promoCodes"
           columns={columns}
-          data={promoCodes}
+          data={filteredPromos}
           searchPlaceholder={language === 'ar' ? 'البحث بأكواد الخصم...' : 'Search promo codes...'}
           actions={actionsNode}
+          filters={filtersNode}
           searchFunction={searchFunction}
           emptyMessage={language === 'ar' ? 'لا توجد أكواد خصم. أنشئ كودًا للبدء.' : 'No promo codes found. Create one to get started.'}
         />

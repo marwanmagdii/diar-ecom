@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Filter, Search, MoreVertical, RotateCcw } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronRight, Filter, Search, MoreVertical, RotateCcw } from 'lucide-react';
 import Skeleton from '../ui/Skeleton';
 import BottomSheet from '../ui/BottomSheet';
 import { useStore } from '../../store';
@@ -223,16 +223,10 @@ export default function DataTable({
                   return (
                     <th 
                       key={colId}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, colId)}
-                      onDragOver={handleDragOver}
-                      onDrop={(e) => handleDrop(e, colId)}
                       style={{ 
-                        cursor: 'grab', 
                         textAlign: colDef.align || 'left',
                         width: colDef.width || 'auto'
                       }}
-                      title={currentLang === 'ar' ? 'اسحب لإعادة الترتيب' : 'Drag to reorder'}
                     >
                       {colDef.label}
                     </th>

@@ -5,8 +5,8 @@ import { compressImage } from '../../utils/imageCompression';
 import { getColorHex } from '../../utils/colors';
 
 export const VariantOptionSelector = ({ variantId, opt, val, onChange }) => {
-  const isColor = opt.name.toLowerCase() === 'color' || opt.name.toLowerCase() === 'لون';
-  const isWeight = opt.name.toLowerCase() === 'weight' || opt.name.toLowerCase() === 'الوزن';
+  const isColor = opt.name.toLowerCase().includes('color') || opt.name.toLowerCase().includes('لون');
+  const isWeight = opt.name.toLowerCase().includes('weight') || opt.name.toLowerCase().includes('الوزن');
   const [isOpen, setIsOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
   

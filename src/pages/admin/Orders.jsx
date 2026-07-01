@@ -87,7 +87,7 @@ export default function Orders() {
         <Download size={18} /> {lang === 'ar' ? "تصدير" : "Export"}
       </button>
       <button 
-        className="btn btn-primary" 
+        className="btn btn-primary mobile-hidden" 
         style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }} 
         onClick={() => navigate('/diaradmin26/orders/new')}
       >

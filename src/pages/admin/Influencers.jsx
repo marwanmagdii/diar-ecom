@@ -159,7 +159,7 @@ export default function Influencers() {
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
         {language === 'ar' ? 'تحليل المؤثرين' : 'Influencer Analysis'}
       </button>
-      <button className="btn btn-primary" onClick={() => navigate('/diaradmin26/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+      <button className="btn btn-primary mobile-hidden" onClick={() => navigate('/diaradmin26/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
         <Plus size={18} /> {language === 'ar' ? 'إضافة مؤثر' : 'Add Influencer'}
       </button>
     </React.Fragment>

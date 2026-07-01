@@ -138,7 +138,7 @@ export default function Products() {
       <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }} onClick={() => navigate('/diaradmin26/products/analysis')}>
         <BarChart2 size={18} /> {language === 'ar' ? 'تحليل شامل' : 'Global Analysis'}
       </button>
-      <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }} onClick={() => navigate('/diaradmin26/products/new')}>
+      <button className="btn btn-primary mobile-hidden" style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }} onClick={() => navigate('/diaradmin26/products/new')}>
         <Plus size={18} /> {language === 'ar' ? 'إضافة منتج' : 'Add Product'}
       </button>
     </React.Fragment>

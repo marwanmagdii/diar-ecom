@@ -1297,7 +1297,7 @@ html[dir="rtl"] .variant-circle {
   border: 1px solid var(--outline-variant);
   overflow-x: auto;
   overflow-y: auto;
-  max-height: calc(100vh - 180px);
+  max-height: calc(100vh - 260px);
 }
 .admin-table {
   width: 100%;

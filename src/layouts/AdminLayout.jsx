@@ -40,6 +40,12 @@ export default function AdminLayout() {
 
   // Helper to determine the best header title
   const getHeaderTitle = () => {
+    const path = location.pathname;
+    if (path.endsWith('/products/new')) return language === 'ar' ? 'إضافة منتج' : 'Add New Product';
+    if (path.endsWith('/orders/new')) return language === 'ar' ? 'إنشاء طلب' : 'Create Order';
+    if (path.endsWith('/influencers/new')) return language === 'ar' ? 'إضافة مؤثر' : 'Add Influencer';
+    if (path.match(/\/products\/[^/]+$/) && !path.endsWith('/new')) return language === 'ar' ? 'تعديل المنتج' : 'Edit Product';
+
     const currentItem = navItems.find(item => location.pathname === item.path || (location.pathname.startsWith(item.path) && item.path !== '/diaradmin26'));
     return currentItem?.name || t('dashboard');
   };
@@ -257,6 +263,8 @@ export default function AdminLayout() {
             {/* Right side + icon for quick action on mobile */}
             {(() => {
               const path = location.pathname;
+              if (path.includes('/new') || path.includes('/edit') || (path.match(/\/products\/[^/]+$/) && !path.endsWith('products'))) return null;
+              
               let createPath = null;
               if (path.match(/^\/diaradmin26\/orders(\/|$)/)) createPath = '/diaradmin26/orders/new';
               else if (path.match(/^\/diaradmin26\/products(\/|$)/)) createPath = '/diaradmin26/products/new';
