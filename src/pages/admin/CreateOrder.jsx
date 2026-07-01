@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Plus, Trash2 } from 'lucide-react';
+import { ShoppingBag, Search, Filter, RefreshCw, X, Menu, Bell, Search as SearchIcon, ArrowLeft, ArrowUp, ArrowDown, ChevronRight, Plus, Download, Upload, Eye, Image as ImageIcon, CreditCard, Clock, MapPin, Truck, Settings as SettingsIcon, Package, User, Hash, Edit3, Trash2 } from 'lucide-react';
+import SearchableSelect from '../../components/SearchableSelect';
 import { useStore } from '../../store';
 
 export default function CreateOrder() {
@@ -23,7 +24,7 @@ export default function CreateOrder() {
 
   const handleAddItem = () => {
     if (!selectedProductId) return;
-    const product = products.find(p => p.id === selectedProductId);
+    const product = products.find(p => p.id.toString() === selectedProductId.toString());
     if (!product) return;
     
     // Default to main variant or simple product
@@ -158,17 +159,14 @@ export default function CreateOrder() {
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', gap: '16px' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>Add Products</h3>
                 <div style={{ display: 'flex', flex: '1 1 auto', gap: '8px', justifyContent: 'flex-end' }}>
-                  <select 
-                    className="input-field" 
-                    value={selectedProductId}
-                    onChange={(e) => setSelectedProductId(e.target.value)}
-                    style={{ padding: '8px', flex: 1, minWidth: '150px', maxWidth: '300px' }}
-                  >
-                    <option value="">Select a product...</option>
-                    {products.map(p => (
-                      <option key={p.id} value={p.id}>{p.title} - {p.price} EGP</option>
-                    ))}
-                  </select>
+                  <div style={{ flex: 1, minWidth: '150px', maxWidth: '300px' }}>
+                    <SearchableSelect 
+                      options={products.map(p => ({ label: `${p.title} - ${p.price} EGP`, value: p.id.toString() }))}
+                      value={selectedProductId?.toString() || ''}
+                      onChange={(val) => setSelectedProductId(val)}
+                      placeholder="Search a product..."
+                    />
+                  </div>
                   <button type="button" className="btn" onClick={handleAddItem} style={{ padding: '8px 12px' }}>
                     <Plus size={20} />
                   </button>

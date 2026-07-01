@@ -212,7 +212,6 @@ export default function DataTable({
       </div>
 
         <div className="admin-table-container" style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-        <div className="table-responsive">
           <table className="admin-table">
             <thead>
               <tr>
@@ -294,7 +293,7 @@ export default function DataTable({
             </tbody>
           </table>
         </div>
-      </div>
+
       {isMobile && filters && (
         <BottomSheet 
           isOpen={isFiltersOpen} 

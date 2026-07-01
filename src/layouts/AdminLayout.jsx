@@ -264,9 +264,11 @@ export default function AdminLayout() {
             {(() => {
               const path = location.pathname;
               if (path.includes('/new') || path.includes('/edit') || (path.match(/\/products\/[^/]+$/) && !path.endsWith('products'))) return null;
-              
+              if (path.includes('/new') || path.match(/\/edit$/) || path.split('/').length > 3) return null;
+
               let createPath = null;
-              if (path.match(/^\/diaradmin26\/orders(\/|$)/)) createPath = '/diaradmin26/orders/new';
+              if (path === '/diaradmin26' || path === '/diaradmin26/') createPath = '/diaradmin26/orders/new';
+              else if (path.match(/^\/diaradmin26\/orders(\/|$)/)) createPath = '/diaradmin26/orders/new';
               else if (path.match(/^\/diaradmin26\/products(\/|$)/)) createPath = '/diaradmin26/products/new';
               else if (path.match(/^\/diaradmin26\/influencers(\/|$)/)) createPath = '/diaradmin26/influencers/new';
               
