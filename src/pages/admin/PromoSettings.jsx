@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Edit2, Check, X, Tag, Download } from 'lucide-react';
+import { Plus, Trash2, Edit2, Download } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
+import DataTable from '../../components/admin/DataTable';
 
 export default function PromoSettings() {
   const { config, updatePromoCodes, language } = useStore();
@@ -120,8 +121,17 @@ export default function PromoSettings() {
     setIsEditing(false);
   };
 
+  const calculateCommission = (promo) => {
+    if (!promo.commissionValue) return "0.00";
+    if (promo.commissionType === 'percentage') {
+      return (promo.totalRevenue * (promo.commissionValue / 100)).toFixed(2);
+    } else {
+      return (promo.usageCount * promo.commissionValue).toFixed(2);
+    }
+  };
+
   const handleExport = () => {
-    const columns = [
+    const exportColumns = [
       { header: 'Promo Code', key: 'code', width: 20 },
       { header: 'Discount', key: 'discount', width: 20 },
       { header: 'Commission', key: 'commission', width: 20 },
@@ -141,36 +151,102 @@ export default function PromoSettings() {
       status: promo.isActive ? 'Active' : 'Inactive'
     }));
 
-    exportToExcel({ data, columns, filename: 'Promo_Codes' });
+    exportToExcel({ data, columns: exportColumns, filename: 'Promo_Codes' });
   };
 
-  const calculateCommission = (promo) => {
-    if (!promo.commissionValue) return "0.00";
-    if (promo.commissionType === 'percentage') {
-      return (promo.totalRevenue * (promo.commissionValue / 100)).toFixed(2);
-    } else {
-      return (promo.usageCount * promo.commissionValue).toFixed(2);
+  const columns = [
+    { 
+      id: 'code', 
+      label: language === 'ar' ? 'الكود' : 'Code', 
+      render: (promo) => (
+        <div 
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
+          onClick={() => {
+            navigator.clipboard.writeText(promo.code);
+            addToast(`Copied ${promo.code} to clipboard!`, 'success');
+          }}
+          title="Click to copy promo code"
+        >
+          <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>
+            {promo.code}
+          </span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </div>
+      )
+    },
+    { 
+      id: 'discount', 
+      label: language === 'ar' ? 'الخصم' : 'Discount', 
+      render: (promo) => `${promo.discountValue}${promo.discountType === 'percentage' ? '%' : ' EGP'}` 
+    },
+    { 
+      id: 'commission', 
+      label: language === 'ar' ? 'العمولة' : 'Commission', 
+      render: (promo) => promo.commissionValue ? `${promo.commissionValue}${promo.commissionType === 'percentage' ? '%' : ' EGP'}` : '-' 
+    },
+    { id: 'uses', label: language === 'ar' ? 'الاستخدامات' : 'Usage Count', align: 'right', render: (promo) => promo.usageCount || 0 },
+    { id: 'revenue', label: language === 'ar' ? 'الإيرادات المحققة' : 'Revenue Generated', align: 'right', render: (promo) => `${(promo.totalRevenue || 0).toFixed(2)} EGP` },
+    { 
+      id: 'owed', 
+      label: language === 'ar' ? 'إجمالي المستحق' : 'Total Owed', 
+      align: 'right', 
+      render: (promo) => (
+        <span style={{ fontWeight: 600, color: '#10b981' }}>{calculateCommission(promo)} EGP</span>
+      )
+    },
+    { 
+      id: 'status', 
+      label: language === 'ar' ? 'الحالة' : 'Status', 
+      render: (promo) => (
+        <label className="toggle-switch">
+          <input 
+            type="checkbox" 
+            checked={promo.isActive !== false} 
+            onChange={() => toggleActive(promo.id)} 
+          />
+          <span className="toggle-slider"></span>
+        </label>
+      )
+    },
+    { 
+      id: 'actions', 
+      label: language === 'ar' ? 'الإجراءات' : 'Actions', 
+      align: 'right',
+      render: (promo) => (
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
+          <button className="icon-btn" onClick={() => handleEdit(promo)} aria-label="Edit">
+            <Edit2 size={16} />
+          </button>
+          <button className="icon-btn" onClick={() => handleDelete(promo.id)} aria-label="Delete" style={{ color: 'var(--error)' }}>
+            <Trash2 size={16} />
+          </button>
+        </div>
+      )
     }
+  ];
+
+  const searchFunction = (promo, term) => {
+    return promo.code.toLowerCase().includes(term.toLowerCase());
   };
+
+  const actionsNode = !isEditing ? (
+    <React.Fragment>
+      <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+        <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
+      </button>
+      <button className="btn btn-primary" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+        <Plus size={18} /> {language === 'ar' ? 'إضافة كود خصم' : 'Add Promo Code'}
+      </button>
+    </React.Fragment>
+  ) : null;
 
   return (
     <div className="admin-page">
-      <div className="admin-page-header">
-        <div className="admin-page-header-left"></div>
-        {!isEditing && (
-          <div className="admin-page-header-right">
-            <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-              <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
-            </button>
-            <button className="btn btn-primary" onClick={handleAddNew} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-              <Plus size={18} /> {language === 'ar' ? 'إضافة كود خصم' : 'Add Promo Code'}
-            </button>
-          </div>
-        )}
-      </div>
-
       {isEditing ? (
-        <div className="card">
+        <div className="card" style={{ marginTop: '24px' }}>
           <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '24px' }}>
             {currentPromo ? 'Edit Promo Code' : 'Create New Promo Code'}
           </h2>
@@ -269,93 +345,15 @@ export default function PromoSettings() {
           </form>
         </div>
       ) : (
-        <div className="admin-table-container">
-          <div className="table-responsive">
-            <table className="admin-table">
-            <thead>
-              <tr>
-                <th>{language === 'ar' ? 'الكود' : 'Code'}</th>
-                <th>{language === 'ar' ? 'الخصم' : 'Discount'}</th>
-                <th>{language === 'ar' ? 'العمولة' : 'Commission'}</th>
-                <th>{language === 'ar' ? 'الاستخدامات' : 'Usage Count'}</th>
-                <th>{language === 'ar' ? 'الإيرادات المحققة' : 'Revenue Generated'}</th>
-                <th>{language === 'ar' ? 'إجمالي المستحق' : 'Total Owed'}</th>
-                <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
-                <th>{language === 'ar' ? 'الإجراءات' : 'Actions'}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {promoCodes.length === 0 ? (
-                <tr>
-                  <td colSpan="8" style={{ textAlign: 'center', padding: '48px 0', color: '#64748b' }}>
-                    <Tag size={48} style={{ opacity: 0.2, margin: '0 auto 16px auto', display: 'block' }} />
-                    <p>{language === 'ar' ? 'لا توجد أكواد خصم. أنشئ كودًا للبدء.' : 'No promo codes found. Create one to get started.'}</p>
-                  </td>
-                </tr>
-              ) : (
-                promoCodes.map((promo) => (
-                  <tr key={promo.id}>
-                    <td>
-                      <div 
-                        style={{ 
-                          display: 'inline-flex', 
-                          alignItems: 'center', 
-                          gap: '6px', 
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => {
-                          navigator.clipboard.writeText(promo.code);
-                          addToast(`Copied ${promo.code} to clipboard!`, 'success');
-                        }}
-                        title="Click to copy promo code"
-                      >
-                        <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>
-                          {promo.code}
-                        </span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
-                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                      </div>
-                    </td>
-                    <td>
-                      {promo.discountValue}{promo.discountType === 'percentage' ? '%' : ' EGP'}
-                    </td>
-                    <td>
-                      {promo.commissionValue ? `${promo.commissionValue}${promo.commissionType === 'percentage' ? '%' : ' EGP'}` : '-'}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>{promo.usageCount || 0}</td>
-                    <td style={{ textAlign: 'right' }}>{(promo.totalRevenue || 0).toFixed(2)} EGP</td>
-                    <td style={{ textAlign: 'right', fontWeight: 600, color: '#10b981' }}>
-                      {calculateCommission(promo)} EGP
-                    </td>
-                    <td>
-                      <label className="toggle-switch">
-                        <input 
-                          type="checkbox" 
-                          checked={promo.isActive !== false} 
-                          onChange={() => toggleActive(promo.id)} 
-                        />
-                        <span className="toggle-slider"></span>
-                      </label>
-                    </td>
-                    <td>
-                      <div className="action-buttons">
-                        <button className="icon-btn" onClick={() => handleEdit(promo)} aria-label="Edit">
-                          <Edit2 size={16} />
-                        </button>
-                        <button className="icon-btn" onClick={() => handleDelete(promo.id)} aria-label="Delete" style={{ color: 'var(--error)' }}>
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-          </div>
-        </div>
+        <DataTable
+          tableId="promoCodes"
+          columns={columns}
+          data={promoCodes}
+          searchPlaceholder={language === 'ar' ? 'البحث بأكواد الخصم...' : 'Search promo codes...'}
+          actions={actionsNode}
+          searchFunction={searchFunction}
+          emptyMessage={language === 'ar' ? 'لا توجد أكواد خصم. أنشئ كودًا للبدء.' : 'No promo codes found. Create one to get started.'}
+        />
       )}
 
       {deleteModalOpen && (

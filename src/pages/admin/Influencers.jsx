@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Star, Download } from 'lucide-react';
+import { Plus, Edit, Trash2, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
+import DataTable from '../../components/admin/DataTable';
 
 export default function Influencers() {
   const { config, updatePromoCodes, configLoading: loading, language } = useStore();
@@ -44,8 +45,6 @@ export default function Influencers() {
     addToast(`Influencer marked as ${!currentStatus ? 'Active' : 'Inactive'}.`);
   };
 
-
-
   const calculateCommission = (promo) => {
     if (!promo.commissionValue) return "0.00";
     if (promo.commissionType === 'percentage') {
@@ -56,7 +55,7 @@ export default function Influencers() {
   };
 
   const handleExport = () => {
-    const columns = [
+    const exportColumns = [
       { header: 'Influencer Name', key: 'name', width: 30 },
       { header: 'Promo Code', key: 'code', width: 20 },
       { header: 'Commission Rate', key: 'rate', width: 20 },
@@ -78,103 +77,106 @@ export default function Influencers() {
       status: inf.isActive ? 'Active' : 'Inactive'
     }));
 
-    exportToExcel({ data, columns, filename: 'Influencers' });
+    exportToExcel({ data, columns: exportColumns, filename: 'Influencers' });
   };
+
+  const columns = [
+    { 
+      id: 'name', 
+      label: language === 'ar' ? 'اسم المؤثر' : 'Influencer Name', 
+      render: (inf) => <span style={{ fontWeight: 600 }}>{inf.influencerName || 'Unnamed'}</span> 
+    },
+    { 
+      id: 'code', 
+      label: language === 'ar' ? 'كود الخصم' : 'Promo Code', 
+      render: (inf) => (
+        <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>
+          {inf.code}
+        </span>
+      )
+    },
+    { 
+      id: 'rate', 
+      label: language === 'ar' ? 'نسبة العمولة' : 'Commission Rate', 
+      render: (inf) => `${inf.commissionValue}${inf.commissionType === 'percentage' ? '%' : ' EGP'}` 
+    },
+    { id: 'uses', label: language === 'ar' ? 'الاستخدامات' : 'Uses', render: (inf) => inf.usageCount || 0 },
+    { id: 'maxUses', label: language === 'ar' ? 'أقصى استخدام' : 'Max Uses', render: (inf) => inf.maxUses > 0 ? inf.maxUses : 'Unlimited' },
+    { id: 'sales', label: language === 'ar' ? 'المبيعات المحققة' : 'Sales Generated', align: 'right', render: (inf) => `${(inf.totalRevenue || 0).toFixed(2)} EGP` },
+    { 
+      id: 'commission', 
+      label: language === 'ar' ? 'العمولة المستحقة' : 'Commission Owed', 
+      align: 'right', 
+      render: (inf) => (
+        <span style={{ fontWeight: 600, color: '#10b981' }}>{calculateCommission(inf)} EGP</span>
+      )
+    },
+    { 
+      id: 'status', 
+      label: language === 'ar' ? 'الحالة' : 'Status', 
+      render: (inf) => (
+        <label className="toggle-switch">
+          <input 
+            type="checkbox" 
+            checked={inf.isActive !== false} 
+            onChange={() => handleToggleActive(inf.id, inf.isActive !== false)} 
+          />
+          <span className="toggle-slider"></span>
+        </label>
+      )
+    },
+    { 
+      id: 'actions', 
+      label: language === 'ar' ? 'الإجراءات' : 'Actions', 
+      align: 'right',
+      render: (inf) => (
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
+          <button className="icon-btn" onClick={() => navigate(`/diaradmin26/influencers/edit/${inf.id}`)} title="Edit">
+            <Edit size={16} />
+          </button>
+          <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={() => handleDelete(inf.id)} title="Delete">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      )
+    }
+  ];
+
+  const searchFunction = (inf, term) => {
+    const lower = term.toLowerCase();
+    return (
+      (inf.influencerName && inf.influencerName.toLowerCase().includes(lower)) ||
+      (inf.code && inf.code.toLowerCase().includes(lower))
+    );
+  };
+
+  const actionsNode = (
+    <React.Fragment>
+      <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+        <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
+      </button>
+      <button className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        {language === 'ar' ? 'تحليل المؤثرين' : 'Influencer Analysis'}
+      </button>
+      <button className="btn btn-primary" onClick={() => navigate('/diaradmin26/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+        <Plus size={18} /> {language === 'ar' ? 'إضافة مؤثر' : 'Add Influencer'}
+      </button>
+    </React.Fragment>
+  );
 
   return (
     <div>
-      <div className="admin-page-header">
-        <div className="admin-page-header-left"></div>
-        <div className="admin-page-header-right">
-          <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-            <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
-          </button>
-          <button className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers/analysis')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-            {language === 'ar' ? 'تحليل المؤثرين' : 'Influencer Analysis'}
-          </button>
-          <button className="btn btn-primary" onClick={() => navigate('/diaradmin26/influencers/new')} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-            <Plus size={18} /> {language === 'ar' ? 'إضافة مؤثر' : 'Add Influencer'}
-          </button>
-        </div>
-      </div>
-
-      <div className="admin-table-container">
-        <div className="table-responsive">
-          <table className="admin-table">
-          <thead>
-            <tr>
-              <th>{language === 'ar' ? 'اسم المؤثر' : 'Influencer Name'}</th>
-              <th>{language === 'ar' ? 'كود الخصم' : 'Promo Code'}</th>
-              <th>{language === 'ar' ? 'نسبة العمولة' : 'Commission Rate'}</th>
-              <th>{language === 'ar' ? 'الاستخدامات' : 'Uses'}</th>
-              <th>{language === 'ar' ? 'أقصى استخدام' : 'Max Uses'}</th>
-              <th>{language === 'ar' ? 'المبيعات المحققة' : 'Sales Generated'}</th>
-              <th>{language === 'ar' ? 'العمولة المستحقة' : 'Commission Owed'}</th>
-              <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
-              <th>{language === 'ar' ? 'الإجراءات' : 'Actions'}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan="9" style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
-                  <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
-                  <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                  {language === 'ar' ? 'جاري تحميل بيانات المؤثرين...' : 'Loading influencers...'}
-                </td>
-              </tr>
-            ) : influencers.length === 0 ? (
-              <tr>
-                <td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: 'var(--on-surface-variant)' }}>
-                  {language === 'ar' ? 'لا يوجد مؤثرين. انقر على "إضافة مؤثر" للبدء.' : 'No influencers found. Click "Add Influencer" to get started.'}
-                </td>
-              </tr>
-            ) : (
-              influencers.map(inf => (
-                <tr key={inf.id}>
-                  <td style={{ fontWeight: 600 }}>{inf.influencerName || 'Unnamed'}</td>
-                  <td>
-                    <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>
-                      {inf.code}
-                    </span>
-                  </td>
-                  <td>
-                    {inf.commissionValue}{inf.commissionType === 'percentage' ? '%' : ' EGP'}
-                  </td>
-                  <td>{inf.usageCount || 0}</td>
-                  <td>{inf.maxUses > 0 ? inf.maxUses : 'Unlimited'}</td>
-                  <td style={{ textAlign: 'right' }}>{(inf.totalRevenue || 0).toFixed(2)} EGP</td>
-                  <td style={{ textAlign: 'right', fontWeight: 600, color: '#10b981' }}>
-                    {calculateCommission(inf)} EGP
-                  </td>
-                  <td>
-                    <label className="toggle-switch">
-                      <input 
-                        type="checkbox" 
-                        checked={inf.isActive !== false} 
-                        onChange={() => handleToggleActive(inf.id, inf.isActive !== false)} 
-                      />
-                      <span className="toggle-slider"></span>
-                    </label>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button className="icon-btn" onClick={() => navigate(`/diaradmin26/influencers/edit/${inf.id}`)} title="Edit">
-                        <Edit size={16} />
-                      </button>
-                      <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={() => handleDelete(inf.id)} title="Delete">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-        </div>
-      </div>
+      <DataTable
+        tableId="influencers"
+        columns={columns}
+        data={influencers}
+        searchPlaceholder={language === 'ar' ? 'البحث عن المؤثرين...' : 'Search influencers...'}
+        actions={actionsNode}
+        loading={loading}
+        searchFunction={searchFunction}
+        emptyMessage={language === 'ar' ? 'لا يوجد مؤثرين. انقر على "إضافة مؤثر" للبدء.' : 'No influencers found. Click "Add Influencer" to get started.'}
+      />
 
       {deleteModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>

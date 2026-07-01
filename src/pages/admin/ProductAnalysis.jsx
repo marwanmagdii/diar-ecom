@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Users, ShoppingCart, Eye, DollarSign, Calendar, Target, Activity, Download } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
+import DataTable from '../../components/admin/DataTable';
 
 export default function ProductAnalysis() {
   const { id } = useParams();
@@ -53,7 +54,7 @@ export default function ProductAnalysis() {
   }, [filteredOrders, id]);
 
   const handleExport = () => {
-    const columns = [
+    const exportColumns = [
       { header: 'Order ID', key: 'id', width: 20 },
       { header: 'Date', key: 'date', width: 20 },
       { header: 'Customer', key: 'customer', width: 30 },
@@ -74,7 +75,7 @@ export default function ProductAnalysis() {
       };
     });
 
-    exportToExcel({ data, columns, filename: `Product_${id}_Orders` });
+    exportToExcel({ data, columns: exportColumns, filename: `Product_${id}_Orders` });
   };
 
   useEffect(() => {
@@ -97,6 +98,57 @@ export default function ProductAnalysis() {
   if (!product) {
     return <div>Product not found.</div>;
   }
+
+  const columns = [
+    { id: 'id', label: language === 'ar' ? 'رقم الطلب' : 'Order ID', render: (order) => <span style={{ fontWeight: 600 }}>{order.id}</span> },
+    { id: 'date', label: language === 'ar' ? 'التاريخ' : 'Date', render: (order) => new Date(order.createdAt).toLocaleDateString() },
+    { id: 'customer', label: language === 'ar' ? 'العميل' : 'Customer', render: (order) => order.customer },
+    { 
+      id: 'qty', 
+      label: language === 'ar' ? 'الكمية' : 'Quantity', 
+      render: (order) => {
+        const item = order.items.find(i => i.id === id);
+        return `${item ? item.qty : 0} units`;
+      }
+    },
+    { 
+      id: 'total', 
+      label: language === 'ar' ? 'إجمالي الطلب' : 'Order Total', 
+      render: (order) => <span style={{ fontWeight: 600 }}>{order.total} EGP</span> 
+    },
+    { 
+      id: 'status', 
+      label: language === 'ar' ? 'الحالة' : 'Status', 
+      render: (order) => (
+        <span style={{ 
+          backgroundColor: order.status === 'Delivered' ? '#dcfce7' : order.status === 'Cancelled' ? '#fee2e2' : '#fef9c3', 
+          color: order.status === 'Delivered' ? '#166534' : order.status === 'Cancelled' ? '#991b1b' : '#854d0e', 
+          padding: '4px 8px', borderRadius: '999px', fontSize: '12px', fontWeight: 600 
+        }}>
+          {order.status}
+        </span>
+      )
+    }
+  ];
+
+  const actionsNode = (
+    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', height: '40px' }}>
+        <Download size={16} /> {language === 'ar' ? 'تصدير' : 'Export'}
+      </button>
+      <select 
+        className="premium-input" 
+        style={{ width: 'auto', padding: '8px 16px', minHeight: 'auto', height: '40px' }}
+        value={timeRange}
+        onChange={(e) => setTimeRange(e.target.value)}
+      >
+        <option value="All Time">All Time</option>
+        <option value="Last 30 Days">Last 30 Days</option>
+        <option value="Last 90 Days">Last 90 Days</option>
+        <option value="This Year">This Year</option>
+      </select>
+    </div>
+  );
 
   return (
     <div style={{ width: '100%', margin: '0 auto', paddingBottom: '40px' }}>
@@ -182,7 +234,7 @@ export default function ProductAnalysis() {
       </div>
 
       {/* Charts & Details */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '24px' }}>
         
         {/* Main Chart Area */}
         <div className="premium-card">
@@ -258,71 +310,18 @@ export default function ProductAnalysis() {
       </div>
 
       {/* Recent Orders Table */}
-      <div className="premium-card" style={{ marginTop: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'أحدث الطلبات' : 'Recent Orders'}</h3>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', height: '40px' }}>
-              <Download size={16} /> {language === 'ar' ? 'تصدير' : 'Export'}
-            </button>
-            <select 
-              className="premium-input" 
-              style={{ width: 'auto', padding: '8px 16px', minHeight: 'auto', height: '40px' }}
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value)}
-            >
-              <option value="All Time">All Time</option>
-              <option value="Last 30 Days">Last 30 Days</option>
-              <option value="Last 90 Days">Last 90 Days</option>
-              <option value="This Year">This Year</option>
-            </select>
-          </div>
-        </div>
-        
-        <div className="admin-table-container">
-          <div className="table-responsive">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>{language === 'ar' ? 'رقم الطلب' : 'Order ID'}</th>
-                  <th>{language === 'ar' ? 'التاريخ' : 'Date'}</th>
-                  <th>{language === 'ar' ? 'العميل' : 'Customer'}</th>
-                  <th>{language === 'ar' ? 'الكمية' : 'Quantity'}</th>
-                  <th>{language === 'ar' ? 'إجمالي الطلب' : 'Order Total'}</th>
-                  <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredOrders.length > 0 ? filteredOrders.map(order => {
-                  const item = order.items.find(i => i.id === id);
-                  return (
-                    <tr key={order.id}>
-                      <td style={{ fontWeight: 600 }}>{order.id}</td>
-                      <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                      <td>{order.customer}</td>
-                      <td>{item ? item.qty : 0} units</td>
-                      <td style={{ fontWeight: 600 }}>{order.total} EGP</td>
-                      <td>
-                        <span style={{ 
-                          backgroundColor: order.status === 'Delivered' ? '#dcfce7' : order.status === 'Cancelled' ? '#fee2e2' : '#fef9c3', 
-                          color: order.status === 'Delivered' ? '#166534' : order.status === 'Cancelled' ? '#991b1b' : '#854d0e', 
-                          padding: '4px 8px', borderRadius: '999px', fontSize: '12px', fontWeight: 600 
-                        }}>
-                          {order.status}
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                }) : (
-                  <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: '#64748b' }}>No orders found for this product.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <DataTable
+        tableId="productAnalysisOrders"
+        columns={columns}
+        data={filteredOrders}
+        searchPlaceholder={language === 'ar' ? "بحث في الطلبات..." : "Search orders..."}
+        actions={actionsNode}
+        emptyMessage={language === 'ar' ? 'لا توجد طلبات لهذا المنتج.' : 'No orders found for this product.'}
+        searchFunction={(order, term) => {
+          const lower = term.toLowerCase();
+          return order.id.toLowerCase().includes(lower) || order.customer.toLowerCase().includes(lower);
+        }}
+      />
     </div>
   );
 }

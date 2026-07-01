@@ -1,18 +1,19 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowLeft, Search, TrendingUp, Package, DollarSign, Download } from 'lucide-react';
+import { ArrowLeft, TrendingUp, Package, DollarSign, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
+import DataTable from '../../components/admin/DataTable';
 
 export default function ProductsAnalysis() {
   const { orders } = useStore();
   const { products } = useStore();
   const navigate = useNavigate();
   const { t, language } = useStore();
-  const [searchTerm, setSearchTerm] = useState('');
+  
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('revenue-desc');
   const [stockFilter, setStockFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('revenue-desc');
 
   const analysisData = useMemo(() => {
     // Initialize stats map
@@ -49,9 +50,6 @@ export default function ProductsAnalysis() {
 
   const filteredData = useMemo(() => {
     let result = analysisData.filter(item => {
-      if (searchTerm && !item.title.toLowerCase().includes(searchTerm.toLowerCase()) && !item.category.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return false;
-      }
       if (categoryFilter !== 'all' && item.category !== categoryFilter) {
         return false;
       }
@@ -77,13 +75,13 @@ export default function ProductsAnalysis() {
     });
 
     return result;
-  }, [analysisData, searchTerm, categoryFilter, stockFilter, sortBy]);
+  }, [analysisData, categoryFilter, stockFilter, sortBy]);
 
   const totalStoreRevenue = analysisData.reduce((sum, item) => sum + item.totalRevenue, 0);
   const totalUnitsSold = analysisData.reduce((sum, item) => sum + item.unitsSold, 0);
 
   const handleExport = () => {
-    const columns = [
+    const exportColumns = [
       { header: 'Product ID', key: 'id', width: 20 },
       { header: 'Product Name', key: 'title', width: 40 },
       { header: 'Category', key: 'category', width: 25 },
@@ -103,8 +101,101 @@ export default function ProductsAnalysis() {
       stock: item.stock || 0
     }));
 
-    exportToExcel({ data, columns, filename: 'Products_Analysis' });
+    exportToExcel({ data, columns: exportColumns, filename: 'Products_Analysis' });
   };
+
+  const columns = [
+    { 
+      id: 'product', 
+      label: language === 'ar' ? 'المنتج' : 'Product', 
+      render: (item) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <img src={item.image || 'https://via.placeholder.com/40'} alt={item.title} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+          <span style={{ fontWeight: 500 }}>{item.title}</span>
+        </div>
+      )
+    },
+    { id: 'category', label: language === 'ar' ? 'الفئة' : 'Category', render: (item) => item.category },
+    { id: 'price', label: language === 'ar' ? 'السعر' : 'Price', render: (item) => `${item.price} EGP` },
+    { 
+      id: 'stock', 
+      label: language === 'ar' ? 'المخزون الحالي' : 'Current Stock', 
+      render: (item) => (
+        <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '13px', fontWeight: 600, backgroundColor: item.stock <= 5 ? '#fee2e2' : '#f1f5f9', color: item.stock <= 5 ? '#dc2626' : '#475569' }}>
+          {item.stock}
+        </span>
+      )
+    },
+    { 
+      id: 'unitsSold', 
+      label: language === 'ar' ? 'الوحدات المباعة' : 'Units Sold', 
+      render: (item) => <span style={{ fontWeight: 'bold', color: '#0f172a' }}>{item.unitsSold}</span>
+    },
+    { id: 'orders', label: language === 'ar' ? 'الطلبات' : 'Orders', render: (item) => item.orderCount },
+    { 
+      id: 'totalRevenue', 
+      label: language === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue', 
+      align: 'right',
+      render: (item) => <span style={{ fontWeight: 'bold', color: '#10b981' }}>{item.totalRevenue.toFixed(2)} EGP</span>
+    }
+  ];
+
+  const searchFunction = (item, term) => {
+    const lower = term.toLowerCase();
+    return item.title.toLowerCase().includes(lower) || item.category.toLowerCase().includes(lower);
+  };
+
+  const actionsNode = (
+    <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '8px', whiteSpace: 'nowrap' }}>
+      <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
+    </button>
+  );
+
+  const filtersNode = (
+    <React.Fragment>
+      <select 
+        className="input-field" 
+        style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)' }}
+        value={categoryFilter}
+        onChange={(e) => setCategoryFilter(e.target.value)}
+      >
+        <option value="all">{language === 'ar' ? 'كل الفئات' : 'All Categories'}</option>
+        {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(cat => (
+          <option key={cat} value={cat}>{cat}</option>
+        ))}
+      </select>
+
+      <select 
+        className="input-field" 
+        style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)' }}
+        value={stockFilter}
+        onChange={(e) => setStockFilter(e.target.value)}
+      >
+        <option value="all">All Stock Status</option>
+        <option value="in">In Stock</option>
+        <option value="low">Low Stock (≤5)</option>
+        <option value="out">{t('outOfStock')}</option>
+      </select>
+
+      <select 
+        className="input-field" 
+        style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)' }}
+        value={sortBy}
+        onChange={(e) => setSortBy(e.target.value)}
+      >
+        <option value="revenue-desc">Revenue (High to Low)</option>
+        <option value="revenue-asc">Revenue (Low to High)</option>
+        <option value="units-desc">Units Sold (High to Low)</option>
+        <option value="units-asc">Units Sold (Low to High)</option>
+        <option value="price-desc">Price (High to Low)</option>
+        <option value="price-asc">Price (Low to High)</option>
+        <option value="stock-asc">Stock (Low to High)</option>
+        <option value="stock-desc">Stock (High to Low)</option>
+        <option value="name-asc">Name (A to Z)</option>
+        <option value="name-desc">Name (Z to A)</option>
+      </select>
+    </React.Fragment>
+  );
 
   return (
     <div>
@@ -149,106 +240,16 @@ export default function ProductsAnalysis() {
       </div>
 
       <div className="metric-card" style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', backgroundColor: 'var(--surface-container-lowest)', border: '1px solid var(--outline-variant)', borderRadius: '8px', flex: '1 1 250px' }}>
-            <Search size={20} color="var(--on-surface-variant)" />
-            <input 
-              type="text" 
-              placeholder={language === 'ar' ? 'بحث بالمنتج أو الفئة...' : "Search by product or category..."}
-              style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%' }}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          
-          <select 
-            className="input-field" 
-            style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)', flex: '1 1 150px' }}
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-          >
-            <option value="all">{language === 'ar' ? 'كل الفئات' : 'All Categories'}</option>
-            {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-
-          <select 
-            className="input-field" 
-            style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)', flex: '1 1 150px' }}
-            value={stockFilter}
-            onChange={(e) => setStockFilter(e.target.value)}
-          >
-            <option value="all">All Stock Status</option>
-            <option value="in">In Stock</option>
-            <option value="low">Low Stock (≤5)</option>
-            <option value="out">{t('outOfStock')}</option>
-          </select>
-
-          <select 
-            className="input-field" 
-            style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)', flex: '1 1 200px' }}
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="revenue-desc">Revenue (High to Low)</option>
-            <option value="revenue-asc">Revenue (Low to High)</option>
-            <option value="units-desc">Units Sold (High to Low)</option>
-            <option value="units-asc">Units Sold (Low to High)</option>
-            <option value="price-desc">Price (High to Low)</option>
-            <option value="price-asc">Price (Low to High)</option>
-            <option value="stock-asc">Stock (Low to High)</option>
-            <option value="stock-desc">Stock (High to Low)</option>
-            <option value="name-asc">Name (A to Z)</option>
-            <option value="name-desc">Name (Z to A)</option>
-          </select>
-          <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '8px' }}>
-            <Download size={18} /> {language === 'ar' ? 'تصدير' : 'Export'}
-          </button>
-        </div>
-
-        <div className="admin-table-container">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>{language === 'ar' ? 'المنتج' : 'Product'}</th>
-                <th>{language === 'ar' ? 'الفئة' : 'Category'}</th>
-                <th>{language === 'ar' ? 'السعر' : 'Price'}</th>
-                <th>{language === 'ar' ? 'المخزون الحالي' : 'Current Stock'}</th>
-                <th>{language === 'ar' ? 'الوحدات المباعة' : 'Units Sold'}</th>
-                <th>{language === 'ar' ? 'الطلبات' : 'Orders'}</th>
-                <th style={{ textAlign: 'right' }}>{language === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue'}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.map(item => (
-                <tr key={item.id}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <img src={item.image || 'https://via.placeholder.com/40'} alt={item.title} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
-                      <span style={{ fontWeight: 500 }}>{item.title}</span>
-                    </div>
-                  </td>
-                  <td>{item.category}</td>
-                  <td>{item.price} EGP</td>
-                  <td>
-                    <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '13px', fontWeight: 600, backgroundColor: item.stock <= 5 ? '#fee2e2' : '#f1f5f9', color: item.stock <= 5 ? '#dc2626' : '#475569' }}>
-                      {item.stock}
-                    </span>
-                  </td>
-                  <td style={{ fontWeight: 'bold', color: '#0f172a' }}>{item.unitsSold}</td>
-                  <td>{item.orderCount}</td>
-                  <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#10b981' }}>{item.totalRevenue.toFixed(2)} EGP</td>
-                </tr>
-              ))}
-              {filteredData.length === 0 && (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: 'center', padding: '24px', color: '#64748b' }}>No data found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          tableId="globalProductsAnalysis"
+          columns={columns}
+          data={filteredData}
+          searchPlaceholder={language === 'ar' ? 'بحث بالمنتج أو الفئة...' : "Search by product or category..."}
+          actions={actionsNode}
+          filters={filtersNode}
+          searchFunction={searchFunction}
+          emptyMessage={language === 'ar' ? 'لم يتم العثور على بيانات.' : 'No data found.'}
+        />
       </div>
     </div>
   );

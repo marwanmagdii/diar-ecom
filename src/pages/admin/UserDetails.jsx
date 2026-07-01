@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Phone, MapPin, ShoppingBag, Target, Merge, Sparkles, ChevronDown, ChevronUp, Search, X, Package, Trash2, Download } from 'lucide-react';
+import { ArrowLeft, Phone, MapPin, ShoppingBag, Target, Merge, Sparkles, ChevronDown, ChevronUp, Search, X, Package, Trash2, Download } from 'lucide-react';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
+import DataTable from '../../components/admin/DataTable';
 
 export default function UserDetails() {
   const { id } = useParams();
@@ -15,8 +16,6 @@ export default function UserDetails() {
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
   const [mergeSearchTerm, setMergeSearchTerm] = useState('');
   
-  // Expanded Orders State
-  const [expandedOrders, setExpandedOrders] = useState({});
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteInput, setDeleteInput] = useState('');
 
@@ -39,11 +38,6 @@ export default function UserDetails() {
     }
   };
 
-  const toggleOrderExpand = (orderId, e) => {
-    e.stopPropagation();
-    setExpandedOrders(prev => ({ ...prev, [orderId]: !prev[orderId] }));
-  };
-
   const confirmDelete = async () => {
     if (deleteInput.trim().toLowerCase() === 'delete') {
       try {
@@ -60,7 +54,7 @@ export default function UserDetails() {
   const filteredMergeUsers = users.filter(u => u.id !== user.id && (u.name.toLowerCase().includes(mergeSearchTerm.toLowerCase()) || u.phone.includes(mergeSearchTerm)));
 
   const handleExport = () => {
-    const columns = [
+    const exportColumns = [
       { header: 'Order ID', key: 'id', width: 20 },
       { header: 'Date', key: 'date', width: 20 },
       { header: 'Status', key: 'status', width: 15 },
@@ -76,8 +70,77 @@ export default function UserDetails() {
       items: (order.items || []).map(item => `${item.qty}x ${item.title}`).join(', ')
     }));
 
-    exportToExcel({ data, columns, filename: `User_${user.name.replace(/\s+/g, '_')}_Orders` });
+    exportToExcel({ data, columns: exportColumns, filename: `User_${user.name.replace(/\s+/g, '_')}_Orders` });
   };
+
+  const orderColumns = [
+    { 
+      id: 'id', 
+      label: lang === 'ar' ? 'رقم الطلب' : 'Order ID', 
+      render: (order) => <span style={{ fontWeight: 600, color: '#2563eb', textDecoration: 'underline' }}>{order.id}</span> 
+    },
+    { 
+      id: 'date', 
+      label: lang === 'ar' ? 'التاريخ' : 'Date', 
+      render: (order) => order.createdAt instanceof Date ? order.createdAt.toLocaleDateString() : 'Unknown Date' 
+    },
+    { id: 'phone', label: lang === 'ar' ? 'الهاتف' : 'Phone', render: (order) => order.phone || 'N/A' },
+    { 
+      id: 'status', 
+      label: lang === 'ar' ? 'الحالة' : 'Status', 
+      render: (order) => (
+        <span className={`status-pill status-${order.status?.toLowerCase()}`}>
+          {order.status}
+        </span>
+      ) 
+    },
+    { 
+      id: 'total', 
+      label: lang === 'ar' ? 'المجموع' : 'Total', 
+      render: (order) => <span style={{ fontWeight: 600 }}>{order.total?.toFixed(2)} EGP</span> 
+    },
+    {
+      id: 'expand',
+      label: '',
+      width: '40px',
+      render: (order, { isExpanded, toggleExpand }) => (
+        <div 
+          onClick={toggleExpand} 
+          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', padding: '8px', cursor: 'pointer' }}
+        >
+          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </div>
+      )
+    }
+  ];
+
+  const renderExpandedOrder = (order) => (
+    <div style={{ padding: '24px', backgroundColor: '#ffffff' }}>
+      <h4 style={{ fontSize: '13px', color: '#64748b', margin: '0 0 16px 0', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Items Purchased</h4>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
+        {order.items?.map((item, idx) => (
+          <div key={idx} style={{ display: 'flex', gap: '16px', alignItems: 'center', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
+            <div style={{ width: '40px', height: '40px', backgroundColor: '#e2e8f0', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Package size={20} color="#64748b" />
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>{item.title}</p>
+              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Qty: {item.qty} &times; {item.price} EGP</p>
+            </div>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: '#0f172a' }}>
+              {(item.qty * item.price).toFixed(2)} EGP
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const orderActions = (
+    <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', fontSize: '14px', whiteSpace: 'nowrap' }}>
+      <Download size={16} /> {lang === 'ar' ? 'تصدير' : 'Export'}
+    </button>
+  );
 
   return (
     <div>
@@ -254,73 +317,22 @@ export default function UserDetails() {
       </div>
 
       {/* Order History */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-        <h3 className="title-lg m-0">{user.isInfluencer ? (lang === 'ar' ? 'سجل الطلبات المحققة' : 'Generated Orders History') : (lang === 'ar' ? 'سجل الطلبات' : 'Order History')}</h3>
-        <button className="btn btn-secondary" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', fontSize: '14px' }}>
-          <Download size={16} /> {lang === 'ar' ? 'تصدير' : 'Export'}
-        </button>
-      </div>
-      <div className="admin-table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>{lang === 'ar' ? 'رقم الطلب' : 'Order ID'}</th>
-              <th>{lang === 'ar' ? 'التاريخ' : 'Date'}</th>
-              <th>{lang === 'ar' ? 'الهاتف' : 'Phone'}</th>
-              <th>{lang === 'ar' ? 'الحالة' : 'Status'}</th>
-              <th>{lang === 'ar' ? 'المجموع' : 'Total'}</th>
-              <th style={{ width: '40px' }}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {user.orders.map(order => (
-              <React.Fragment key={order.id}>
-                <tr style={{ cursor: 'pointer', borderBottom: expandedOrders[order.id] ? 'none' : '1px solid #f1f5f9' }} onClick={() => navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`)}>
-                  <td style={{ fontWeight: 600, color: '#2563eb', textDecoration: 'underline' }}>{order.id}</td>
-                  <td>{order.createdAt instanceof Date ? order.createdAt.toLocaleDateString() : 'Unknown Date'}</td>
-                  <td>{order.phone || 'N/A'}</td>
-                  <td>
-                    <span className={`status-pill status-${order.status?.toLowerCase()}`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td style={{ fontWeight: 600 }}>{order.total?.toFixed(2)} EGP</td>
-                  <td onClick={(e) => toggleOrderExpand(order.id, e)} style={{ width: '40px', padding: '16px 8px', textAlign: 'right' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
-                      {expandedOrders[order.id] ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                    </div>
-                  </td>
-                </tr>
-                {expandedOrders[order.id] && (
-                  <tr>
-                    <td colSpan="5" style={{ padding: 0, borderBottom: '1px solid #f1f5f9' }}>
-                      <div style={{ padding: '24px', backgroundColor: '#ffffff' }}>
-                        <h4 style={{ fontSize: '13px', color: '#64748b', margin: '0 0 16px 0', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Items Purchased</h4>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
-                          {order.items?.map((item, idx) => (
-                            <div key={idx} style={{ display: 'flex', gap: '16px', alignItems: 'center', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
-                              <div style={{ width: '40px', height: '40px', backgroundColor: '#e2e8f0', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <Package size={20} color="#64748b" />
-                              </div>
-                              <div style={{ flex: 1 }}>
-                                <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>{item.title}</p>
-                                <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Qty: {item.qty} &times; {item.price} EGP</p>
-                              </div>
-                              <div style={{ fontWeight: 700, fontSize: '14px', color: '#0f172a' }}>
-                                {(item.qty * item.price).toFixed(2)} EGP
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <h3 className="title-lg" style={{ marginBottom: '12px' }}>
+        {user.isInfluencer ? (lang === 'ar' ? 'سجل الطلبات المحققة' : 'Generated Orders History') : (lang === 'ar' ? 'سجل الطلبات' : 'Order History')}
+      </h3>
+      <DataTable
+        tableId="userDetailsOrders"
+        columns={orderColumns}
+        data={user.orders}
+        searchPlaceholder={lang === 'ar' ? "بحث في الطلبات..." : "Search orders..."}
+        actions={orderActions}
+        searchFunction={(order, term) => {
+          const lower = term.toLowerCase();
+          return order.id.toLowerCase().includes(lower) || (order.phone && order.phone.includes(term));
+        }}
+        onRowClick={(order) => navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`)}
+        renderExpandedRow={renderExpandedOrder}
+      />
 
       {/* Merge Modal */}
       {isMergeModalOpen && (

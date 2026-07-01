@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../../store';
+import DataTable from '../../components/admin/DataTable';
+
 export default function Dashboard() {
   const { orders, users, ordersError, usersError, ordersLoading: loading } = useStore();
   const error = ordersError || usersError;
@@ -70,7 +72,7 @@ export default function Dashboard() {
   const recentOrders = [...orders].sort((a, b) => b.createdAt - a.createdAt).slice(0, 5);
 
   const handleExport = () => {
-    const columns = [
+    const exportColumns = [
       { header: 'Order ID', key: 'id', width: 25 },
       { header: 'Customer', key: 'customer', width: 30 },
       { header: 'Status', key: 'status', width: 15 },
@@ -86,8 +88,48 @@ export default function Dashboard() {
       date: new Date(o.createdAt).toLocaleString()
     }));
 
-    exportToExcel({ data, columns, filename: 'Recent_Orders' });
+    exportToExcel({ data, columns: exportColumns, filename: 'Recent_Orders' });
   };
+
+  const columns = [
+    { 
+      id: 'id', 
+      label: language === 'ar' ? 'رقم الطلب' : 'Order ID', 
+      render: (order) => <span style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</span> 
+    },
+    { id: 'customer', label: language === 'ar' ? 'العميل' : 'Customer', render: (order) => order.customer },
+    { 
+      id: 'status', 
+      label: language === 'ar' ? 'الحالة' : 'Status', 
+      render: (order) => (
+        <span className={`status-pill status-${order.status?.toLowerCase()}`}>
+          {order.status}
+        </span>
+      ) 
+    },
+    { id: 'total', label: language === 'ar' ? 'المجموع' : 'Total', render: (order) => `${order.total?.toFixed(2)} EGP` },
+    {
+      id: 'actions',
+      label: '',
+      align: 'right',
+      render: (order) => (
+        <button className="icon-btn" onClick={(e) => { e.stopPropagation(); navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`); }}>
+          <Eye size={16} />
+        </button>
+      )
+    }
+  ];
+
+  const actionsNode = (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={handleExport}>
+        <Download size={16} /> {language === 'ar' ? 'تصدير' : 'Export'}
+      </button>
+      <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px' }} onClick={() => navigate('/diaradmin26/orders')}>
+        {language === 'ar' ? 'عرض الكل' : 'View All'}
+      </button>
+    </div>
+  );
 
   return (
     <div>
@@ -210,49 +252,18 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Activity */}
-        <div className="admin-table-container" style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ padding: '24px', borderBottom: '1px solid var(--outline-variant)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 className="title-md m-0">{language === 'ar' ? 'أحدث الطلبات' : 'Recent Orders'}</h2>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={handleExport}>
-                <Download size={16} /> {language === 'ar' ? 'تصدير' : 'Export'}
-              </button>
-              <button className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '14px' }} onClick={() => navigate('/diaradmin26/orders')}>{language === 'ar' ? 'عرض الكل' : 'View All'}</button>
-            </div>
-          </div>
-          <div className="table-responsive">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>{language === 'ar' ? 'رقم الطلب' : 'Order ID'}</th>
-                  <th>{language === 'ar' ? 'العميل' : 'Customer'}</th>
-                  <th>{language === 'ar' ? 'الحالة' : 'Status'}</th>
-                  <th>{language === 'ar' ? 'المجموع' : 'Total'}</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentOrders.length === 0 ? (
-                  <tr><td colSpan="5" style={{ textAlign: 'center', padding: '32px' }}>{language === 'ar' ? 'لا توجد طلبات بعد.' : 'No orders yet.'}</td></tr>
-                ) : (
-                  recentOrders.map(order => (
-                    <tr key={order.id}>
-                      <td style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</td>
-                      <td>{order.customer}</td>
-                      <td>
-                        <span className={`status-pill status-${order.status?.toLowerCase()}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td>{order.total?.toFixed(2)} EGP</td>
-                      <td style={{ textAlign: 'right' }}>
-                        <button className="icon-btn" onClick={() => navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`)}><Eye size={16} /></button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <h2 className="title-md" style={{ marginBottom: '16px' }}>{language === 'ar' ? 'أحدث الطلبات' : 'Recent Orders'}</h2>
+          <div className="metric-card" style={{ padding: '24px' }}>
+            <DataTable
+              tableId="dashboardRecentOrders"
+              columns={columns}
+              data={recentOrders}
+              searchPlaceholder={language === 'ar' ? "بحث في الطلبات..." : "Search orders..."}
+              actions={actionsNode}
+              emptyMessage={language === 'ar' ? 'لا توجد طلبات بعد.' : 'No orders yet.'}
+              onRowClick={(order) => navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`)}
+            />
           </div>
         </div>
       </div>
