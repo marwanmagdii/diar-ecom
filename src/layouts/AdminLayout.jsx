@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus } from 'lucide-react';
 import { useStore } from '../store';
 
 export default function AdminLayout() {
@@ -254,7 +254,12 @@ export default function AdminLayout() {
                 {getHeaderTitle()}
               </h1>
             </div>
-            {/* Right side removed to cleanup global toolbar */}
+            {/* Right side + icon for quick action on mobile */}
+            <div className="desktop-hidden" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <button className="btn btn-primary" style={{ padding: '8px', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Plus size={20} />
+              </button>
+            </div>
           </header>
           <div className="admin-content" style={{ overflowY: 'auto' }}>
             <Outlet />

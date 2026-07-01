@@ -1195,6 +1195,7 @@ html[dir="rtl"] .variant-circle {
   border-right: 1px solid var(--outline-variant);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 .admin-logo {
   padding: 24px;
@@ -2135,12 +2136,22 @@ html[dir="rtl"] .variant-circle {
     pointer-events: auto;
   }
   
+  .mobile-hidden {
+    display: none !important;
+  }
+  
   .mobile-menu-btn {
     display: block !important;
   }
   
   .admin-main {
     width: 100%;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-hidden {
+    display: none !important;
   }
 }
 
@@ -2205,9 +2216,9 @@ html[dir="rtl"] .variant-circle {
   
   .admin-page-header-left {
     min-width: 100% !important;
-    flex-direction: column;
-    align-items: stretch;
-    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center !important;
+    flex-wrap: nowrap;
     gap: 8px;
     order: 2;
   }
@@ -2215,7 +2226,8 @@ html[dir="rtl"] .variant-circle {
   .admin-page-header-left > div,
   .admin-page-header-left > select,
   .admin-page-header-left > input {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     max-width: 100% !important;
   }
   
