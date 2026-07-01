@@ -2155,14 +2155,20 @@ html[dir="rtl"] .variant-circle {
   border-radius: 12px;
   border: 1px solid var(--outline-variant);
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  min-width: 0;
+  width: 100%;
 }
 
 .admin-page-header-left {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 12px;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   align-items: center;
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-page-header-right {
@@ -2171,6 +2177,7 @@ html[dir="rtl"] .variant-circle {
   gap: 12px;
   align-items: center;
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 /* Admin Page Header & Buttons Mobile Fixes */.columns-dropdown {

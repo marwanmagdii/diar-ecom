@@ -113,7 +113,7 @@ export default function DataTable({
   return (
     <div>
       <div className="admin-page-header">
-        <div className="admin-page-header-left" style={{ flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: '4px' }}>
+        <div className="admin-page-header-left">
           <div style={{ position: 'relative', flex: '1 0 auto', minWidth: '250px' }}>
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
             <input 
