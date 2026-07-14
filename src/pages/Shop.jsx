@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ProductCard from '../components/ProductCard';
+import Skeleton from '../components/ui/Skeleton';
 import { Search, Filter, X, LayoutGrid, Smartphone, Shirt, Home as HomeIcon, Sparkles, Watch, Droplet, Tag } from 'lucide-react';
 import { useSearchParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useStore } from '../store';
@@ -383,11 +384,14 @@ export default function Shop() {
 
           <div className="product-grid">
             {loading ? (
-              <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '40px', color: '#64748b' }}>
-                <div className="spinner" style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
-                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                Loading products...
-              </div>
+              Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px', backgroundColor: '#ffffff', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+                  <Skeleton height="250px" borderRadius="12px" />
+                  <Skeleton height="24px" width="80%" />
+                  <Skeleton height="20px" width="40%" />
+                  <Skeleton height="40px" width="100%" borderRadius="8px" style={{ marginTop: '12px' }} />
+                </div>
+              ))
             ) : error ? (
               <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '40px', backgroundColor: '#fef2f2', borderRadius: '12px', border: '1px solid #fecaca', color: '#ef4444' }}>
                 <p style={{ fontWeight: '500', marginBottom: '8px' }}>Oops! Could not load products.</p>

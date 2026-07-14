@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ProductCard from '../components/ProductCard';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import Skeleton from '../components/ui/Skeleton';
 import { Clock, LayoutGrid, ArrowRight } from 'lucide-react';
 import { useStore } from '../store';
 import CustomerReviewsMarquee from '../components/CustomerReviewsMarquee';
@@ -93,10 +94,17 @@ export default function Home() {
 
   if (loading) {
     return (
-      <main className="container pb-4 pt-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', color: '#64748b' }}>
-        <div className="spinner" style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px', animation: 'spin 1s linear infinite' }}></div>
-        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-        <h2>Loading products...</h2>
+      <main className="container pb-4 pt-4" style={{ minHeight: '50vh' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px', backgroundColor: '#ffffff', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+              <Skeleton height="250px" borderRadius="12px" />
+              <Skeleton height="24px" width="80%" />
+              <Skeleton height="20px" width="40%" />
+              <Skeleton height="40px" width="100%" borderRadius="8px" style={{ marginTop: '12px' }} />
+            </div>
+          ))}
+        </div>
       </main>
     );
   }

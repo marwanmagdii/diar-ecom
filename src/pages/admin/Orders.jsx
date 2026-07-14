@@ -116,6 +116,7 @@ export default function Orders() {
       tableId="orders"
       columns={columns}
       data={filteredOrders}
+      emptyMessage={lang === 'ar' ? 'لا توجد طلبات.' : 'No orders found.'}
       searchPlaceholder={lang === 'ar' ? "بحث برقم الطلب، العميل أو رقم الهاتف..." : "Search by ID, Customer or Phone..."}
       onRowClick={(order) => navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`)}
       actions={actionsNode}

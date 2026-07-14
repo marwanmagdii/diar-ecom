@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus, PanelLeft, PanelLeftClose } from 'lucide-react';
 import { useStore } from '../store';
 
 export default function AdminLayout() {
@@ -260,7 +260,7 @@ export default function AdminLayout() {
                   }
                 }}
               >
-                <Menu size={24} />
+                {isDesktopCollapsed ? <PanelLeft size={24} /> : <PanelLeftClose size={24} />}
               </button>
               <h1 className="headline-md m-0">
                 {getHeaderTitle()}
