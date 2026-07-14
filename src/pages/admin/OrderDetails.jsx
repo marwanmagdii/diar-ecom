@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronRight, ChevronDown, Trash2, Edit, Check, X, Plus, Copy, Search } from 'lucide-react';
 import { PremiumInput } from '../../components/AdminUI';
+import SearchableSelect from '../../components/SearchableSelect';
 import { useStore } from '../../store';
 
 export default function OrderDetails() {
@@ -417,146 +418,120 @@ export default function OrderDetails() {
             </div>
 
             {isEditingItems && (
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid #f1f5f9', position: 'relative' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
-                  <div 
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    style={{ padding: '10px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px' }}
-                  >
-                    <span style={{ color: newItemId ? '#0f172a' : '#64748b', fontSize: '15px' }}>
-                      {newItemId ? products.find(p => p.id === newItemId)?.title : 'Select a product to add...'}
-                    </span>
-                    <ChevronDown size={18} color="#64748b" />
-                  </div>
-                  
-                  {isDropdownOpen && (
-                    <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '8px', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0', zIndex: 50, maxHeight: '300px', overflowY: 'auto' }}>
-                      {products.map(p => (
-                        <div 
-                          key={p.id} 
-                          onClick={() => { setNewItemId(p.id); setIsDropdownOpen(false); }}
-                          style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', transition: 'background-color 0.2s' }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                        >
-                          <div style={{ width: '40px', height: '40px', backgroundColor: '#e2e8f0', borderRadius: '6px', overflow: 'hidden', flexShrink: 0 }}>
-                            <img src={p.image || 'https://via.placeholder.com/40'} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          </div>
-                          <div>
-                            <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>{p.title}</p>
-                            <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>{p.price} EGP</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
+                <div style={{ flex: 1, minWidth: '150px', maxWidth: '300px' }}>
+                  <SearchableSelect 
+                    options={products.map(p => ({ label: `${p.title} - ${p.price} EGP`, value: p.id.toString() }))}
+                    value={newItemId?.toString() || ''}
+                    onChange={(val) => setNewItemId(val)}
+                    placeholder={lang === 'ar' ? 'ابحث عن منتج...' : 'Search a product...'}
+                  />
                 </div>
-                <button type="button" className="btn" onClick={handleAddItem} style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '8px' }}>
-                  <Plus size={18} /> Add
+                <button type="button" className="btn" onClick={handleAddItem} style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '8px' }}>
+                  <Plus size={18} />
                 </button>
               </div>
             )}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {itemsToDisplay?.map((item, idx) => {
-                const product = products.find(p => p.id === item.id) || {};
-                let imageUrl = item.image || product.image || 'https://via.placeholder.com/64';
-                if (item.variantId && product.variants) {
-                  const variant = product.variants.find(v => v.id === item.variantId);
-                  if (variant && variant.image) {
-                    imageUrl = variant.image;
-                  }
-                }
+            <div className="admin-table-container" style={{ overflow: 'auto' }}>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>{lang === 'ar' ? 'المنتج' : 'Product'}</th>
+                    <th>{lang === 'ar' ? 'التفاصيل' : 'Details'}</th>
+                    <th>{t('quantity')}</th>
+                    <th>{t('price')}</th>
+                    {isEditingItems && <th>{lang === 'ar' ? 'إجراءات' : 'Actions'}</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {itemsToDisplay?.map((item, idx) => {
+                    const product = products.find(p => p.id === item.id) || {};
+                    let imageUrl = item.image || product.image || 'https://via.placeholder.com/48';
+                    if (item.variantId && product.variants) {
+                      const variant = product.variants.find(v => v.id === item.variantId);
+                      if (variant && variant.image) imageUrl = variant.image;
+                    }
 
-                return (
-                  <div key={idx} className="admin-item-card">
-                    <div 
-                      onClick={() => navigate(`/diaradmin26/products/${item.id}`)}
-                      style={{ width: '64px', height: '80px', backgroundColor: '#e2e8f0', borderRadius: '8px', marginRight: '24px', overflow: 'hidden', flexShrink: 0, cursor: 'pointer' }}
-                    >
-                      <img src={imageUrl} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
-                    
-                    <div style={{ flex: 2 }}>
-                      <p 
-                        onClick={() => navigate(`/diaradmin26/products/${item.id}`)}
-                        style={{ fontSize: '16px', fontWeight: 600, margin: 0, color: '#0f172a', cursor: 'pointer', display: 'inline-block' }}
-                        className="hover-underline"
-                      >
-                        {item.title}
-                      </p>
-                      {/* Detailed Attributes styled like tags */}
-                      <div style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
-                        {isEditingItems ? (
-                          <>
-                            {item.color !== undefined && <input type="text" value={item.color} onChange={(e) => handleAttributeChange(item.id, 'color', e.target.value)} style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500, border: '1px solid #cbd5e1', width: '60px' }} placeholder="Color" />}
-                            {item.size !== undefined && <input type="text" value={item.size} onChange={(e) => handleAttributeChange(item.id, 'size', e.target.value)} style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500, border: '1px solid #cbd5e1', width: '50px' }} placeholder="Size" />}
-                            {item.material !== undefined && <input type="text" value={item.material} onChange={(e) => handleAttributeChange(item.id, 'material', e.target.value)} style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500, border: '1px solid #cbd5e1', width: '80px' }} placeholder="Material" />}
-                            {item.weight !== undefined && <input type="text" value={item.weight} onChange={(e) => handleAttributeChange(item.id, 'weight', e.target.value)} style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500, border: '1px solid #cbd5e1', width: '60px' }} placeholder="Weight" />}
-                          </>
-                        ) : (
-                          <>
-                            {item.selectedOptions ? (
-                              Object.entries(item.selectedOptions).map(([k, v]) => (
-                                <span key={k} style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500 }}>
-                                  {lang === 'ar' ? translateKey(k) : k}: {lang === 'ar' ? translateVal(v) : v.split(' / ')[0]}
-                                </span>
-                              ))
+                    return (
+                      <tr key={idx}>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div 
+                              onClick={() => navigate(`/diaradmin26/products/${item.id}`)}
+                              style={{ width: '48px', height: '48px', backgroundColor: '#e2e8f0', borderRadius: '6px', overflow: 'hidden', flexShrink: 0, cursor: 'pointer' }}
+                            >
+                              <img src={imageUrl} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            </div>
+                            <p 
+                              onClick={() => navigate(`/diaradmin26/products/${item.id}`)}
+                              style={{ fontSize: '14px', fontWeight: 600, margin: 0, color: '#0f172a', cursor: 'pointer' }}
+                              className="hover-underline"
+                            >
+                              {item.title}
+                            </p>
+                          </div>
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            {isEditingItems ? (
+                              <>
+                                {item.color !== undefined && <input type="text" value={item.color} onChange={(e) => handleAttributeChange(item.id, 'color', e.target.value)} style={{ fontSize: '12px', padding: '4px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', width: '60px' }} placeholder="Color" />}
+                                {item.size !== undefined && <input type="text" value={item.size} onChange={(e) => handleAttributeChange(item.id, 'size', e.target.value)} style={{ fontSize: '12px', padding: '4px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', width: '50px' }} placeholder="Size" />}
+                                {item.material !== undefined && <input type="text" value={item.material} onChange={(e) => handleAttributeChange(item.id, 'material', e.target.value)} style={{ fontSize: '12px', padding: '4px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', width: '80px' }} placeholder="Material" />}
+                                {item.weight !== undefined && <input type="text" value={item.weight} onChange={(e) => handleAttributeChange(item.id, 'weight', e.target.value)} style={{ fontSize: '12px', padding: '4px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', width: '60px' }} placeholder="Weight" />}
+                              </>
                             ) : (
                               <>
-                                {item.color && <span style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500 }}>{item.color}</span>}
-                                {item.size && <span style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500 }}>{item.size}</span>}
-                                {item.material && <span style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500 }}>{item.material}</span>}
-                                {item.weight && <span style={{ fontSize: '12px', backgroundColor: '#e2e8f0', color: '#334155', padding: '4px 8px', borderRadius: '6px', fontWeight: 500 }}>{item.weight}</span>}
+                                {item.selectedOptions ? (
+                                  Object.entries(item.selectedOptions).map(([k, v]) => (
+                                    <span key={k} style={{ fontSize: '12px', backgroundColor: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>
+                                      {lang === 'ar' ? translateKey(k) : k}: {lang === 'ar' ? translateVal(v) : v.split(' / ')[0]}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <>
+                                    {item.color && <span style={{ fontSize: '12px', backgroundColor: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>{item.color}</span>}
+                                    {item.size && <span style={{ fontSize: '12px', backgroundColor: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>{item.size}</span>}
+                                    {item.material && <span style={{ fontSize: '12px', backgroundColor: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>{item.material}</span>}
+                                    {item.weight && <span style={{ fontSize: '12px', backgroundColor: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>{item.weight}</span>}
+                                  </>
+                                )}
                               </>
                             )}
-                          </>
+                          </div>
+                        </td>
+                        <td>
+                          {isEditingItems ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '2px', width: 'fit-content' }}>
+                              <button type="button" onClick={() => handleQtyChange(item.id, item.qty - 1)} style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: '#f1f5f9', cursor: 'pointer' }}>-</button>
+                              <span style={{ fontSize: '14px', fontWeight: 600, minWidth: '20px', textAlign: 'center' }}>{item.qty}</span>
+                              <button type="button" onClick={() => handleQtyChange(item.id, item.qty + 1)} style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: '#f1f5f9', cursor: 'pointer' }}>+</button>
+                            </div>
+                          ) : (
+                            <span style={{ fontSize: '14px', fontWeight: 600 }}>{item.qty}</span>
+                          )}
+                        </td>
+                        <td>
+                          <span style={{ fontSize: '14px', fontWeight: 600 }}>{item.price?.toFixed(2)} EGP</span>
+                        </td>
+                        {isEditingItems && (
+                          <td>
+                            <button 
+                              type="button" 
+                              onClick={() => handleRemoveItem(item.id)}
+                              className="icon-btn"
+                              style={{ color: 'var(--error)' }}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </td>
                         )}
-                      </div>
-                    </div>
-                    
-                    <div style={{ flex: 1 }}>
-                      <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 8px 0' }}>{t('quantity')}</p>
-                      {isEditingItems ? (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '4px', width: 'fit-content', backgroundColor: '#ffffff' }}>
-                          <button type="button" onClick={() => handleQtyChange(item.id, item.qty - 1)} style={{ width: '32px', height: '32px', padding: 0, borderRadius: '6px', backgroundColor: '#f1f5f9', border: '1.5px solid #0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                          </button>
-                          <span style={{ fontSize: '16px', fontWeight: 700, minWidth: '24px', textAlign: 'center', color: '#0f172a' }}>{item.qty}</span>
-                          <button type="button" onClick={() => handleQtyChange(item.id, item.qty + 1)} style={{ width: '32px', height: '32px', padding: 0, borderRadius: '6px', backgroundColor: '#f1f5f9', border: '1.5px solid #0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                          </button>
-                        </div>
-                      ) : (
-                        <p style={{ fontSize: '16px', margin: 0, color: '#0f172a' }}>{item.qty}</p>
-                      )}
-                    </div>
-                    
-                    <div style={{ flex: 1, textAlign: lang === 'ar' ? 'left' : 'right' }}>
-                      <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 6px 0' }}>{t('price')}</p>
-                      <p style={{ fontSize: '16px', margin: 0, color: '#0f172a' }}>{item.price?.toFixed(2)} EGP</p>
-                    </div>
-
-                    {isEditingItems && (
-                      <div style={{ marginLeft: '24px' }}>
-                        <button 
-                          type="button" 
-                          onClick={() => handleRemoveItem(item.id)}
-                          style={{ 
-                            width: '40px', height: '40px', 
-                            borderRadius: '50%', border: '1.5px solid #0f172a', 
-                            backgroundColor: '#f8fafc', color: '#dc2626', 
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
               {itemsToDisplay?.length === 0 && (
                 <p style={{ textAlign: 'center', color: '#64748b', padding: '24px 0' }}>No products in this order.</p>
               )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, ChevronRight, Filter, Search, MoreVertical, RotateCcw } from 'lucide-react';
 import Skeleton from '../ui/Skeleton';
 import BottomSheet from '../ui/BottomSheet';
@@ -37,6 +37,19 @@ export default function DataTable({
   const [visibleColumns, setVisibleColumns] = useState(defaultVisible);
   const [columnOrder, setColumnOrder] = useState(defaultOrder);
   const [showColumnsMenu, setShowColumnsMenu] = useState(false);
+  const columnsMenuRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (columnsMenuRef.current && !columnsMenuRef.current.contains(event.target)) {
+        setShowColumnsMenu(false);
+      }
+    }
+    if (showColumnsMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showColumnsMenu]);
 
   // Load from localStorage
   useEffect(() => {
@@ -165,7 +178,7 @@ export default function DataTable({
         </div>
 
         <div className="admin-page-header-right">
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }} ref={columnsMenuRef}>
             <button 
               className="btn btn-secondary" 
               style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }} 

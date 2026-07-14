@@ -46,6 +46,12 @@ export default function AdminLayout() {
     if (path.endsWith('/influencers/new')) return language === 'ar' ? 'إضافة مؤثر' : 'Add Influencer';
     if (path.match(/\/products\/[^/]+$/) && !path.endsWith('/new')) return language === 'ar' ? 'تعديل المنتج' : 'Edit Product';
 
+    const matchOrder = path.match(/\/orders\/([^/]+)$/);
+    if (matchOrder && !path.endsWith('/new')) {
+      const decodedId = decodeURIComponent(matchOrder[1]);
+      return language === 'ar' ? `الطلب ${decodedId}` : `Order ${decodedId}`;
+    }
+
     const currentItem = navItems.find(item => location.pathname === item.path || (location.pathname.startsWith(item.path) && item.path !== '/diaradmin26'));
     return currentItem?.name || t('dashboard');
   };
