@@ -36,36 +36,32 @@ export default async function handler(req, res) {
     // Deduplicate tokens
     const uniqueTokens = Array.from(new Set(tokens));
 
+    const baseUrl = req.headers.origin || 'https://diar-romya.vercel.app';
+
     const message = {
-      notification: {
-        title: title || 'New Notification',
-        body: body || '',
-      },
       tokens: uniqueTokens,
+      data: {
+        url: productId ? `/product/${productId}` : `/`
+      },
+      webpush: {
+        headers: {
+          Urgency: 'high'
+        },
+        notification: {
+          title: title || 'New Notification',
+          body: body || '',
+          icon: 'https://diar-romya.vercel.app/vite.svg',
+          vibrate: [200, 100, 200]
+        },
+        fcmOptions: {
+          link: productId ? `${baseUrl}/product/${productId}` : `${baseUrl}/`
+        }
+      }
     };
 
     if (imageUrl) {
-      message.notification.imageUrl = imageUrl;
+      message.webpush.notification.image = imageUrl;
     }
-
-    const baseUrl = req.headers.origin || 'https://diar-romya.vercel.app';
-    const linkUrl = productId ? `${baseUrl}/products/${productId}` : `${baseUrl}/`;
-
-    if (productId) {
-      message.data = { url: `/products/${productId}` };
-    } else {
-      message.data = { url: `/` };
-    }
-
-    // This is the OFFICIAL way to make Firebase open a URL on Web when clicked
-    message.webpush = {
-      headers: {
-        Urgency: 'high'
-      },
-      fcmOptions: {
-        link: linkUrl
-      }
-    };
 
     // Force Android to deliver immediately, bypassing Doze/Battery saver
     message.android = {
