@@ -3,6 +3,7 @@ import { Outlet, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import { Send } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
+import NotificationBanner from '../components/NotificationBanner';
 import { useStore } from '../store';
 
 function Footer() {
@@ -53,6 +54,7 @@ export default function StoreLayout() {
       </div>
       <Footer />
       <BottomNav />
+      <NotificationBanner />
     </>
   );
 }

@@ -70,9 +70,6 @@ const NotificationBanner = () => {
             {language === 'ar' ? 'تفعيل الإشعارات' : 'Enable Notifications'}
           </h3>
         </div>
-        <button onClick={handleDismiss} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--on-surface-variant)' }}>
-          <X size={18} />
-        </button>
       </div>
       
       <p style={{ margin: 0, fontSize: '14px', color: 'var(--on-surface-variant)', lineHeight: 1.5 }}>

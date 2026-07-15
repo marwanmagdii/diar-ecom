@@ -43,7 +43,6 @@ import ProfitCalculator from './pages/admin/ProfitCalculator';
 
 import PageTracker from './components/PageTracker';
 import ToastContainer from './components/ToastContainer';
-import NotificationBanner from './components/NotificationBanner';
 import { useStore } from './store';
 import { useEffect } from 'react';
 
@@ -133,7 +132,6 @@ function App() {
             {/* Catch-all redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-          <NotificationBanner />
           <ToastContainer />
           </BrowserRouter>
   );
