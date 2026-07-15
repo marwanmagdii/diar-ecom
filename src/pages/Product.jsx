@@ -272,9 +272,16 @@ export default function Product() {
 
   return (
     <>
-      <div className="container" style={{ paddingTop: '16px', paddingBottom: '8px' }}>
+      {/* Back Button with reduced top spacing for mobile */}
+      <div className="container" style={{ paddingTop: '4px', paddingBottom: '4px' }}>
         <button 
-          onClick={() => navigate(-1)} 
+          onClick={() => {
+            if (window.history.length > 2) {
+              navigate(-1);
+            } else {
+              navigate('/');
+            }
+          }} 
           className="glass-back-btn"
           style={{ 
             display: 'inline-flex', 
