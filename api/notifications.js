@@ -1,6 +1,7 @@
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
 import dbConnect from './_utils/dbConnect.js';
+import StoreConfig from './_models/StoreConfig.js';
 
 // Initialize Firebase Admin only once
 if (!getApps().length) {
@@ -100,7 +101,6 @@ export default async function handler(req, res) {
         
         if (failedTokens.length > 0) {
           try {
-            const StoreConfig = require('./_models/StoreConfig.js').default;
             await dbConnect();
             await StoreConfig.findOneAndUpdate(
               { id: 'global' },
