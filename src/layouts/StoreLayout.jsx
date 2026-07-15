@@ -51,7 +51,15 @@ export default function StoreLayout() {
     // Automatically trigger the native browser notification prompt on load instantly
     if ('Notification' in window && Notification.permission === 'default') {
       requestNotificationPermission().then(token => {
-        if (token) localStorage.setItem('fcm_token', token);
+        if (token) {
+          localStorage.setItem('fcm_token', token);
+          // Send to backend immediately for anonymous visitors
+          fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          }).catch(console.error);
+        }
       });
     }
   }, []);

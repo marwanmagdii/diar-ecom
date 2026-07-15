@@ -3,15 +3,18 @@ import { useStore } from '../../store';
 import { Send, BellRing, Smartphone, Filter, Image as ImageIcon, Package } from 'lucide-react';
 
 export default function PushNotifications() {
-  const { users, products, addToast, t, language } = useStore();
+  const { users, products, config, addToast, t, language } = useStore();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [targetType, setTargetType] = useState('all'); // all, category, city
+  const [targetType, setTargetType] = useState('all'); // all, category, city, specific
   const [targetCategory, setTargetCategory] = useState('');
   const [targetCity, setTargetCity] = useState('');
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+  const anonymousTokens = config?.anonymousTokens || [];
 
   // Extract all unique categories and cities from users
   const availableCategories = Array.from(new Set(users.flatMap(u => Object.keys(u.purchasedCategories || {})))).sort();
@@ -37,7 +40,6 @@ export default function PushNotifications() {
   // Calculate target audience
   const getTargetUsers = () => {
     return users.filter(user => {
-      // Must have at least one FCM token
       if (!user.fcmTokens || user.fcmTokens.size === 0) return false;
       
       if (targetType === 'category' && targetCategory) {
@@ -46,12 +48,17 @@ export default function PushNotifications() {
       if (targetType === 'city' && targetCity) {
         return user.latestAddress && user.latestAddress.includes(targetCity);
       }
+      if (targetType === 'specific') {
+        return selectedUserIds.includes(user.id);
+      }
       return true; // targetType === 'all'
     });
   };
 
   const targetUsers = getTargetUsers();
-  const totalTokens = targetUsers.reduce((sum, user) => sum + user.fcmTokens.size, 0);
+  // Include anonymous tokens only if we are targeting 'all'
+  const activeAnonymousTokens = targetType === 'all' ? anonymousTokens : [];
+  const totalTokens = targetUsers.reduce((sum, user) => sum + user.fcmTokens.size, 0) + activeAnonymousTokens.length;
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -66,8 +73,7 @@ export default function PushNotifications() {
 
     setIsSending(true);
 
-    // Extract all tokens into an array
-    const tokens = [];
+    const tokens = [...activeAnonymousTokens];
     targetUsers.forEach(user => {
       user.fcmTokens.forEach(token => tokens.push(token));
     });
@@ -179,6 +185,9 @@ export default function PushNotifications() {
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                   <input type="radio" checked={targetType === 'city'} onChange={() => setTargetType('city')} /> Specific City
                 </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input type="radio" checked={targetType === 'specific'} onChange={() => setTargetType('specific')} /> Specific Customers
+                </label>
               </div>
 
               {targetType === 'category' && (
@@ -193,9 +202,33 @@ export default function PushNotifications() {
                   {availableCities.map(city => <option key={city} value={city}>{city}</option>)}
                 </select>
               )}
+              {targetType === 'specific' && (
+                <div style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {users.filter(u => u.fcmTokens && u.fcmTokens.size > 0).length === 0 && (
+                    <div style={{ color: '#64748b', fontSize: '13px', textAlign: 'center', padding: '12px' }}>No known customers with active devices found.</div>
+                  )}
+                  {users.filter(u => u.fcmTokens && u.fcmTokens.size > 0).map(user => (
+                    <label key={user.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', padding: '8px', backgroundColor: '#f8fafc', borderRadius: '6px' }}>
+                      <input 
+                        type="checkbox" 
+                        checked={selectedUserIds.includes(user.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) setSelectedUserIds([...selectedUserIds, user.id]);
+                          else setSelectedUserIds(selectedUserIds.filter(id => id !== user.id));
+                        }}
+                        style={{ width: '16px', height: '16px', accentColor: 'var(--primary)' }}
+                      />
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 600 }}>{user.name}</span>
+                        <span style={{ fontSize: '12px', color: '#64748b' }}>{user.phone} • {user.fcmTokens.size} device(s)</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
               
               <div style={{ marginTop: '12px', padding: '12px', backgroundColor: '#f0f9ff', borderRadius: '8px', color: '#0369a1', fontSize: '14px', fontWeight: 500 }}>
-                This message will be sent to <strong>{targetUsers.length} Customers</strong> ({totalTokens} devices).
+                This message will be sent to <strong>{targetType === 'all' ? `All Subscribers (${targetUsers.length} Customers + ${activeAnonymousTokens.length} Anonymous)` : `${targetUsers.length} Customers`}</strong> ({totalTokens} devices).
               </div>
             </section>
 
