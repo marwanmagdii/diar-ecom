@@ -3,9 +3,11 @@ import { Save, Phone, Mail, MapPin, Link as LinkIcon, MessageCircle, Globe, Serv
 import { useStore } from '../../store';
 
 export default function GeneralSettings() {
-  const { config, updateStoreInfo, updateConfig } = useStore();
+  const { config, updateStoreInfo, updateConfig, orders, users } = useStore();
   const { language, setLanguage, t } = useStore();
   const { addToast } = useStore();
+  
+  const [realTimeCapacity, setRealTimeCapacity] = useState(false);
 
   const [storeInfo, setStoreInfo] = useState({
     email: '',
@@ -67,26 +69,91 @@ export default function GeneralSettings() {
 
       <div style={{ display: 'grid', gap: '24px' }}>
         {/* Server Capacity Widget */}
-        <div style={{ backgroundColor: 'var(--surface-container-lowest)', padding: '24px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <h2 className="title-md" style={{ margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Server size={20} color="var(--primary)" /> 
-              {language === 'ar' ? 'سعة الخادم الحالية (Vercel)' : 'Server Capacity (Vercel)'}
-            </h2>
-            <p style={{ margin: 0, color: 'var(--on-surface-variant)', fontSize: '14px' }}>
-              {language === 'ar' ? 'الحد الأقصى للزوار النشطين في نفس الوقت: ~1,000 زائر' : 'Max Concurrent Visitors: ~1,000 visitors'}
-            </p>
-            <p style={{ margin: '4px 0 0 0', color: 'var(--on-surface-variant)', fontSize: '14px' }}>
-              {language === 'ar' ? 'نقل البيانات المسموح: 100 جيجابايت / شهر' : 'Monthly Bandwidth Limit: 100 GB / month'}
-            </p>
-          </div>
-          <div style={{ padding: '12px 24px', backgroundColor: '#ecfdf5', borderRadius: '12px', textAlign: 'center', border: '1px solid #a7f3d0' }}>
-            <div style={{ fontSize: '12px', color: '#065f46', fontWeight: 600, marginBottom: '4px' }}>{language === 'ar' ? 'حالة الخادم' : 'Status'}</div>
-            <div style={{ color: '#047857', fontWeight: 'bold', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Activity size={18} />
-              {language === 'ar' ? 'ممتاز' : 'Excellent'}
+        <div style={{ backgroundColor: 'var(--surface-container-lowest)', padding: '24px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+            <div>
+              <h2 className="title-md" style={{ margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Server size={20} color="var(--primary)" /> 
+                {language === 'ar' ? 'سعة الخادم الحالية (Vercel)' : 'Server Capacity (Vercel)'}
+              </h2>
+              <p style={{ margin: 0, color: 'var(--on-surface-variant)', fontSize: '14px' }}>
+                {language === 'ar' ? 'حساب الاستهلاك المتوقع بناءً على الطلبات والزوار' : 'Calculate expected usage based on orders and visitors'}
+              </p>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '14px', fontWeight: 500 }}>{language === 'ar' ? 'الحساب المباشر' : 'Live Tracking'}</span>
+              <label className="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  checked={realTimeCapacity}
+                  onChange={(e) => setRealTimeCapacity(e.target.checked)}
+                />
+                <span className="toggle-slider"></span>
+              </label>
             </div>
           </div>
+
+          {!realTimeCapacity ? (
+            <div style={{ padding: '16px', backgroundColor: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+              <div>
+                <p style={{ margin: 0, color: '#334155', fontWeight: 500 }}>{language === 'ar' ? 'الحدود القياسية (بدون تتبع مباشر):' : 'Standard Limits (Live tracking OFF):'}</p>
+                <ul style={{ margin: '8px 0 0 16px', padding: 0, color: '#475569', fontSize: '14px' }}>
+                  <li>{language === 'ar' ? 'نقل البيانات: 100 جيجابايت شهرياً' : 'Bandwidth: 100 GB / month'}</li>
+                  <li>{language === 'ar' ? 'الزوار النشطين: ~1,000 زائر في نفس الوقت' : 'Concurrent Visitors: ~1,000 visitors'}</li>
+                </ul>
+              </div>
+              <div style={{ padding: '8px 16px', backgroundColor: '#e2e8f0', borderRadius: '8px', color: '#475569', fontSize: '14px', fontWeight: 600 }}>
+                {language === 'ar' ? 'غير مفعل' : 'Inactive'}
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              {/* Dynamic Calculation Block */}
+              {(() => {
+                // Estimation Logic: 
+                // Base cost = 50 MB
+                // Order = ~10 MB, User Registration = ~5 MB
+                const totalOrders = orders ? orders.length : 0;
+                const totalUsers = users ? users.length : 0;
+                
+                const estimatedUsedMB = 50 + (totalOrders * 10) + (totalUsers * 5);
+                const limitMB = 100000; // 100GB
+                const percentage = Math.min((estimatedUsedMB / limitMB) * 100, 100).toFixed(4);
+                const isWarning = estimatedUsedMB > (limitMB * 0.8); // 80% usage
+
+                return (
+                  <>
+                    <div style={{ padding: '16px', backgroundColor: 'var(--surface-container)', borderRadius: '12px', border: '1px solid var(--outline-variant)' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)', fontWeight: 600, marginBottom: '8px' }}>
+                        {language === 'ar' ? 'استهلاك البيانات الشهري المقدر' : 'Estimated Monthly Bandwidth'}
+                      </div>
+                      <div style={{ fontSize: '24px', fontWeight: 'bold', color: isWarning ? '#ef4444' : 'var(--primary)', marginBottom: '8px' }}>
+                        {(estimatedUsedMB / 1024).toFixed(2)} GB <span style={{ fontSize: '14px', color: 'var(--on-surface-variant)', fontWeight: 'normal' }}>/ 100 GB</span>
+                      </div>
+                      <div style={{ width: '100%', height: '8px', backgroundColor: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${percentage}%`, height: '100%', backgroundColor: isWarning ? '#ef4444' : 'var(--primary)', transition: 'width 0.3s ease' }}></div>
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)', marginTop: '8px', textAlign: 'right' }}>
+                        {percentage}% {language === 'ar' ? 'مستخدم' : 'Used'}
+                      </div>
+                    </div>
+
+                    <div style={{ padding: '16px', backgroundColor: '#ecfdf5', borderRadius: '12px', border: '1px solid #a7f3d0', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                      <div style={{ fontSize: '12px', color: '#065f46', fontWeight: 600, marginBottom: '4px' }}>{language === 'ar' ? 'حالة الخادم' : 'Server Status'}</div>
+                      <div style={{ color: '#047857', fontWeight: 'bold', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Activity size={20} />
+                        {isWarning ? (language === 'ar' ? 'تحذير' : 'Warning') : (language === 'ar' ? 'ممتاز' : 'Excellent')}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#065f46', marginTop: '8px' }}>
+                        {totalOrders} {language === 'ar' ? 'طلب' : 'Orders'} | {totalUsers} {language === 'ar' ? 'مستخدم' : 'Users'}
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          )}
         </div>
 
         {/* System Preferences */}
