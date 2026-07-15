@@ -279,6 +279,7 @@ export default function AdminLayout() {
           <header className="admin-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <button 
+                type="button"
                 className="icon-btn desktop-hidden" 
                 style={{ padding: '8px', cursor: 'pointer', background: 'none', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 onClick={() => setIsMobileMenuOpen(true)}
