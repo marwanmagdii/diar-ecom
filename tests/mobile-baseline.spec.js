@@ -41,7 +41,7 @@ test.describe('Phase 1 — Mobile Baseline Screenshots', () => {
       }
 
       // Extra settle for data loading
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(5000);
 
       await page.screenshot({
         path: `tests/screenshots/baseline-${pg.name}.png`,

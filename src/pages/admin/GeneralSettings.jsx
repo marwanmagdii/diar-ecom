@@ -53,8 +53,8 @@ export default function GeneralSettings() {
 
   return (
     <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 className="headline-sm">{language === 'ar' ? 'الإعدادات العامة' : 'General Settings'}</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+        <h1 className="headline-sm" style={{ margin: 0 }}>{language === 'ar' ? 'الإعدادات العامة' : 'General Settings'}</h1>
         <button 
           onClick={handleSave}
           className="btn btn-primary"

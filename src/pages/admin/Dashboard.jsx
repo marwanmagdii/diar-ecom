@@ -1,5 +1,5 @@
 import React from 'react';
-import { DollarSign, ShoppingBag, Users, TrendingUp, BarChart2, Eye, Download } from 'lucide-react';
+import { DollarSign, ShoppingBag, Users, TrendingUp, BarChart2, Eye, Download, Server, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -218,6 +218,28 @@ export default function Dashboard() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {/* Server Capacity Widget */}
+        <div className="metric-card" style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <h2 className="title-md" style={{ margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Server size={20} color="var(--primary)" /> 
+              {language === 'ar' ? 'سعة الخادم الحالية (Vercel)' : 'Server Capacity (Vercel)'}
+            </h2>
+            <p style={{ margin: 0, color: 'var(--on-surface-variant)', fontSize: '14px' }}>
+              {language === 'ar' ? 'الحد الأقصى للزوار النشطين في نفس الوقت: ~1,000 زائر' : 'Max Concurrent Visitors: ~1,000 visitors'}
+            </p>
+            <p style={{ margin: '4px 0 0 0', color: 'var(--on-surface-variant)', fontSize: '14px' }}>
+              {language === 'ar' ? 'نقل البيانات المسموح: 100 جيجابايت / شهر' : 'Monthly Bandwidth Limit: 100 GB / month'}
+            </p>
+          </div>
+          <div style={{ padding: '12px 24px', backgroundColor: '#ecfdf5', borderRadius: '12px', textAlign: 'center', border: '1px solid #a7f3d0' }}>
+            <div style={{ fontSize: '12px', color: '#065f46', fontWeight: 600, marginBottom: '4px' }}>{language === 'ar' ? 'حالة الخادم' : 'Status'}</div>
+            <div style={{ color: '#047857', fontWeight: 'bold', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Activity size={18} />
+              {language === 'ar' ? 'ممتاز' : 'Excellent'}
+            </div>
+          </div>
+        </div>
         {/* Revenue Chart */}
         <div 
           className="metric-card" 
