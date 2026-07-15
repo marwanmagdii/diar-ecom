@@ -45,6 +45,7 @@ import PageTracker from './components/PageTracker';
 import ToastContainer from './components/ToastContainer';
 import { useStore } from './store';
 import { useEffect } from 'react';
+import { messaging, onMessage } from './firebase';
 
 function App() {
   const fetchConfig = useStore(state => state.fetchConfig);
@@ -59,6 +60,22 @@ function App() {
     const savedLang = localStorage.getItem('storeLanguage');
     if (savedLang) setLanguage(savedLang);
     else setLanguage('ar');
+
+    // Handle foreground messages
+    if (messaging) {
+      const unsubscribe = onMessage(messaging, (payload) => {
+        console.log("Foreground message received: ", payload);
+        if ('serviceWorker' in navigator && Notification.permission === 'granted') {
+          navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification(
+              payload.notification.title || "New Notification",
+              { body: payload.notification.body || "", data: payload.data }
+            );
+          });
+        }
+      });
+      return () => unsubscribe();
+    }
   }, [fetchConfig, setLanguage]);
 
   const clarityProjectId = useStore(state => state.config?.clarityProjectId);
