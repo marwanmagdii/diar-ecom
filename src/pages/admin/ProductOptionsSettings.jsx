@@ -134,7 +134,7 @@ export default function ProductOptionsSettings() {
         </button>
       </div>
       
-      <div className="card" style={{ maxWidth: '800px' }}>
+      <div className="card" style={{ maxWidth: '1200px' }}>
         <h2 className="headline-sm mb-2">{language === 'ar' ? 'إعدادات الخيارات العامة' : 'Global Option Configurations'}</h2>
         <p className="body-md text-on-surface-variant mb-4">
           {language === 'ar' ? 'حدد الخصائص (مثل اللون، المقاس) والقيم المسموح بها. عند إضافة منتج، يمكنك تحديد هذه الخيارات لبناء المتغيرات بسرعة!' : 'Define the properties (like Color, Size) and their allowed predefined values. When adding a product, you can select from these checkboxes to quickly build variants!'}

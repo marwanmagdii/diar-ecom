@@ -105,7 +105,7 @@ export default function CreateInfluencer() {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header and Breadcrumbs removed as they are now in the top navbar */}
 
       <div className="metric-card" style={{ padding: '32px', backgroundColor: '#ffffff', borderRadius: '12px' }}>
