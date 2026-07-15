@@ -38,6 +38,9 @@ export default function GeneralSettings() {
     if (config?.clarityProjectId !== undefined) {
       setClarityProjectId(config.clarityProjectId);
     }
+    if (config?.realTimeCapacity !== undefined) {
+      setRealTimeCapacity(config.realTimeCapacity);
+    }
   }, [config]);
 
   const handleChange = (e) => {
@@ -47,7 +50,7 @@ export default function GeneralSettings() {
 
   const handleSave = () => {
     if (updateConfig) {
-      updateConfig({ storeInfo, clarityProjectId });
+      updateConfig({ storeInfo, clarityProjectId, realTimeCapacity });
     } else {
       updateStoreInfo(storeInfo);
     }
@@ -56,8 +59,7 @@ export default function GeneralSettings() {
 
   return (
     <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <h1 className="headline-sm" style={{ margin: 0 }}>{language === 'ar' ? 'الإعدادات العامة' : 'General Settings'}</h1>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
         <button 
           onClick={handleSave}
           className="btn btn-primary"

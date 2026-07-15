@@ -68,11 +68,21 @@ export default function AdminLayout() {
 
         {/* Sidebar */}
         <aside className={`admin-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''} ${isDesktopCollapsed ? 'collapsed' : ''}`} style={{ transition: 'width 0.3s ease' }}>
-          <div className="admin-logo" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Link to="/" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '20px', fontWeight: 700 }}>
+          <div className="admin-logo" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+            <Link to="/" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '20px', fontWeight: 700 }} className={isDesktopCollapsed ? 'mobile-hidden' : ''}>
               <img src="/logo_transparent.svg" alt="Admin" style={{ height: '32px', width: 'auto', flexShrink: 0 }} />
               <span className="nav-link-text">Admin</span>
             </Link>
+            
+            <button 
+              className="icon-btn desktop-menu-btn" 
+              style={{ cursor: 'pointer', background: 'none', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', position: isDesktopCollapsed ? 'static' : 'absolute', right: 0 }}
+              onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
+              title={language === 'ar' ? 'طي / توسيع' : 'Collapse / Expand'}
+            >
+              {isDesktopCollapsed ? <PanelLeft size={24} /> : <PanelLeftClose size={24} />}
+            </button>
+            
             <button className="icon-btn mobile-menu-btn" style={{ display: 'none' }} onClick={() => setIsMobileMenuOpen(false)}>
               <X size={20} />
             </button>
@@ -250,17 +260,11 @@ export default function AdminLayout() {
           <header className="admin-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <button 
-                className="icon-btn" 
-                style={{ padding: '8px', cursor: 'pointer', background: 'none', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                onClick={() => {
-                  if (window.innerWidth <= 992) {
-                    setIsMobileMenuOpen(true);
-                  } else {
-                    setIsDesktopCollapsed(!isDesktopCollapsed);
-                  }
-                }}
+                className="icon-btn mobile-only-btn" 
+                style={{ padding: '8px', cursor: 'pointer', background: 'none', border: 'none', display: 'none', alignItems: 'center', justifyContent: 'center' }}
+                onClick={() => setIsMobileMenuOpen(true)}
               >
-                {isDesktopCollapsed ? <PanelLeft size={24} /> : <PanelLeftClose size={24} />}
+                <Menu size={24} />
               </button>
               <h1 className="headline-md m-0">
                 {getHeaderTitle()}
