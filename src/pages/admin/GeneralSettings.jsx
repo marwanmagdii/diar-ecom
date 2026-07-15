@@ -46,9 +46,10 @@ export default function GeneralSettings() {
   };
 
   const handleSave = () => {
-    updateStoreInfo(storeInfo);
     if (updateConfig) {
-      updateConfig({ clarityProjectId });
+      updateConfig({ storeInfo, clarityProjectId });
+    } else {
+      updateStoreInfo(storeInfo);
     }
     addToast(language === 'ar' ? 'تم حفظ الإعدادات بنجاح' : 'Settings saved successfully', 'success');
   };
