@@ -79,7 +79,7 @@ function App() {
         // because it causes duplicate bubbles. Instead, we just show a friendly in-app toast!
         const addToast = useStore.getState().addToast;
         if (addToast && payload?.notification?.title) {
-          addToast({ message: payload.notification.title, type: 'success' });
+          addToast(payload.notification.title, 'success');
         }
       });
       return () => unsubscribe();
