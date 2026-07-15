@@ -75,11 +75,11 @@ function App() {
     if (messaging) {
       const unsubscribe = onMessage(messaging, (payload) => {
         console.log("Foreground message received: ", payload);
-        // If the user is actively looking at the site, we shouldn't trigger an OS-level push notification 
-        // because it causes duplicate bubbles. Instead, we just show a friendly in-app toast!
         const addToast = useStore.getState().addToast;
-        if (addToast && payload?.notification?.title) {
-          addToast(payload.notification.title, 'success');
+        if (addToast) {
+          // Firebase Web SDK sometimes abstracts the notification object when webpush block is used
+          const title = payload?.notification?.title || payload?.data?.title || 'New Notification Received';
+          addToast(title, 'success');
         }
       });
       return () => unsubscribe();
