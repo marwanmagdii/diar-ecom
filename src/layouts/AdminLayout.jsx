@@ -271,27 +271,30 @@ export default function AdminLayout() {
               </h1>
             </div>
             {/* Right side + icon for quick action on mobile */}
-            {(() => {
-              const path = location.pathname;
-              if (path.includes('/new') || path.includes('/edit') || (path.match(/\/products\/[^/]+$/) && !path.endsWith('products'))) return null;
-              if (path.includes('/new') || path.match(/\/edit$/) || path.split('/').length > 3) return null;
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div id="admin-header-actions"></div>
+              {(() => {
+                const path = location.pathname;
+                if (path.includes('/new') || path.includes('/edit') || (path.match(/\/products\/[^/]+$/) && !path.endsWith('products'))) return null;
+                if (path.includes('/new') || path.match(/\/edit$/) || path.split('/').length > 3) return null;
 
-              let createPath = null;
-              if (path === '/diaradmin26' || path === '/diaradmin26/') createPath = '/diaradmin26/orders/new';
-              else if (path.match(/^\/diaradmin26\/orders(\/|$)/)) createPath = '/diaradmin26/orders/new';
-              else if (path.match(/^\/diaradmin26\/products(\/|$)/)) createPath = '/diaradmin26/products/new';
-              else if (path.match(/^\/diaradmin26\/influencers(\/|$)/)) createPath = '/diaradmin26/influencers/new';
-              
-              if (!createPath) return null;
-              
-              return (
-                <div className="desktop-hidden" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <button className="btn btn-primary" style={{ padding: '8px', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => window.location.href = createPath}>
-                    <Plus size={20} />
-                  </button>
-                </div>
-              );
-            })()}
+                let createPath = null;
+                if (path === '/diaradmin26' || path === '/diaradmin26/') createPath = '/diaradmin26/orders/new';
+                else if (path.match(/^\/diaradmin26\/orders(\/|$)/)) createPath = '/diaradmin26/orders/new';
+                else if (path.match(/^\/diaradmin26\/products(\/|$)/)) createPath = '/diaradmin26/products/new';
+                else if (path.match(/^\/diaradmin26\/influencers(\/|$)/)) createPath = '/diaradmin26/influencers/new';
+                
+                if (!createPath) return null;
+                
+                return (
+                  <div className="desktop-hidden">
+                    <button className="btn btn-primary" style={{ padding: '8px', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => window.location.href = createPath}>
+                      <Plus size={20} />
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
           </header>
           <div className="admin-content" style={{ overflowY: 'auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 72px)' }}>
             <Outlet />

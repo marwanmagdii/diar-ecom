@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Save, Phone, Mail, MapPin, Link as LinkIcon, MessageCircle, Globe, Server, Activity } from 'lucide-react';
 import { useStore } from '../../store';
 
@@ -58,8 +59,8 @@ export default function GeneralSettings() {
   };
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+    <div style={{ padding: '24px', width: '100%', margin: '0 auto' }}>
+      {document.getElementById('admin-header-actions') && createPortal(
         <button 
           onClick={handleSave}
           className="btn btn-primary"
@@ -67,7 +68,11 @@ export default function GeneralSettings() {
         >
           <Save size={18} />
           {language === 'ar' ? 'حفظ التغييرات' : 'Save Changes'}
-        </button>
+        </button>,
+        document.getElementById('admin-header-actions')
+      )}
+      
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
       </div>
 
       <div style={{ display: 'grid', gap: '24px' }}>
