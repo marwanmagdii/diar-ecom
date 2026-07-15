@@ -58,7 +58,14 @@ export default function StoreLayout() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token })
-          }).catch(console.error);
+          })
+          .then(res => res.json())
+          .then(data => {
+             if (data.error) alert("API Error: " + data.error);
+          })
+          .catch(err => alert("Network Error: " + err.message));
+        } else {
+          alert("Firebase failed to get your device token! Check console.");
         }
       });
     }
