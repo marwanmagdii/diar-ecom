@@ -58,7 +58,7 @@ function App() {
     fetchOrders();
     const savedLang = localStorage.getItem('storeLanguage');
     if (savedLang) setLanguage(savedLang);
-    else setLanguage('en');
+    else setLanguage('ar');
   }, [fetchConfig, setLanguage]);
 
   const clarityProjectId = useStore(state => state.config?.clarityProjectId);
