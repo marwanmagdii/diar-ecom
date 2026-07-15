@@ -16,6 +16,8 @@ import ordersHandler from './api/orders.js';
 import ordersIdHandler from './api/orders/[id].js';
 import configHandler from './api/config.js';
 import logsHandler from './api/logs.js';
+import subscribeHandler from './api/subscribe.js';
+import notificationsHandler from './api/notifications.js';
 
 const createVercelReq = (req) => {
   return {
@@ -46,6 +48,8 @@ app.all('/api/orders', wrapHandler(ordersHandler));
 app.all('/api/orders/:id', wrapHandler(ordersIdHandler));
 app.all('/api/config', wrapHandler(configHandler));
 app.all('/api/logs', wrapHandler(logsHandler));
+app.all('/api/subscribe', wrapHandler(subscribeHandler));
+app.all('/api/notifications', wrapHandler(notificationsHandler));
 
 const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => {
