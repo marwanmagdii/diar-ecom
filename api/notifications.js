@@ -47,15 +47,21 @@ export default async function handler(req, res) {
       message.notification.imageUrl = imageUrl;
     }
 
+    const baseUrl = req.headers.origin || 'https://diar-romya.vercel.app';
+    const linkUrl = productId ? `${baseUrl}/products/${productId}` : `${baseUrl}/`;
+
     if (productId) {
-      message.data = {
-        url: `/products/${productId}`
-      };
+      message.data = { url: `/products/${productId}` };
     } else {
-      message.data = {
-        url: `/`
-      };
+      message.data = { url: `/` };
     }
+
+    // This is the OFFICIAL way to make Firebase open a URL on Web when clicked
+    message.webpush = {
+      fcmOptions: {
+        link: linkUrl
+      }
+    };
 
     // Firebase sendMulticast limits to 500 tokens per call
     const CHUNK_SIZE = 500;
