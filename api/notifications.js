@@ -39,18 +39,19 @@ export default async function handler(req, res) {
     const baseUrl = req.headers.origin || 'https://diar-romya.vercel.app';
 
     const message = {
+      notification: {
+        title: title || 'New Notification',
+        body: body || '',
+      },
       tokens: uniqueTokens,
       data: {
         url: productId ? `/product/${productId}` : `/`
       },
       webpush: {
-        headers: {
-          Urgency: 'high'
-        },
+        headers: { Urgency: 'high' },
         notification: {
           title: title || 'New Notification',
           body: body || '',
-          icon: 'https://diar-romya.vercel.app/vite.svg',
           vibrate: [200, 100, 200]
         },
         fcmOptions: {
@@ -60,6 +61,7 @@ export default async function handler(req, res) {
     };
 
     if (imageUrl) {
+      message.notification.imageUrl = imageUrl;
       message.webpush.notification.image = imageUrl;
     }
 
