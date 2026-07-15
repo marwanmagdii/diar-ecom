@@ -242,8 +242,8 @@ export default function Checkout() {
             return opts.length > 0 ? opts.join('') : '';
           };
 
-          const waItemText = cart.map(item => `- (${item.qty}) ${item.titleAr || item.title} - ${item.price.toFixed(2)} ج.م${buildItemOptionsText(item, false)}`).join('\n');
-          const tgItemText = cart.map(item => `\u200F- (${item.qty}) <a href="${window.location.origin}/diaradmin26/products/${encodeURIComponent(item.id)}">${item.titleAr || item.title}</a> - \u200E${item.price.toFixed(2)} ج.م${buildItemOptionsText(item, true)}`).join('\n');
+          const waItemText = cart.map(item => `- (${item.qty}) ${item.titleAr || item.title}\n  - السعر: ${item.price.toFixed(2)} ج.م${buildItemOptionsText(item, false)}`).join('\n');
+          const tgItemText = cart.map(item => `\u200F- (${item.qty}) <a href="${window.location.origin}/diaradmin26/products/${encodeURIComponent(item.id)}">${item.titleAr || item.title}</a>\n\u200F  ▪️ \u200Eالسعر: \u200E${item.price.toFixed(2)} ج.م${buildItemOptionsText(item, true)}`).join('\n');
 
           const waText = `مرحباً ${newOrder.customer}،
 لقد استلمنا طلبك رقم ${assignedOrderId}.
