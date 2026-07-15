@@ -3,8 +3,9 @@ import { Outlet, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import { Send } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
-import NotificationBanner from '../components/NotificationBanner';
 import { useStore } from '../store';
+import { requestNotificationPermission } from '../firebase';
+import { useEffect } from 'react';
 
 function Footer() {
   const { t, language } = useStore();
@@ -46,6 +47,18 @@ function Footer() {
 }
 
 export default function StoreLayout() {
+  useEffect(() => {
+    // Automatically trigger the native browser notification prompt on load
+    const timer = setTimeout(() => {
+      if ('Notification' in window && Notification.permission === 'default') {
+        requestNotificationPermission().then(token => {
+          if (token) localStorage.setItem('fcm_token', token);
+        });
+      }
+    }, 3000); // 3 second delay to let the page load first
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <Header />
@@ -54,7 +67,6 @@ export default function StoreLayout() {
       </div>
       <Footer />
       <BottomNav />
-      <NotificationBanner />
     </>
   );
 }
