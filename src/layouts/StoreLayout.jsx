@@ -48,8 +48,8 @@ function Footer() {
 
 export default function StoreLayout() {
   useEffect(() => {
-    // Automatically trigger the native browser notification prompt on load instantly
-    if ('Notification' in window && Notification.permission === 'default') {
+    // Automatically trigger or refresh the native browser notification prompt
+    if ('Notification' in window && (Notification.permission === 'default' || Notification.permission === 'granted')) {
       requestNotificationPermission().then(token => {
         if (token) {
           localStorage.setItem('fcm_token', token);
