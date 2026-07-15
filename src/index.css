@@ -1405,26 +1405,7 @@ html[dir="rtl"] .variant-circle {
     border: none;
     color: var(--on-surface-variant);
   }
-  .admin-sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: -260px;
-    z-index: 1050;
-    transition: transform 0.3s ease;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-  }
-  html[dir="rtl"] .admin-sidebar {
-    left: auto;
-    right: -260px;
-    box-shadow: -2px 0 8px rgba(0,0,0,0.1);
-  }
-  .admin-sidebar.mobile-open {
-    transform: translateX(260px);
-  }
-  html[dir="rtl"] .admin-sidebar.mobile-open {
-    transform: translateX(-260px);
-  }
+
   .admin-header {
     padding: 0 16px;
   }
