@@ -243,7 +243,7 @@ export default function Checkout() {
           };
 
           const waItemText = cart.map(item => `- (${item.qty}) ${item.titleAr || item.title} - ${item.price.toFixed(2)} ج.م${buildItemOptionsText(item, false)}`).join('\n');
-          const tgItemText = cart.map(item => `\u200F- (${item.qty}) ${item.titleAr || item.title} - \u200E${item.price.toFixed(2)} ج.م${buildItemOptionsText(item, true)}`).join('\n');
+          const tgItemText = cart.map(item => `\u200F- (${item.qty}) <a href="${window.location.origin}/diaradmin26/products/${encodeURIComponent(item.id)}">${item.titleAr || item.title}</a> - \u200E${item.price.toFixed(2)} ج.م${buildItemOptionsText(item, true)}`).join('\n');
 
           const waText = `مرحباً ${newOrder.customer}،
 لقد استلمنا طلبك رقم ${assignedOrderId}.
@@ -266,7 +266,7 @@ ${newOrder.shipping > 0 ? `الشحن: ${newOrder.shipping.toFixed(2)} ج.م\n` 
           const waMessage = encodeURIComponent(waText);
           const waLink = `https://wa.me/${waPhone}?text=${waMessage}`;
 
-          const orderLink = `${window.location.origin}/admin/orders/${encodeURIComponent(assignedOrderId)}`;
+          const orderLink = `${window.location.origin}/diaradmin26/orders/${encodeURIComponent(assignedOrderId)}`;
           const message = `🛒 <b>طلب جديد ${assignedOrderId}</b>
 👤 <b>العميل:</b> ${newOrder.customer}
 📞 <b>رقم الهاتف:</b> <a href="${waLink}">\u200E+${waPhone}</a>
