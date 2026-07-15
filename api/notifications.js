@@ -58,6 +58,10 @@ export default async function handler(req, res) {
 
     // This is the OFFICIAL way to make Firebase open a URL on Web when clicked
     message.webpush = {
+      notification: {
+        icon: '/vite.svg',
+        vibrate: [200, 100, 200]
+      },
       fcmOptions: {
         link: linkUrl
       }
