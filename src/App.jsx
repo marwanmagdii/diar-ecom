@@ -55,6 +55,15 @@ function App() {
   const setLanguage = useStore(state => state.setLanguage);
 
   useEffect(() => {
+    // Force Service Worker Update to fix aggressive mobile caching
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(registration => {
+          registration.update(); // Forces the browser to check for a new version
+        })
+        .catch(err => console.log('SW registration failed: ', err));
+    }
+
     fetchConfig();
     fetchProducts();
     fetchOrders();
