@@ -96,7 +96,11 @@ export default function PushNotifications() {
       if (response.ok) {
         addToast(`Successfully sent ${result.successCount} notifications!`, 'success');
         if (result.failureCount > 0) {
-          addToast(`${result.failureCount} notifications failed to send.`, 'error');
+          const errorMessages = result.responses
+            .filter(r => !r.success)
+            .map(r => r.error?.message || r.error?.code || 'Unknown error');
+          const uniqueErrors = Array.from(new Set(errorMessages));
+          addToast(`${result.failureCount} failed: ${uniqueErrors.join(' | ')}`, 'error');
         }
         setTitle('');
         setBody('');
