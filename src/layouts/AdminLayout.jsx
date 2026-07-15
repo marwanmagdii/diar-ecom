@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus, PanelLeft, PanelLeftClose } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus, PanelLeft, PanelLeftClose, BellRing } from 'lucide-react';
 import { useStore } from '../store';
 
 export default function AdminLayout() {
@@ -35,6 +35,7 @@ export default function AdminLayout() {
     { name: t('products'), path: '/diaradmin26/products', icon: <Package size={20} /> },
     { name: t('promoCodes'), path: '/diaradmin26/promos', icon: <Ticket size={20} /> },
     { name: t('influencers'), path: '/diaradmin26/influencers', icon: <Star size={20} /> },
+    { name: 'Notifications', path: '/diaradmin26/notifications', icon: <BellRing size={20} /> },
     { name: t('settings') || 'Store Settings', path: '/diaradmin26/settings', icon: <Settings size={20} /> },
   ];
 

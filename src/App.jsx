@@ -33,6 +33,7 @@ import CategorySettings from './pages/admin/CategorySettings';
 import LocationSettings from './pages/admin/LocationSettings';
 import ProductOptionsSettings from './pages/admin/ProductOptionsSettings';
 import PromoSettings from './pages/admin/PromoSettings';
+import PushNotifications from './pages/admin/PushNotifications';
 import Influencers from './pages/admin/Influencers';
 import InfluencersAnalysis from './pages/admin/InfluencersAnalysis';
 import CreateInfluencer from './pages/admin/CreateInfluencer';
@@ -138,6 +139,7 @@ function App() {
               <Route path="settings/calculator" element={<ProfitCalculator />} />
               <Route path="settings/logs" element={<ActivityLogs />} />
               <Route path="promos" element={<PromoSettings />} />
+              <Route path="notifications" element={<PushNotifications />} />
               <Route path="influencers" element={<Influencers />} />
               <Route path="influencers/analysis" element={<InfluencersAnalysis />} />
               <Route path="influencers/new" element={<CreateInfluencer />} />

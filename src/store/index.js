@@ -375,13 +375,14 @@ export const useStore = create((set, get) => ({
   },
 
   getTrackingData: () => {
-    if (typeof localStorage === 'undefined') return { deviceId: null, sessionId: null, events: [] };
+    if (typeof localStorage === 'undefined') return { deviceId: null, sessionId: null, fcmToken: null, events: [] };
     get().initTracking();
     const sessionId = localStorage.getItem('diar_session_id');
     const deviceId = localStorage.getItem('diar_device_id');
+    const fcmToken = localStorage.getItem('fcm_token');
     const savedEvents = localStorage.getItem(`diar_events_${sessionId}`);
     const events = savedEvents ? JSON.parse(savedEvents) : [];
-    return { deviceId, sessionId, events };
+    return { deviceId, sessionId, fcmToken, events };
   },
 
   clearTrackingData: () => {
@@ -731,6 +732,7 @@ useStore.subscribe((state, prevState) => {
           orders: [],
           purchasedCategories: {},
           deviceIds: new Set(),
+          fcmTokens: new Set(),
           linkedAccounts: []
         };
       }
@@ -745,6 +747,9 @@ useStore.subscribe((state, prevState) => {
 
       if (order.trackingData && order.trackingData.deviceId) {
         userMap[normalizedPhone].deviceIds.add(order.trackingData.deviceId);
+      }
+      if (order.trackingData && order.trackingData.fcmToken) {
+        userMap[normalizedPhone].fcmTokens.add(order.trackingData.fcmToken);
       }
 
       order.items?.forEach(item => {
