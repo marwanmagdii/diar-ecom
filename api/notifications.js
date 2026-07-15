@@ -1,13 +1,14 @@
-import admin from 'firebase-admin';
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
+import { getMessaging } from 'firebase-admin/messaging';
 
 // Initialize Firebase Admin only once
-if (!admin.apps.length) {
+if (!getApps().length) {
   try {
     const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT;
     if (serviceAccount) {
       const credentials = JSON.parse(serviceAccount);
-      admin.initializeApp({
-        credential: admin.credential.cert(credentials)
+      initializeApp({
+        credential: cert(credentials)
       });
     }
   } catch (err) {
@@ -21,7 +22,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (!admin.apps.length) {
+    if (!getApps().length) {
       return res.status(500).json({ error: 'Firebase Admin not initialized. Please add FIREBASE_SERVICE_ACCOUNT to your environment variables.' });
     }
 
@@ -66,7 +67,7 @@ export default async function handler(req, res) {
       const chunk = uniqueTokens.slice(i, i + CHUNK_SIZE);
       const chunkMessage = { ...message, tokens: chunk };
       
-      const response = await admin.messaging().sendMulticast(chunkMessage);
+      const response = await getMessaging().sendMulticast(chunkMessage);
       totalSuccess += response.successCount;
       totalFailure += response.failureCount;
       allResponses = allResponses.concat(response.responses);
