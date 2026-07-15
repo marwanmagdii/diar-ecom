@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       const chunk = uniqueTokens.slice(i, i + CHUNK_SIZE);
       const chunkMessage = { ...message, tokens: chunk };
       
-      const response = await getMessaging().sendMulticast(chunkMessage);
+      const response = await getMessaging().sendEachForMulticast(chunkMessage);
       totalSuccess += response.successCount;
       totalFailure += response.failureCount;
       allResponses = allResponses.concat(response.responses);
