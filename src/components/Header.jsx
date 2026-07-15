@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingBag, ArrowLeft, Menu, X, Globe, Search, Bell } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Menu, X, Globe, Search } from 'lucide-react';
 import { useStore } from '../store';
-import { requestNotificationPermission } from '../firebase';
 
 export default function Header() {
   const { cartCount, products } = useStore();
@@ -32,16 +31,6 @@ export default function Header() {
 
         
         <div className="header-actions">
-          <button onClick={() => {
-            if ('Notification' in window) {
-              requestNotificationPermission().then(token => {
-                if (token) localStorage.setItem('fcm_token', token);
-              });
-            }
-          }} className="icon-btn" aria-label="Enable Notifications" style={{ color: 'var(--on-surface)' }}>
-            <Bell size={20} />
-          </button>
-          
           <button onClick={toggleLanguage} className="icon-btn lang-btn" aria-label="Toggle Language" style={{ display: 'flex', alignItems: 'center', gap: '4px', width: 'auto', padding: '0 12px', fontSize: '14px', fontWeight: 600, color: 'var(--on-surface)' }}>
             <Globe size={20} />
             <span className="lang-text">{language === 'en' ? 'عربي' : 'EN'}</span>
