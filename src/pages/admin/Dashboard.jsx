@@ -215,6 +215,8 @@ export default function Dashboard() {
             Total registered
           </div>
         </div>
+      </div>
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {/* Revenue Chart */}
         <div 
