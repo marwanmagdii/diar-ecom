@@ -67,6 +67,14 @@ export default async function handler(req, res) {
       }
     };
 
+    // Force Android to deliver immediately, bypassing Doze/Battery saver
+    message.android = {
+      priority: 'high',
+      notification: {
+        sound: 'default'
+      }
+    };
+
     // Firebase sendMulticast limits to 500 tokens per call
     const CHUNK_SIZE = 500;
     let totalSuccess = 0;
