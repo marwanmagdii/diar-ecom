@@ -47,15 +47,6 @@ function Footer() {
 }
 
 export default function StoreLayout() {
-  useEffect(() => {
-    // Automatically trigger the native browser notification prompt on load instantly
-    if ('Notification' in window && Notification.permission === 'default') {
-      requestNotificationPermission().then(token => {
-        if (token) localStorage.setItem('fcm_token', token);
-      });
-    }
-  }, []);
-
   return (
     <>
       <Header />
