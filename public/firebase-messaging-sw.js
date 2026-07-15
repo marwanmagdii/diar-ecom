@@ -25,7 +25,10 @@ messaging.onBackgroundMessage(function(payload) {
     data: payload.data
   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  // We do NOT call showNotification here anymore! 
+  // The Firebase Admin backend now sends a native webpush.notification object, 
+  // which Chrome automatically displays. Calling it here causes duplicate popups.
+  // self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 self.addEventListener('notificationclick', function(event) {
