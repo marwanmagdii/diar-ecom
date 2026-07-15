@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus, PanelLeft, PanelLeftClose, BellRing } from 'lucide-react';
 import { useStore } from '../store';
+import { requestNotificationPermission } from '../firebase';
 
 export default function AdminLayout() {
   const location = useLocation();
@@ -9,6 +10,23 @@ export default function AdminLayout() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(location.pathname.startsWith('/diaradmin26/settings'));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
+
+  useEffect(() => {
+    // Automatically trigger or refresh the native browser notification prompt for Admins
+    if ('Notification' in window && (Notification.permission === 'default' || Notification.permission === 'granted')) {
+      requestNotificationPermission().then(token => {
+        if (token) {
+          localStorage.setItem('fcm_token', token);
+          // Send to backend immediately
+          fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          }).catch(console.error);
+        }
+      }).catch(console.error);
+    }
+  }, []);
 
   useEffect(() => {
     if (location.pathname === '/diaradmin26/settings' && location.hash) {
