@@ -34,7 +34,11 @@ messaging.onBackgroundMessage(function(payload) {
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   
-  const data = event.notification.data || {};
+  let data = event.notification.data || {};
+  if (data.FCM_MSG && data.FCM_MSG.data) {
+    data = data.FCM_MSG.data;
+  }
+
   const urlString = data.url ? data.url : '/';
   const urlToOpen = new URL(urlString, self.location.origin).href;
 

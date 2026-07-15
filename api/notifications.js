@@ -71,9 +71,6 @@ export default async function handler(req, res) {
           body: body || '',
           icon: 'https://diar-romya.vercel.app/logo.png',
           vibrate: [200, 100, 200]
-        },
-        fcmOptions: {
-          link: productId ? `${baseUrl}/product/${productId}` : `${baseUrl}/`
         }
       }
     };
