@@ -75,13 +75,11 @@ function App() {
     if (messaging) {
       const unsubscribe = onMessage(messaging, (payload) => {
         console.log("Foreground message received: ", payload);
-        if ('serviceWorker' in navigator && Notification.permission === 'granted') {
-          navigator.serviceWorker.ready.then(registration => {
-            registration.showNotification(
-              payload.notification.title || "New Notification",
-              { body: payload.notification.body || "", data: payload.data }
-            );
-          });
+        // If the user is actively looking at the site, we shouldn't trigger an OS-level push notification 
+        // because it causes duplicate bubbles. Instead, we just show a friendly in-app toast!
+        const addToast = useStore.getState().addToast;
+        if (addToast && payload?.notification?.title) {
+          addToast({ message: payload.notification.title, type: 'success' });
         }
       });
       return () => unsubscribe();
