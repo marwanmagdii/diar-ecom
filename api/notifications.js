@@ -62,10 +62,6 @@ export default async function handler(req, res) {
       headers: {
         Urgency: 'high'
       },
-      notification: {
-        icon: '/vite.svg',
-        vibrate: [200, 100, 200]
-      },
       fcmOptions: {
         link: linkUrl
       }
