@@ -19,6 +19,9 @@ messaging.onBackgroundMessage(function(payload) {
   const notificationTitle = payload.notification.title || 'New Notification';
   const notificationOptions = {
     body: payload.notification.body || 'You have a new message.',
+    icon: '/vite.svg', // Android drops notifications if an icon is missing!
+    image: payload.notification.imageUrl || null,
+    vibrate: [200, 100, 200],
     data: payload.data
   };
 
