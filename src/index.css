@@ -1515,6 +1515,18 @@ html[dir="rtl"] .variant-circle {
   width: 80px;
   min-width: 80px;
 }
+@media (max-width: 992px) {
+  .admin-sidebar.collapsed {
+    width: 280px;
+    min-width: 280px;
+  }
+  .admin-sidebar.collapsed .admin-logo span {
+    display: inline;
+  }
+  .admin-sidebar.collapsed .nav-link-text {
+    display: inline;
+  }
+}
 .admin-sidebar.collapsed .admin-logo {
   justify-content: center;
   padding: 24px 0;

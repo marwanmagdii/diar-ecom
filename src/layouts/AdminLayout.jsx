@@ -83,7 +83,7 @@ export default function AdminLayout() {
               {isDesktopCollapsed ? <PanelLeft size={24} /> : <PanelLeftClose size={24} />}
             </button>
             
-            <button className="icon-btn mobile-menu-btn" style={{ display: 'none' }} onClick={() => setIsMobileMenuOpen(false)}>
+            <button className="icon-btn mobile-menu-btn desktop-hidden" style={{ background: 'none', border: 'none' }} onClick={() => setIsMobileMenuOpen(false)}>
               <X size={20} />
             </button>
           </div>
@@ -260,8 +260,8 @@ export default function AdminLayout() {
           <header className="admin-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <button 
-                className="icon-btn mobile-only-btn" 
-                style={{ padding: '8px', cursor: 'pointer', background: 'none', border: 'none', display: 'none', alignItems: 'center', justifyContent: 'center' }}
+                className="icon-btn desktop-hidden" 
+                style={{ padding: '8px', cursor: 'pointer', background: 'none', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 onClick={() => setIsMobileMenuOpen(true)}
               >
                 <Menu size={24} />
