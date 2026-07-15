@@ -46,31 +46,39 @@ const NotificationBanner = () => {
   return (
     <div style={{
       position: 'fixed',
-      bottom: '24px',
-      left: '24px',
-      right: '24px',
-      maxWidth: '400px',
-      backgroundColor: '#ffffff',
-      borderRadius: '12px',
-      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-      padding: '16px',
-      zIndex: 9999,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       display: 'flex',
-      flexDirection: 'column',
-      gap: '12px',
-      direction: language === 'ar' ? 'rtl' : 'ltr',
-      margin: language === 'ar' ? '0 0 0 auto' : '0 auto 0 0'
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999,
+      padding: '24px'
     }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ backgroundColor: 'rgba(235, 93, 80, 0.1)', padding: '8px', borderRadius: '50%', color: 'var(--primary)' }}>
-            <Bell size={20} />
+      <div style={{
+        width: '100%',
+        maxWidth: '400px',
+        backgroundColor: '#ffffff',
+        borderRadius: '16px',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        direction: language === 'ar' ? 'rtl' : 'ltr'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ backgroundColor: 'rgba(235, 93, 80, 0.1)', padding: '12px', borderRadius: '50%', color: 'var(--primary)' }}>
+              <Bell size={24} />
+            </div>
+            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: 'var(--on-surface)' }}>
+              {language === 'ar' ? 'تفعيل الإشعارات' : 'Enable Notifications'}
+            </h3>
           </div>
-          <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: 'var(--on-surface)' }}>
-            {language === 'ar' ? 'تفعيل الإشعارات' : 'Enable Notifications'}
-          </h3>
         </div>
-      </div>
       
       <p style={{ margin: 0, fontSize: '14px', color: 'var(--on-surface-variant)', lineHeight: 1.5 }}>
         {language === 'ar' 
@@ -78,19 +86,20 @@ const NotificationBanner = () => {
           : 'Get notified about exclusive flash sales and instant discounts right on your device!'}
       </p>
       
-      <div style={{ display: 'flex', gap: '12px', marginTop: '4px' }}>
-        <button 
-          onClick={handleAllow}
-          style={{ flex: 1, backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
-        >
-          {language === 'ar' ? 'تفعيل' : 'Allow'}
-        </button>
-        <button 
-          onClick={handleDismiss}
-          style={{ flex: 1, backgroundColor: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', padding: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
-        >
-          {language === 'ar' ? 'ليس الآن' : 'Not Now'}
-        </button>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+          <button 
+            onClick={handleAllow}
+            style={{ flex: 1, backgroundColor: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '12px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', transition: 'background-color 0.2s' }}
+          >
+            {language === 'ar' ? 'تفعيل الآن' : 'Allow Now'}
+          </button>
+          <button 
+            onClick={handleDismiss}
+            style={{ flex: 1, backgroundColor: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', padding: '12px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', transition: 'background-color 0.2s' }}
+          >
+            {language === 'ar' ? 'ليس الآن' : 'Not Now'}
+          </button>
+        </div>
       </div>
     </div>
   );
