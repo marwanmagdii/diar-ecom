@@ -18,9 +18,12 @@ export default async function handler(req, res) {
     }
   } else if (req.method === 'PUT') {
     try {
+      const updateData = { ...req.body };
+      delete updateData.anonymousTokens; // Protect from race condition overwrites
+      
       const updatedConfig = await StoreConfig.findOneAndUpdate(
         { id: 'global' },
-        req.body,
+        updateData,
         { new: true, upsert: true }
       );
       res.status(200).json(updatedConfig);

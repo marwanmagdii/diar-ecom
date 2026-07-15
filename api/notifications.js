@@ -1,5 +1,6 @@
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
+import dbConnect from './_utils/dbConnect.js';
 
 // Initialize Firebase Admin only once
 if (!getApps().length) {
@@ -92,6 +93,29 @@ export default async function handler(req, res) {
       totalSuccess += response.successCount;
       totalFailure += response.failureCount;
       allResponses = allResponses.concat(response.responses);
+
+      // Clean up invalid tokens automatically
+      if (response.failureCount > 0) {
+        const failedTokens = [];
+        response.responses.forEach((resp, idx) => {
+          if (!resp.success) {
+            failedTokens.push(chunk[idx]);
+          }
+        });
+        
+        if (failedTokens.length > 0) {
+          try {
+            const StoreConfig = require('./_models/StoreConfig.js').default;
+            await dbConnect();
+            await StoreConfig.findOneAndUpdate(
+              { id: 'global' },
+              { $pullAll: { anonymousTokens: failedTokens } }
+            );
+          } catch (err) {
+            console.error('Failed to cleanup tokens:', err);
+          }
+        }
+      }
     }
 
     return res.status(200).json({
