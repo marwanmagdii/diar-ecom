@@ -100,6 +100,7 @@ export default function GeneralSettings() {
                 <p style={{ margin: 0, color: '#334155', fontWeight: 500 }}>{language === 'ar' ? 'الحدود القياسية (بدون تتبع مباشر):' : 'Standard Limits (Live tracking OFF):'}</p>
                 <ul style={{ margin: '8px 0 0 16px', padding: 0, color: '#475569', fontSize: '14px' }}>
                   <li>{language === 'ar' ? 'نقل البيانات: 100 جيجابايت شهرياً' : 'Bandwidth: 100 GB / month'}</li>
+                  <li>{language === 'ar' ? 'طلبات الخادم (API): 1,000,000 طلب شهرياً' : 'API Requests: 1,000,000 / month'}</li>
                   <li>{language === 'ar' ? 'الزوار النشطين: ~1,000 زائر في نفس الوقت' : 'Concurrent Visitors: ~1,000 visitors'}</li>
                 </ul>
               </div>
@@ -112,15 +113,24 @@ export default function GeneralSettings() {
               {/* Dynamic Calculation Block */}
               {(() => {
                 // Estimation Logic: 
-                // Base cost = 50 MB
-                // Order = ~10 MB, User Registration = ~5 MB
+                // Order = ~10 MB and 15 API Requests
+                // User Registration/Visit = ~5 MB and 10 API Requests
                 const totalOrders = orders ? orders.length : 0;
                 const totalUsers = users ? users.length : 0;
                 
+                // Bandwidth: 100 GB = 100,000 MB limit
                 const estimatedUsedMB = 50 + (totalOrders * 10) + (totalUsers * 5);
-                const limitMB = 100000; // 100GB
-                const percentage = Math.min((estimatedUsedMB / limitMB) * 100, 100).toFixed(4);
-                const isWarning = estimatedUsedMB > (limitMB * 0.8); // 80% usage
+                const limitMB = 100000; 
+                const bandwidthPercentage = Math.min((estimatedUsedMB / limitMB) * 100, 100).toFixed(4);
+                const isWarningBW = estimatedUsedMB > (limitMB * 0.8);
+
+                // API Requests (Function Invocations): 1,000,000 limit per month
+                const estimatedRequests = 200 + (totalOrders * 15) + (totalUsers * 10);
+                const limitRequests = 1000000;
+                const requestsPercentage = Math.min((estimatedRequests / limitRequests) * 100, 100).toFixed(4);
+                const isWarningReq = estimatedRequests > (limitRequests * 0.8);
+
+                const isWarning = isWarningBW || isWarningReq;
 
                 return (
                   <>
@@ -128,14 +138,29 @@ export default function GeneralSettings() {
                       <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)', fontWeight: 600, marginBottom: '8px' }}>
                         {language === 'ar' ? 'استهلاك البيانات الشهري المقدر' : 'Estimated Monthly Bandwidth'}
                       </div>
-                      <div style={{ fontSize: '24px', fontWeight: 'bold', color: isWarning ? '#ef4444' : 'var(--primary)', marginBottom: '8px' }}>
+                      <div style={{ fontSize: '24px', fontWeight: 'bold', color: isWarningBW ? '#ef4444' : 'var(--primary)', marginBottom: '8px' }}>
                         {(estimatedUsedMB / 1024).toFixed(2)} GB <span style={{ fontSize: '14px', color: 'var(--on-surface-variant)', fontWeight: 'normal' }}>/ 100 GB</span>
                       </div>
                       <div style={{ width: '100%', height: '8px', backgroundColor: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
-                        <div style={{ width: `${percentage}%`, height: '100%', backgroundColor: isWarning ? '#ef4444' : 'var(--primary)', transition: 'width 0.3s ease' }}></div>
+                        <div style={{ width: `${bandwidthPercentage}%`, height: '100%', backgroundColor: isWarningBW ? '#ef4444' : 'var(--primary)', transition: 'width 0.3s ease' }}></div>
                       </div>
                       <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)', marginTop: '8px', textAlign: 'right' }}>
-                        {percentage}% {language === 'ar' ? 'مستخدم' : 'Used'}
+                        {bandwidthPercentage}% {language === 'ar' ? 'مستخدم' : 'Used'}
+                      </div>
+                    </div>
+
+                    <div style={{ padding: '16px', backgroundColor: 'var(--surface-container)', borderRadius: '12px', border: '1px solid var(--outline-variant)' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)', fontWeight: 600, marginBottom: '8px' }}>
+                        {language === 'ar' ? 'طلبات الخادم الشهرية المقدرة' : 'Estimated Monthly API Requests'}
+                      </div>
+                      <div style={{ fontSize: '24px', fontWeight: 'bold', color: isWarningReq ? '#ef4444' : 'var(--primary)', marginBottom: '8px' }}>
+                        {estimatedRequests.toLocaleString()} <span style={{ fontSize: '14px', color: 'var(--on-surface-variant)', fontWeight: 'normal' }}>/ 1M</span>
+                      </div>
+                      <div style={{ width: '100%', height: '8px', backgroundColor: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${requestsPercentage}%`, height: '100%', backgroundColor: isWarningReq ? '#ef4444' : 'var(--primary)', transition: 'width 0.3s ease' }}></div>
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)', marginTop: '8px', textAlign: 'right' }}>
+                        {requestsPercentage}% {language === 'ar' ? 'مستخدم' : 'Used'}
                       </div>
                     </div>
 
