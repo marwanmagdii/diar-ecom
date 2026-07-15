@@ -56,14 +56,27 @@ export default async function handler(req, res) {
       };
     }
 
-    // Send multicast message
-    const response = await admin.messaging().sendMulticast(message);
+    // Firebase sendMulticast limits to 500 tokens per call
+    const CHUNK_SIZE = 500;
+    let totalSuccess = 0;
+    let totalFailure = 0;
+    let allResponses = [];
+
+    for (let i = 0; i < uniqueTokens.length; i += CHUNK_SIZE) {
+      const chunk = uniqueTokens.slice(i, i + CHUNK_SIZE);
+      const chunkMessage = { ...message, tokens: chunk };
+      
+      const response = await admin.messaging().sendMulticast(chunkMessage);
+      totalSuccess += response.successCount;
+      totalFailure += response.failureCount;
+      allResponses = allResponses.concat(response.responses);
+    }
 
     return res.status(200).json({
       success: true,
-      successCount: response.successCount,
-      failureCount: response.failureCount,
-      responses: response.responses
+      successCount: totalSuccess,
+      failureCount: totalFailure,
+      responses: allResponses
     });
 
   } catch (error) {
