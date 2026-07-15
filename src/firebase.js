@@ -24,11 +24,17 @@ try {
 export const requestNotificationPermission = async () => {
   if (!messaging) return null;
   try {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      const currentToken = await getToken(messaging, { 
-        vapidKey: 'BLC9rCjU5i_D1H99wAQpZeraOhJHgoaeyHZgBAoSqQPSdvBaTPBZGlHFqp5H5_VumsmiQ6ZFQK9sIEKRyEAcRBk'
-      });
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        let swRegistration = null;
+        if ('serviceWorker' in navigator) {
+          swRegistration = await navigator.serviceWorker.ready;
+        }
+
+        const currentToken = await getToken(messaging, { 
+          vapidKey: 'BLC9rCjU5i_D1H99wAQpZeraOhJHgoaeyHZgBAoSqQPSdvBaTPBZGlHFqp5H5_VumsmiQ6ZFQK9sIEKRyEAcRBk',
+          serviceWorkerRegistration: swRegistration
+        });
       if (currentToken) {
         console.log('FCM Token received successfully!');
         return currentToken;
