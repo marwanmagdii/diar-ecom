@@ -17,10 +17,27 @@ async function convertSvgToPng() {
   // Set viewport to 192x192, which is the standard push icon size
   await page.setViewportSize({ width: 192, height: 192 });
   
-  // Take screenshot with transparent background
+  // Take screenshot with solid white background
+  await page.evaluate(() => {
+    document.body.style.backgroundColor = 'white';
+    document.body.style.margin = '0';
+    document.body.style.padding = '0';
+    document.body.style.display = 'flex';
+    document.body.style.justifyContent = 'center';
+    document.body.style.alignItems = 'center';
+    document.body.style.height = '100vh';
+    
+    // Scale SVG slightly so it has some padding
+    const svg = document.querySelector('svg');
+    if (svg) {
+      svg.style.width = '70%';
+      svg.style.height = '70%';
+    }
+  });
+
   await page.screenshot({ 
     path: path.resolve(__dirname, '../public/logo.png'),
-    omitBackground: true,
+    omitBackground: false,
     clip: { x: 0, y: 0, width: 192, height: 192 }
   });
   

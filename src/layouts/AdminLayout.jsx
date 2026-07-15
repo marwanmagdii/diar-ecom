@@ -89,7 +89,7 @@ export default function AdminLayout() {
         <aside className={`admin-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''} ${isDesktopCollapsed ? 'collapsed' : ''}`} style={{ transition: 'width 0.3s ease' }}>
           <div className="admin-logo" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
             <Link to="/" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '20px', fontWeight: 700 }} className={isDesktopCollapsed ? 'mobile-hidden' : ''}>
-              <img src="/logo_transparent.svg" alt="Admin" style={{ height: '32px', width: 'auto', flexShrink: 0 }} />
+              <img src="/logo_transparent.svg" alt="Admin" style={{ height: '48px', width: 'auto', flexShrink: 0 }} />
               <span className="nav-link-text">Admin</span>
             </Link>
             

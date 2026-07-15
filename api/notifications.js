@@ -2,6 +2,7 @@ import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
 import dbConnect from './_utils/dbConnect.js';
 import StoreConfig from './_models/StoreConfig.js';
+import NotificationHistory from './_models/NotificationHistory.js';
 
 // Initialize Firebase Admin only once
 if (!getApps().length) {
@@ -28,11 +29,25 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Firebase Admin not initialized. Please add FIREBASE_SERVICE_ACCOUNT to your environment variables.' });
     }
 
-    const { title, body, imageUrl, tokens, productId } = req.body;
+    const { title, body, imageUrl, tokens, productId, targetType } = req.body;
 
     if (!tokens || !Array.isArray(tokens) || tokens.length === 0) {
       return res.status(400).json({ error: 'No tokens provided' });
     }
+
+    await dbConnect();
+
+    // Create History Record
+    const historyRecord = await NotificationHistory.create({
+      title: title || 'New Notification',
+      body: body || '',
+      imageUrl: imageUrl || null,
+      productId: productId || null,
+      targetType: targetType || 'all',
+      successCount: 0,
+      failureCount: 0,
+      clicks: []
+    });
 
     // Deduplicate tokens
     const uniqueTokens = Array.from(new Set(tokens));
@@ -46,7 +61,8 @@ export default async function handler(req, res) {
       },
       tokens: uniqueTokens,
       data: {
-        url: productId ? `/product/${productId}` : `/`
+        url: productId ? `/product/${productId}` : `/`,
+        notificationId: historyRecord._id.toString()
       },
       webpush: {
         headers: { Urgency: 'high' },
@@ -75,7 +91,7 @@ export default async function handler(req, res) {
       }
     };
 
-    // Firebase sendMulticast limits to 500 tokens per call
+    // Firebase sendEach limits to 500 messages per call
     const CHUNK_SIZE = 500;
     let totalSuccess = 0;
     let totalFailure = 0;
@@ -83,9 +99,17 @@ export default async function handler(req, res) {
 
     for (let i = 0; i < uniqueTokens.length; i += CHUNK_SIZE) {
       const chunk = uniqueTokens.slice(i, i + CHUNK_SIZE);
-      const chunkMessage = { ...message, tokens: chunk };
+      const messages = chunk.map(token => {
+        // Deep copy the base message
+        const individualMessage = JSON.parse(JSON.stringify(message));
+        individualMessage.token = token;
+        delete individualMessage.tokens; // Remove the tokens array from the base message
+        // Inject the specific token into the data payload so the Service Worker knows who clicked
+        individualMessage.data.token = token;
+        return individualMessage;
+      });
       
-      const response = await getMessaging().sendEachForMulticast(chunkMessage);
+      const response = await getMessaging().sendEach(messages);
       totalSuccess += response.successCount;
       totalFailure += response.failureCount;
       allResponses = allResponses.concat(response.responses);
@@ -111,6 +135,16 @@ export default async function handler(req, res) {
           }
         }
       }
+    }
+
+    // Update History Record with final counts
+    try {
+      await NotificationHistory.findByIdAndUpdate(historyRecord._id, {
+        successCount: totalSuccess,
+        failureCount: totalFailure
+      });
+    } catch (err) {
+      console.error('Failed to update history record counts:', err);
     }
 
     return res.status(200).json({

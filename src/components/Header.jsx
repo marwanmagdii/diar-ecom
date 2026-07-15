@@ -18,7 +18,7 @@ export default function Header() {
           {/* Back button removed per request */}
 
           <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/logo_transparent.svg" alt="Diar" className="header-logo-img" style={{ height: '36px', width: 'auto' }} />
+            <img src="/logo_transparent.svg" alt="Diar" className="header-logo-img" style={{ height: '56px', width: 'auto' }} />
           </Link>
         </div>
         
