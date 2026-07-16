@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Image as ImageIcon, ChevronDown, Search } from 'lucide-react';
+import { Plus, Trash2, Image as ImageIcon, ChevronDown, ChevronUp, Search } from 'lucide-react';
 import ImageLightbox from '../../components/ImageLightbox';
 import { compressImage } from '../../utils/imageCompression';
 import { getColorHex } from '../../utils/colors';
