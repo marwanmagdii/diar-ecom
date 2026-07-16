@@ -135,7 +135,7 @@ export default function CreateInfluencer() {
               />
             </div>
             {showDropdown && userSearch && (
-              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', zIndex: 10, maxHeight: '200px', overflowY: 'auto', marginTop: '4px' }}>
+              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)', zIndex: 50, maxHeight: '200px', overflowY: 'auto', marginTop: '4px' }}>
                 {filteredUsers.length > 0 ? filteredUsers.map(u => (
                   <div key={u.id} style={{ padding: '12px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onClick={() => handleSelectUser(u)}>
                     <div style={{ fontWeight: 600 }}>{u.name}</div>
@@ -218,11 +218,13 @@ export default function CreateInfluencer() {
           </div>
           
           <div>
-            <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Assigned Promo Code</label>
+            <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+              {formData.affiliateType === 'link' ? 'Assigned Referral Code (Used to generate link)' : 'Assigned Promo Code'}
+            </label>
             <input 
               type="text" 
               className="input-field"
-              placeholder="e.g. SARAH20"
+              placeholder={formData.affiliateType === 'link' ? 'e.g. SARAH_TRACK' : 'e.g. SARAH20'}
               value={formData.code}
               onChange={(e) => setFormData({...formData, code: e.target.value})}
               style={{ textTransform: 'uppercase', fontSize: '18px', fontWeight: 'bold', letterSpacing: '1px' }}
@@ -230,7 +232,7 @@ export default function CreateInfluencer() {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
             <div>
               <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Commission Type</label>
               <select className="input-field" value={formData.commissionType} onChange={(e) => setFormData({...formData, commissionType: e.target.value})}>
