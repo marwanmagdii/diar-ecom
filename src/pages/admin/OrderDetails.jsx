@@ -335,7 +335,7 @@ export default function OrderDetails() {
   `;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#1e293b' }}>
+    <div style={{ width: '100%', color: '#1e293b' }}>
       <style>{mobileGridStyles}</style>
       
       {/* Mobile Back Button */}
