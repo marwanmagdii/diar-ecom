@@ -132,6 +132,24 @@ export default function Checkout() {
     const distLabel = formData.district === 'other' ? formData.customDistrict : (districtOptions.find(o => o.value === formData.district)?.label || formData.district);
     const fullAddress = `${formData.address}, ${distLabel}, ${govLabel}`;
 
+    let affiliateCode = appliedPromo ? appliedPromo.code : null;
+    let isFromReferralLink = false;
+    if (!affiliateCode) {
+      try {
+        const storedAff = localStorage.getItem('diar_affiliate_tracking');
+        if (storedAff) {
+          const affData = JSON.parse(storedAff);
+          const hoursPassed = (Date.now() - affData.timestamp) / (1000 * 60 * 60);
+          if (hoursPassed <= 24) { // 24-hour cookie window
+            affiliateCode = affData.code;
+            isFromReferralLink = true;
+          } else {
+            localStorage.removeItem('diar_affiliate_tracking');
+          }
+        }
+      } catch (e) {}
+    }
+
     const newOrder = {
       customer: `${formData.firstName} ${formData.lastName}`,
       phone: formData.phone,
@@ -144,6 +162,7 @@ export default function Checkout() {
       shipping: shippingCost,
       discount: discountAmount,
       promoCode: appliedPromo ? appliedPromo.code : null,
+      affiliateCode: affiliateCode,
       status: 'Pending',
       paymentMethod: 'Cash on Delivery',
       items: cart,
@@ -165,18 +184,21 @@ export default function Checkout() {
       
       const assignedOrderId = result.data.id;
       
-      if (appliedPromo) {
+      if (affiliateCode) {
         const updatedPromos = (config.promoCodes || []).map(p => {
-          if (p.code === appliedPromo.code) {
+          if (p.code === affiliateCode) {
             return {
               ...p,
-              usageCount: (p.usageCount || 0) + 1,
+              usageCount: (p.usageCount || 0) + (isFromReferralLink ? 0 : 1),
               totalRevenue: (p.totalRevenue || 0) + finalTotal
             };
           }
           return p;
         });
         updatePromoCodes(updatedPromos);
+        if (isFromReferralLink) {
+          localStorage.removeItem('diar_affiliate_tracking');
+        }
       }
       
       // Send Telegram Notification

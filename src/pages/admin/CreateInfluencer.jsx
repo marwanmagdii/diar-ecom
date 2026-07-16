@@ -17,6 +17,7 @@ export default function CreateInfluencer() {
     userId: '',
     influencerName: '',
     code: '',
+    affiliateType: 'promo',
     discountType: 'percentage',
     discountValue: 10,
     commissionType: 'percentage',
@@ -35,6 +36,7 @@ export default function CreateInfluencer() {
         userId: existingInf.userId || '',
         influencerName: existingInf.influencerName || '',
         code: existingInf.code || '',
+        affiliateType: existingInf.affiliateType || 'promo',
         discountType: existingInf.discountType || 'percentage',
         discountValue: existingInf.discountValue || 10,
         commissionType: existingInf.commissionType || 'percentage',
@@ -77,7 +79,7 @@ export default function CreateInfluencer() {
             ...p,
             ...formData,
             code: uppercaseCode,
-            discountValue: Number(formData.discountValue),
+            discountValue: formData.affiliateType === 'link' ? 0 : Number(formData.discountValue),
             commissionValue: Number(formData.commissionValue),
             maxUses: Number(formData.maxUses)
           };
@@ -90,7 +92,7 @@ export default function CreateInfluencer() {
         id: Date.now().toString(),
         ...formData,
         code: uppercaseCode,
-        discountValue: Number(formData.discountValue),
+        discountValue: formData.affiliateType === 'link' ? 0 : Number(formData.discountValue),
         commissionValue: Number(formData.commissionValue),
         maxUses: Number(formData.maxUses),
         usageCount: 0,
@@ -202,7 +204,18 @@ export default function CreateInfluencer() {
             ))}
           </div>
 
-          <h3 style={{ fontSize: '18px', fontWeight: 600, borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', margin: '16px 0 0 0' }}>Promo Code Details</h3>
+          <h3 style={{ fontSize: '18px', fontWeight: 600, borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', margin: '16px 0 0 0' }}>Affiliate Configuration</h3>
+          
+          <div style={{ display: 'flex', gap: '24px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input type="radio" name="affiliateType" value="promo" checked={formData.affiliateType === 'promo'} onChange={() => setFormData({...formData, affiliateType: 'promo'})} style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }} />
+              <span style={{ fontWeight: 500, color: '#334155' }}>Promo Code (Discount)</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input type="radio" name="affiliateType" value="link" checked={formData.affiliateType === 'link'} onChange={() => setFormData({...formData, affiliateType: 'link'})} style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }} />
+              <span style={{ fontWeight: 500, color: '#334155' }}>Referral Link (No Discount)</span>
+            </label>
+          </div>
           
           <div>
             <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Assigned Promo Code</label>
@@ -229,17 +242,21 @@ export default function CreateInfluencer() {
               <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Commission Value</label>
               <input type="number" className="input-field" min="0" step="0.01" value={formData.commissionValue} onChange={(e) => setFormData({...formData, commissionValue: e.target.value})} required />
             </div>
-            <div>
-              <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Given to Customer</label>
-              <select className="input-field" value={formData.discountType} onChange={(e) => setFormData({...formData, discountType: e.target.value})}>
-                <option value="percentage">Percentage (%)</option>
-                <option value="fixed">Fixed Amount (EGP)</option>
-              </select>
-            </div>
-            <div>
-              <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Value</label>
-              <input type="number" className="input-field" min="0" step="0.01" value={formData.discountValue} onChange={(e) => setFormData({...formData, discountValue: e.target.value})} required />
-            </div>
+            {formData.affiliateType === 'promo' && (
+              <>
+                <div>
+                  <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Given to Customer</label>
+                  <select className="input-field" value={formData.discountType} onChange={(e) => setFormData({...formData, discountType: e.target.value})}>
+                    <option value="percentage">Percentage (%)</option>
+                    <option value="fixed">Fixed Amount (EGP)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Value</label>
+                  <input type="number" className="input-field" min="0" step="0.01" value={formData.discountValue} onChange={(e) => setFormData({...formData, discountValue: e.target.value})} required />
+                </div>
+              </>
+            )}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', marginTop: '8px' }}>

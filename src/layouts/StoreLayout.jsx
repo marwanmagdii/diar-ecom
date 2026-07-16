@@ -48,6 +48,17 @@ function Footer() {
 
 export default function StoreLayout() {
   useEffect(() => {
+    // Affiliate Tracking: Capture ?ref= or ?aff= from URL
+    const searchParams = new URLSearchParams(window.location.search);
+    const refCode = searchParams.get('ref') || searchParams.get('aff');
+    if (refCode) {
+      const trackingData = {
+        code: refCode.toUpperCase().trim(),
+        timestamp: Date.now()
+      };
+      localStorage.setItem('diar_affiliate_tracking', JSON.stringify(trackingData));
+    }
+
     // Automatically trigger or refresh the native browser notification prompt
     if ('Notification' in window && (Notification.permission === 'default' || Notification.permission === 'granted')) {
       requestNotificationPermission().then(token => {

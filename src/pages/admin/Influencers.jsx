@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Download } from 'lucide-react';
+import { Plus, Edit, Trash2, Download, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
@@ -88,12 +88,36 @@ export default function Influencers() {
     },
     { 
       id: 'code', 
-      label: language === 'ar' ? 'كود الخصم' : 'Promo Code', 
-      render: (inf) => (
-        <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>
-          {inf.code}
-        </span>
-      )
+      label: language === 'ar' ? 'النوع والكود' : 'Type & Code', 
+      render: (inf) => {
+        const isLink = inf.affiliateType === 'link';
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ fontSize: '11px', color: isLink ? '#8b5cf6' : '#f59e0b', fontWeight: 600 }}>
+              {isLink ? (language === 'ar' ? 'رابط إحالة' : 'Referral Link') : (language === 'ar' ? 'كود خصم' : 'Promo Code')}
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>
+                {inf.code}
+              </span>
+              {isLink && (
+                <button 
+                  className="icon-btn" 
+                  title="Copy Link"
+                  onClick={() => {
+                    const link = `${window.location.origin}/?ref=${inf.code}`;
+                    navigator.clipboard.writeText(link);
+                    addToast('Link copied!', 'success');
+                  }}
+                  style={{ padding: '4px', backgroundColor: '#f1f5f9' }}
+                >
+                  <Copy size={14} style={{ color: '#64748b' }} />
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      }
     },
     { 
       id: 'rate', 
