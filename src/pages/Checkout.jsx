@@ -196,7 +196,7 @@ export default function Checkout() {
           if (p.code === affiliateCode) {
             return {
               ...p,
-              usageCount: (p.usageCount || 0) + (isFromReferralLink ? 0 : 1),
+              usageCount: (p.usageCount || 0) + 1,
               totalRevenue: (p.totalRevenue || 0) + finalTotal
             };
           }

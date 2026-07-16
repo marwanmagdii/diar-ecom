@@ -376,8 +376,8 @@ export default function OrderDetails() {
           )}
           
           <select 
-            className={`input-field status-${order.status?.toLowerCase()}`}
-            style={{ width: 'auto', padding: '6px 12px', fontSize: '13px', height: '36px', minWidth: '110px', borderRadius: '999px', fontWeight: 600, border: 'none', appearance: 'none', cursor: 'pointer' }}
+            className="input-field"
+            style={{ width: 'auto', padding: '4px 12px', fontSize: '13px', height: '36px', minWidth: '100px' }}
             value={order.status}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
@@ -630,11 +630,24 @@ export default function OrderDetails() {
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px', marginTop: '20px', borderTop: '2px dashed #e2e8f0' }}>
               <span style={{ fontWeight: 700, fontSize: '18px', color: '#0f172a' }}>{lang === 'ar' ? 'صافي الربح للمنتجات' : 'Products Net Profit'}</span>
               <span style={{ fontWeight: 700, fontSize: '20px', color: '#10b981' }}>
-                {((order.subtotal || 0) - (order.discount || 0) - (order.items || []).reduce((sum, item) => {
-                  const p = products.find(prod => prod.id === item.id);
-                  const cost = p && p.costPrice ? parseFloat(p.costPrice) : 0;
-                  return sum + (cost * item.qty);
-                }, 0)).toFixed(2)} EGP
+                {(() => {
+                  let influencerCommission = 0;
+                  const code = order.promoCode || order.affiliateCode;
+                  if (code && config?.promoCodes) {
+                    const promo = config.promoCodes.find(p => p.code === code);
+                    if (promo && promo.commissionValue) {
+                      influencerCommission = promo.commissionType === 'percentage' 
+                        ? (order.total * (promo.commissionValue / 100)) 
+                        : parseFloat(promo.commissionValue);
+                    }
+                  }
+                  const costOfGoods = (order.items || []).reduce((sum, item) => {
+                    const p = products.find(prod => prod.id === item.id);
+                    const cost = p && p.costPrice ? parseFloat(p.costPrice) : 0;
+                    return sum + (cost * item.qty);
+                  }, 0);
+                  return ((order.subtotal || 0) - (order.discount || 0) - costOfGoods - influencerCommission).toFixed(2);
+                })()} EGP
               </span>
             </div>
           </div>
@@ -657,6 +670,12 @@ export default function OrderDetails() {
                   {order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Unknown'}
                 </span>
               </div>
+              {order.influencerName && (
+                <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
+                  <span style={{ color: '#64748b', fontSize: '14px' }}>Influencer</span>
+                  <span style={{ fontWeight: 600, fontSize: '14px', color: '#3b82f6', wordBreak: 'break-all' }}>{order.influencerName}</span>
+                </div>
+              )}
               {order.promoCode && (
                 <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
                   <span style={{ color: '#64748b', fontSize: '14px' }}>Promo Code</span>
@@ -672,11 +691,24 @@ export default function OrderDetails() {
               <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
                 <span style={{ color: '#64748b', fontSize: '14px' }}>{lang === 'ar' ? 'صافي الربح' : 'Net Profit'}</span>
                 <span style={{ fontWeight: 700, fontSize: '14px', color: '#10b981' }}>
-                  {((order.subtotal || 0) - (order.discount || 0) - (order.items || []).reduce((sum, item) => {
-                    const p = products.find(prod => prod.id === item.id);
-                    const cost = p && p.costPrice ? parseFloat(p.costPrice) : 0;
-                    return sum + (cost * item.qty);
-                  }, 0)).toFixed(2)} EGP
+                  {(() => {
+                    let influencerCommission = 0;
+                    const code = order.promoCode || order.affiliateCode;
+                    if (code && config?.promoCodes) {
+                      const promo = config.promoCodes.find(p => p.code === code);
+                      if (promo && promo.commissionValue) {
+                        influencerCommission = promo.commissionType === 'percentage' 
+                          ? (order.total * (promo.commissionValue / 100)) 
+                          : parseFloat(promo.commissionValue);
+                      }
+                    }
+                    const costOfGoods = (order.items || []).reduce((sum, item) => {
+                      const p = products.find(prod => prod.id === item.id);
+                      const cost = p && p.costPrice ? parseFloat(p.costPrice) : 0;
+                      return sum + (cost * item.qty);
+                    }, 0);
+                    return ((order.subtotal || 0) - (order.discount || 0) - costOfGoods - influencerCommission).toFixed(2);
+                  })()} EGP
                 </span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>

@@ -58,11 +58,11 @@ export default function Influencers() {
     const exportColumns = [
       { header: 'Influencer Name', key: 'name', width: 30 },
       { header: 'Promo Code', key: 'code', width: 20 },
-      { header: 'Commission Rate', key: 'rate', width: 20 },
+      { header: 'Commission', key: 'rate', width: 20 },
       { header: 'Uses', key: 'uses', width: 10 },
       { header: 'Max Uses', key: 'maxUses', width: 15 },
       { header: 'Sales Generated (EGP)', key: 'sales', width: 20 },
-      { header: 'Commission Owed (EGP)', key: 'commission', width: 20 },
+      { header: 'Commission (EGP)', key: 'commission', width: 20 },
       { header: 'Status', key: 'status', width: 15 }
     ];
 
@@ -127,7 +127,7 @@ export default function Influencers() {
     },
     { 
       id: 'rate', 
-      label: language === 'ar' ? 'نسبة العمولة' : 'Commission Rate', 
+      label: language === 'ar' ? 'العمولة' : 'Commission', 
       render: (inf) => `${inf.commissionValue}${inf.commissionType === 'percentage' ? '%' : ' EGP'}` 
     },
     { id: 'uses', label: language === 'ar' ? 'الاستخدامات' : 'Uses', render: (inf) => inf.usageCount || 0 },
@@ -135,7 +135,7 @@ export default function Influencers() {
     { id: 'sales', label: language === 'ar' ? 'المبيعات المحققة' : 'Sales Generated', align: 'right', render: (inf) => `${(inf.totalRevenue || 0).toFixed(2)} EGP` },
     { 
       id: 'commission', 
-      label: language === 'ar' ? 'العمولة المستحقة' : 'Commission Owed', 
+      label: language === 'ar' ? 'مستحقات العمولة' : 'Commission', 
       align: 'right', 
       render: (inf) => (
         <span style={{ fontWeight: 600, color: '#10b981' }}>{calculateCommission(inf)} EGP</span>
