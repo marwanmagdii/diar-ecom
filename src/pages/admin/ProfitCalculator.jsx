@@ -67,7 +67,7 @@ export default function ProfitCalculator() {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '40px', direction: isAr ? 'rtl' : 'ltr' }}>
+    <div style={{ width: '100%', paddingBottom: '40px', direction: isAr ? 'rtl' : 'ltr' }}>
       <div style={{ marginBottom: '32px' }}>
         <h1 style={{ fontSize: '28px', fontWeight: 800, margin: '0 0 8px 0', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '12px' }}>
           <BarChart2 size={32} color="var(--primary)" /> {isAr ? 'حاسبة الأرباح والتكاليف' : 'Profit & Cost Calculator'}

@@ -335,7 +335,7 @@ export default function OrderDetails() {
   `;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#1e293b' }}>
+    <div style={{ width: '100%' }}>
       <style>{mobileGridStyles}</style>
       
       {/* Mobile Back Button */}
@@ -609,6 +609,12 @@ export default function OrderDetails() {
               <span style={{ color: '#0f172a', fontSize: '16px', fontWeight: 600 }}>{t('subtotal')}</span>
               <span style={{ fontWeight: 600, fontSize: '16px', color: '#0f172a' }}>{order.subtotal?.toFixed(2)} EGP</span>
             </div>
+            {order.discount > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px', paddingBottom: '20px', borderBottom: '1px solid #f1f5f9' }}>
+                <span style={{ color: '#0f172a', fontSize: '16px', fontWeight: 600 }}>{t('discount')}</span>
+                <span style={{ fontWeight: 600, fontSize: '16px', color: '#10b981' }}>-{order.discount?.toFixed(2)} EGP</span>
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px', paddingBottom: '20px', borderBottom: '1px solid #f1f5f9' }}>
               <span style={{ color: '#0f172a', fontSize: '16px', fontWeight: 600 }}>{t('shipping')}</span>
               <span style={{ fontWeight: 600, fontSize: '16px', color: '#0f172a' }}>{order.shipping?.toFixed(2)} EGP</span>
@@ -629,7 +635,7 @@ export default function OrderDetails() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
                 <span style={{ color: '#64748b', fontSize: '14px' }}>{t('orderId')}</span>
-                <span style={{ fontWeight: 500, fontSize: '15px' }}>{order.id}</span>
+                <span style={{ fontWeight: 500, fontSize: '15px', wordBreak: 'break-all' }}>{order.id}</span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
                 <span style={{ color: '#64748b', fontSize: '14px' }}>{t('date')}</span>
@@ -637,6 +643,18 @@ export default function OrderDetails() {
                   {order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Unknown'}
                 </span>
               </div>
+              {order.promoCode && (
+                <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
+                  <span style={{ color: '#64748b', fontSize: '14px' }}>Promo Code</span>
+                  <span style={{ fontWeight: 600, fontSize: '14px', color: '#8b5cf6', wordBreak: 'break-all' }}>{order.promoCode}</span>
+                </div>
+              )}
+              {order.affiliateCode && order.affiliateCode !== order.promoCode && (
+                <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
+                  <span style={{ color: '#64748b', fontSize: '14px' }}>Referral Link</span>
+                  <span style={{ fontWeight: 600, fontSize: '14px', color: '#f59e0b', wordBreak: 'break-all' }}>{order.affiliateCode}</span>
+                </div>
+              )}
               <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
                 <span style={{ color: '#64748b', fontSize: '14px' }}>{t('total')}</span>
                 <span style={{ fontWeight: 700, fontSize: '16px', color: '#ea580c' }}>{order.total?.toFixed(2)} EGP</span>
@@ -774,11 +792,14 @@ export default function OrderDetails() {
               </div>
             </div>
             
-            <div style={{ marginTop: '32px', borderTop: '1px solid #e2e8f0', paddingTop: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <p style={{ fontWeight: 600, fontSize: '15px', color: '#0f172a', margin: 0 }}>
+            <details style={{ marginTop: '32px', borderTop: '1px solid #e2e8f0', paddingTop: '24px' }}>
+              <summary style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', cursor: 'pointer', outline: 'none' }}>
+                <p style={{ fontWeight: 600, fontSize: '15px', color: '#0f172a', margin: 0, display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                   {lang === 'ar' ? 'معاينة رسالة التأكيد' : 'Confirmation Message Preview'}
                 </p>
+              </summary>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
                 <button 
                   type="button"
                   onClick={() => openWhatsapp(lang)}
@@ -811,7 +832,7 @@ export default function OrderDetails() {
               }}>
                 {buildConfirmationText(lang)}
               </div>
-            </div>
+            </details>
 
           </div>
 
