@@ -532,10 +532,11 @@ export default function OrderDetails() {
                   })}
                 </tbody>
               </table>
-              {itemsToDisplay?.length === 0 && (
-                <p style={{ textAlign: 'center', color: '#64748b', padding: '24px 0' }}>No products in this order.</p>
-              )}
+              </div>
             </div>
+            {itemsToDisplay?.length === 0 && (
+              <p style={{ textAlign: 'center', color: '#64748b', padding: '24px 0' }}>No products in this order.</p>
+            )}
           </div>
 
           {/* Delivery Details Edit Form (Only shows when editing) */}
