@@ -41,7 +41,27 @@ export default function Orders() {
     { id: 'customer', label: t('customer'), render: (order) => <span style={{ whiteSpace: 'nowrap', fontWeight: 500, color: 'var(--on-surface)' }}>{order.customer}</span> },
     { id: 'phone', label: lang === 'ar' ? 'رقم الهاتف' : 'Phone', render: (order) => <span style={{ whiteSpace: 'nowrap', color: 'var(--on-surface-variant)' }}>{order.phone}</span> },
     { id: 'status', label: t('status'), render: (order) => <span className={`status-pill status-${order.status?.toLowerCase()}`}>{t(order.status?.toLowerCase()) || order.status}</span> },
-    { id: 'promoCode', label: lang === 'ar' ? 'كود الخصم' : 'Promo Code', render: (order) => order.promoCode ? <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>{order.promoCode}</span> : '-' },
+    { 
+      id: 'promoCode', 
+      label: lang === 'ar' ? 'الكود/الرابط' : 'Code/Link', 
+      render: (order) => {
+        const code = order.promoCode || order.affiliateCode;
+        if (!code) return '-';
+        const isLink = order.affiliateCode && !order.promoCode;
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ fontSize: '10px', color: isLink ? '#8b5cf6' : '#f59e0b', fontWeight: 600 }}>
+              {isLink ? (lang === 'ar' ? 'رابط إحالة' : 'Referral Link') : (lang === 'ar' ? 'كود خصم' : 'Promo Code')}
+            </span>
+            <div>
+              <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                {code}
+              </span>
+            </div>
+          </div>
+        );
+      } 
+    },
     { id: 'influencer', label: lang === 'ar' ? 'المؤثر' : 'Influencer', render: (order) => order.influencerName || '-' },
     { id: 'total', label: t('total'), align: 'right', render: (order) => <span style={{ fontWeight: 'bold', color: 'var(--primary)', whiteSpace: 'nowrap' }}>{order.total?.toFixed(2)} EGP</span> },
     { id: 'actions', label: lang === 'ar' ? 'الإجراءات' : 'Actions', align: 'right', render: (order) => (

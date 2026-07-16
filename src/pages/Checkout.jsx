@@ -150,6 +150,12 @@ export default function Checkout() {
       } catch (e) {}
     }
 
+    let influencerName = null;
+    if (affiliateCode && config?.promoCodes) {
+      const found = config.promoCodes.find(p => p.code === affiliateCode);
+      if (found) influencerName = found.influencerName;
+    }
+
     const newOrder = {
       customer: `${formData.firstName} ${formData.lastName}`,
       phone: formData.phone,
@@ -163,6 +169,7 @@ export default function Checkout() {
       discount: discountAmount,
       promoCode: appliedPromo ? appliedPromo.code : null,
       affiliateCode: affiliateCode,
+      influencerName: influencerName,
       status: 'Pending',
       paymentMethod: 'Cash on Delivery',
       items: cart,
