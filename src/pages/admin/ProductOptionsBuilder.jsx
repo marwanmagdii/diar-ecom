@@ -160,6 +160,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
   // Drag and Drop Reordering for Variant Images
   const [draggedVariantImage, setDraggedVariantImage] = useState({ variantId: null, index: null });
   const [lightboxData, setLightboxData] = useState({ isOpen: false, images: [], currentIndex: 0 });
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const openLightbox = (images, index) => {
     setLightboxData({ isOpen: true, images, currentIndex: index });
