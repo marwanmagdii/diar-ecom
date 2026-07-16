@@ -299,16 +299,20 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
       ...prev,
       variants: prev.variants.map(v => {
         if (v.id !== variantId) return v;
-        const newImages = [...(v.images || [])];
-        newImages.splice(imageIndex, 1);
-        return { ...v, images: newImages, image: newImages[0] || '' };
+        const newImages = v.images.filter((_, idx) => idx !== imageIndex);
+        return { ...v, images: newImages, image: newImages.length > 0 ? newImages[0] : '' };
       })
     }));
   };
 
   return (
-    <div className="card" style={{ padding: '32px' }}>
-      <div style={{ marginTop: '32px' }}>
+    <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
+      <div className="form-accordion-header" onClick={() => setIsExpanded(!isExpanded)}>
+        <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Variants & Attributes</h3>
+        {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </div>
+      
+      <div className={`form-accordion-content ${isExpanded ? '' : 'collapsed'}`}>
         {lightboxData.isOpen && (
           <ImageLightbox 
             images={lightboxData.images}
@@ -317,19 +321,18 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
             onNavigate={handleLightboxNavigate}
           />
         )}
-        <h2 className="headline-sm mb-2" style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>Variants & Different Attributes</h2>
-      </div>
-      <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
-        Manually add child products if you want to sell the same product with a different image, color, size, or price.
-      </p>
+        
+        <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
+          Manually add child products if you want to sell the same product with a different image, color, size, or price.
+        </p>
 
-      {variants.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
-          {variants.map((variant, index) => (
-            <div key={variant.id} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Variant #{index + 1}</h4>
-                <button type="button" className="icon-btn" onClick={() => handleRemoveVariant(variant.id)} style={{ color: '#ef4444' }}>
+        {variants.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+            {variants.map((variant, index) => (
+              <div key={variant.id} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Variant #{index + 1}</h4>
+                  <button type="button" className="icon-btn" onClick={() => handleRemoveVariant(variant.id)} style={{ color: '#ef4444' }}>
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -437,6 +440,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
       >
         <Plus size={18} /> Add Variant / Different Attribute
       </button>
+      </div>
     </div>
   );
 }

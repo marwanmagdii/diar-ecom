@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, UploadCloud, X, Tag, Plus, BarChart2, Trash2, Crop } from 'lucide-react';
+import { ArrowLeft, Save, UploadCloud, X, Tag, Plus, BarChart2, Trash2, Crop, ChevronDown, ChevronUp } from 'lucide-react';
 
 import ProductOptionsBuilder, { VariantOptionSelector } from './ProductOptionsBuilder';
 import ImageLightbox from '../../components/ImageLightbox';
@@ -55,6 +55,19 @@ export default function ProductForm() {
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [lightboxData, setLightboxData] = useState({ isOpen: false, images: [], currentIndex: 0 });
   const [cropperData, setCropperData] = useState({ isOpen: false, index: null, imageSrc: null });
+  
+  const [expandedSections, setExpandedSections] = useState({
+    basic: true,
+    media: false,
+    pricing: false,
+    inventory: false,
+    variants: false,
+    reviews: false
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   const openLightbox = (images, index) => {
     setLightboxData({ isOpen: true, images, currentIndex: index });
@@ -420,25 +433,29 @@ export default function ProductForm() {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
         {/* Main Details & Image Row */}
-        <div className="product-form-grid" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' }}>
+        <div className="responsive-form-grid">
           
           {/* Left Col: Details */}
-          <div className="premium-card">
-            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: '0 0 24px 0', color: '#0f172a' }}>Basic Information</h3>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-              <div>
-                <label className="premium-label">Product Name (English)</label>
-                <input type="text" className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="E.g. Premium Cotton T-Shirt" />
-              </div>
-              <div>
-                <label className="premium-label">Product Name (Arabic)</label>
-                <input type="text" className="premium-input" value={formData.titleAr} onChange={e => setFormData({...formData, titleAr: e.target.value})} placeholder="قميص قطن فاخر" dir="rtl" />
-              </div>
+          <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
+            <div className="form-accordion-header" onClick={() => toggleSection('basic')}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Basic Information</h3>
+              {expandedSections.basic ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-              <div style={{ marginBottom: '24px', gridColumn: '1 / -1' }}>
+            <div className={`form-accordion-content ${expandedSections.basic ? '' : 'collapsed'}`}>
+              <div className="responsive-grid-2">
+                <div>
+                  <label className="premium-label">Product Name (English)</label>
+                  <input type="text" className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="E.g. Premium Cotton T-Shirt" />
+                </div>
+                <div>
+                  <label className="premium-label">Product Name (Arabic)</label>
+                  <input type="text" className="premium-input" value={formData.titleAr} onChange={e => setFormData({...formData, titleAr: e.target.value})} placeholder="قميص قطن فاخر" dir="rtl" />
+                </div>
+              </div>
+            
+            <div className="responsive-grid-2">
+              <div style={{ gridColumn: '1 / -1' }}>
                 <label className="premium-label">{language === 'ar' ? 'الفئة' : 'Category'}</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', padding: '16px', border: '1px solid var(--outline-variant)', borderRadius: '12px', backgroundColor: '#f8fafc', maxHeight: '300px', overflowY: 'auto' }}>
                   {config.categories?.map(cat => {
@@ -512,7 +529,7 @@ export default function ProductForm() {
             </div>
             
             {/* Basic Options */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+            <div className="responsive-grid-2">
               {(() => {
                 const optionsList = config?.productOptions && config.productOptions.length > 0 
                   ? (typeof config.productOptions[0] === 'string' 
@@ -542,7 +559,7 @@ export default function ProductForm() {
               })()}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+            <div className="responsive-grid-2">
               <div>
                 <label className="premium-label">Description (English)</label>
                 <textarea 
@@ -566,7 +583,7 @@ export default function ProductForm() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="responsive-grid-2">
               <div>
                 <label className="premium-label">Key Benefits (English, one per line)</label>
                 <textarea 
@@ -589,12 +606,17 @@ export default function ProductForm() {
                 />
               </div>
             </div>
+            </div>
           </div>
 
           {/* Right Col: Image Upload */}
-          <div className="premium-card">
-            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: '0 0 24px 0', color: '#0f172a' }}>Product Media</h3>
+          <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
+            <div className="form-accordion-header" onClick={() => toggleSection('media')}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Product Media</h3>
+              {expandedSections.media ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </div>
             
+            <div className={`form-accordion-content ${expandedSections.media ? '' : 'collapsed'}`}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '16px' }}>
               {formData.images && formData.images.map((img, index) => (
                 <div 
@@ -655,14 +677,19 @@ export default function ProductForm() {
                 <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: isDragging ? 'var(--primary)' : '#475569' }}>{isDragging ? 'Drop Image Here' : 'Add Image'}</p>
               </div>
             </div>
+            </div>
           </div>
         </div>
 
         {/* Pricing & Offers */}
-        <div className="premium-card">
-          <h3 style={{ fontSize: '18px', fontWeight: 600, margin: '0 0 24px 0', color: '#0f172a' }}>Pricing & Offers</h3>
+        <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
+          <div className="form-accordion-header" onClick={() => toggleSection('pricing')}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Pricing & Offers</h3>
+            {expandedSections.pricing ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'flex-start', marginBottom: '24px' }}>
+          <div className={`form-accordion-content ${expandedSections.pricing ? '' : 'collapsed'}`}>
+          <div className="responsive-grid-2">
             <div>
               <label className="premium-label">Regular Price (EGP)</label>
               <input type="number" step="0.01" className="premium-input" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="0.00" />
@@ -769,7 +796,7 @@ export default function ProductForm() {
               </div>
 
               {/* Offer Dates */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'flex-start' }}>
+              <div className="responsive-grid-2">
                 <div>
                   <label className="premium-label">Sale Start Date/Time (Optional)</label>
                   <input 
@@ -792,13 +819,18 @@ export default function ProductForm() {
 
             </div>
           )}
+          </div>
         </div>
 
         {/* Inventory & Visibility */}
-        <div className="premium-card" style={{ gap: '24px' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 600, margin: '0 0 8px 0', color: '#0f172a' }}>{t('inventoryVisibility')}</h3>
+        <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
+          <div className="form-accordion-header" onClick={() => toggleSection('inventory')}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{t('inventoryVisibility')}</h3>
+            {expandedSections.inventory ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'center' }}>
+          <div className={`form-accordion-content ${expandedSections.inventory ? '' : 'collapsed'}`}>
+          <div className="responsive-grid-2">
             <div>
               <label className="premium-label">Base Stock Quantity</label>
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -831,7 +863,8 @@ export default function ProductForm() {
                 <span style={{ fontSize: '15px', fontWeight: 600, color: formData.isActive ? '#22c55e' : '#64748b', cursor: 'pointer' }} onClick={() => setFormData({...formData, isActive: !formData.isActive})}>{formData.isActive ? 'Active (Visible)' : 'Inactive (Hidden)'}</span>
               </div>
               <p style={{ margin: '0 0 0 48px', fontSize: '13px', color: '#64748b' }}>If inactive, product will be completely hidden from store</p>
-            </div>
+          </div>
+          </div>
           </div>
         </div>
 
@@ -854,8 +887,13 @@ export default function ProductForm() {
         />
 
         {/* Customer Reviews Section */}
-        <div className="premium-card">
-          <h3 style={{ fontSize: '18px', fontWeight: 600, margin: '0 0 8px 0', color: '#0f172a' }}>Customer Reviews (Screenshots)</h3>
+        <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
+          <div className="form-accordion-header" onClick={() => toggleSection('reviews')}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Customer Reviews</h3>
+            {expandedSections.reviews ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </div>
+          
+          <div className={`form-accordion-content ${expandedSections.reviews ? '' : 'collapsed'}`}>
           <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
             Upload screenshots of customer reviews (WhatsApp, Messenger, etc.) to show on this product's page.
           </p>
@@ -901,6 +939,7 @@ export default function ProductForm() {
               <UploadCloud size={24} color={isReviewDragging ? 'var(--primary)' : '#94a3b8'} style={{ marginBottom: '8px' }} />
               <div style={{ fontSize: '13px', fontWeight: 500, color: '#334155' }}>Upload Screenshot</div>
             </div>
+          </div>
           </div>
         </div>
 
