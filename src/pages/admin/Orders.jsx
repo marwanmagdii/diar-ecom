@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, Plus, Download } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
 import DataTable from '../../components/admin/DataTable';
@@ -8,7 +8,10 @@ import DataTable from '../../components/admin/DataTable';
 export default function Orders() {
   const { orders, t, lang, ordersLoading: loading } = useStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [statusFilter, setStatusFilter] = useState('All');
+  
+  const initialSearch = location.state?.search || '';
 
   const handleExport = () => {
     const exportColumns = [
@@ -143,6 +146,7 @@ export default function Orders() {
       filters={filtersNode}
       loading={loading}
       searchFunction={searchFunction}
+      initialSearch={initialSearch}
     />
   );
 }

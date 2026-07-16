@@ -348,18 +348,21 @@ export default function OrderDetails() {
         {t('orders')}
       </button>
 
-      {/* Header Actions moved to Portal */}
+      {/* Header Actions moved to Portals */}
+      {document.getElementById('admin-header-title-actions') && createPortal(
+        <button 
+          className="icon-btn" 
+          onClick={() => handleCopyForDriver('ar')} 
+          title={lang === 'ar' ? 'نسخ التفاصيل' : 'Copy Details'}
+          style={{ padding: '4px' }}
+        >
+          <Copy size={20} color="#64748b" />
+        </button>,
+        document.getElementById('admin-header-title-actions')
+      )}
+      
       {document.getElementById('admin-header-actions') && createPortal(
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button 
-            className="icon-btn" 
-            onClick={() => handleCopyForDriver('ar')} 
-            title={lang === 'ar' ? 'نسخ التفاصيل' : 'Copy Details'}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', padding: '6px 12px', border: '1px solid var(--outline-variant)', borderRadius: '8px' }}
-          >
-            <Copy size={16} /> <span className="mobile-hidden">{lang === 'ar' ? 'نسخ' : 'Copy'}</span>
-          </button>
-          
           {order.telegramMessageUrl && (
             <a 
               href={order.telegramMessageUrl} 
@@ -373,8 +376,8 @@ export default function OrderDetails() {
           )}
           
           <select 
-            className="input-field" 
-            style={{ width: 'auto', padding: '4px 12px', fontSize: '13px', height: '36px', minWidth: '100px' }}
+            className={`input-field status-${order.status?.toLowerCase()}`}
+            style={{ width: 'auto', padding: '6px 12px', fontSize: '13px', height: '36px', minWidth: '110px', borderRadius: '999px', fontWeight: 600, border: 'none', appearance: 'none', cursor: 'pointer' }}
             value={order.status}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
@@ -663,9 +666,19 @@ export default function OrderDetails() {
               {order.affiliateCode && order.affiliateCode !== order.promoCode && (
                 <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
                   <span style={{ color: '#64748b', fontSize: '14px' }}>Referral Link</span>
-                  <span style={{ fontWeight: 600, fontSize: '14px', color: '#f59e0b', wordBreak: 'break-all' }}>{order.affiliateCode}</span>
+                  <a href={`/?ref=${order.affiliateCode}`} target="_blank" rel="noreferrer" style={{ fontWeight: 600, fontSize: '14px', color: '#f59e0b', wordBreak: 'break-all', textDecoration: 'underline' }}>{order.affiliateCode}</a>
                 </div>
               )}
+              <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
+                <span style={{ color: '#64748b', fontSize: '14px' }}>{lang === 'ar' ? 'صافي الربح' : 'Net Profit'}</span>
+                <span style={{ fontWeight: 700, fontSize: '14px', color: '#10b981' }}>
+                  {((order.subtotal || 0) - (order.discount || 0) - (order.items || []).reduce((sum, item) => {
+                    const p = products.find(prod => prod.id === item.id);
+                    const cost = p && p.costPrice ? parseFloat(p.costPrice) : 0;
+                    return sum + (cost * item.qty);
+                  }, 0)).toFixed(2)} EGP
+                </span>
+              </div>
               <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr' }}>
                 <span style={{ color: '#64748b', fontSize: '14px' }}>{t('total')}</span>
                 <span style={{ fontWeight: 700, fontSize: '16px', color: '#ea580c' }}>{order.total?.toFixed(2)} EGP</span>

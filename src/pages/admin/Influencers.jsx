@@ -83,12 +83,12 @@ export default function Influencers() {
   const columns = [
     { 
       id: 'name', 
-      label: language === 'ar' ? 'اسم المؤثر' : 'Influencer Name', 
+      label: language === 'ar' ? 'الاسم' : 'Name', 
       render: (inf) => <span style={{ fontWeight: 600 }}>{inf.influencerName || 'Unnamed'}</span> 
     },
     { 
       id: 'code', 
-      label: language === 'ar' ? 'النوع والكود' : 'Type & Code', 
+      label: language === 'ar' ? 'الكود / الرابط' : 'Code / Link', 
       render: (inf) => {
         const isLink = inf.affiliateType === 'link';
         return (
@@ -206,6 +206,7 @@ export default function Influencers() {
         loading={loading}
         searchFunction={searchFunction}
         emptyMessage={language === 'ar' ? 'لا يوجد مؤثرين. انقر على "إضافة مؤثر" للبدء.' : 'No influencers found. Click "Add Influencer" to get started.'}
+        onRowClick={(inf) => navigate('/diaradmin26/orders', { state: { search: inf.influencerName } })}
       />
 
       {deleteModalOpen && (

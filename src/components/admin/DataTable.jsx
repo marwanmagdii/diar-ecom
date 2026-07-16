@@ -16,11 +16,12 @@ export default function DataTable({
   loadingMessage,
   emptyMessage,
   searchFunction, // optional custom search, otherwise string match
-  renderExpandedRow
+  renderExpandedRow,
+  initialSearch = ''
 }) {
   const { lang, language } = useStore();
   const currentLang = lang || language || 'en';
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth <= 768);
 

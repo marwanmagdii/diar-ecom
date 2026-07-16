@@ -296,8 +296,9 @@ export default function AdminLayout() {
               >
                 <Menu size={24} />
               </button>
-              <h1 className="headline-md m-0">
+              <h1 className="headline-md m-0" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {getHeaderTitle()}
+                <div id="admin-header-title-actions"></div>
               </h1>
             </div>
             {/* Right side + icon for quick action on mobile */}
