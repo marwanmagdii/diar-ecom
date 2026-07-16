@@ -438,18 +438,18 @@ export default function ProductForm() {
           {/* Left Col: Details */}
           <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
             <div className="form-accordion-header" onClick={() => toggleSection('basic')}>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Basic Information</h3>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'المعلومات الأساسية' : 'Basic Information'}</h3>
               {expandedSections.basic ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </div>
             
             <div className={`form-accordion-content ${expandedSections.basic ? '' : 'collapsed'}`}>
               <div className="responsive-grid-2">
                 <div>
-                  <label className="premium-label">Product Name (English)</label>
-                  <input type="text" className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="E.g. Premium Cotton T-Shirt" />
+                  <label className="premium-label">{language === 'ar' ? 'اسم المنتج (إنجليزي)' : 'Product Name (English)'}</label>
+                  <input type="text" className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder={language === 'ar' ? 'مثال: تيشرت قطن فاخر' : 'E.g. Premium Cotton T-Shirt'} />
                 </div>
                 <div>
-                  <label className="premium-label">Product Name (Arabic)</label>
+                  <label className="premium-label">{language === 'ar' ? 'اسم المنتج (عربي)' : 'Product Name (Arabic)'}</label>
                   <input type="text" className="premium-input" value={formData.titleAr} onChange={e => setFormData({...formData, titleAr: e.target.value})} placeholder="قميص قطن فاخر" dir="rtl" />
                 </div>
               </div>
@@ -490,7 +490,7 @@ export default function ProductForm() {
                 </div>
               </div>
               <div>
-                <label className="premium-label">Product Background Color (Optional)</label>
+                <label className="premium-label">{language === 'ar' ? 'لون خلفية المنتج (اختياري)' : 'Product Background Color (Optional)'}</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <input 
                     type="color" 
@@ -561,23 +561,23 @@ export default function ProductForm() {
 
             <div className="responsive-grid-2">
               <div>
-                <label className="premium-label">Description (English)</label>
+                <label className="premium-label">{language === 'ar' ? 'الوصف (إنجليزي)' : 'Description (English)'}</label>
                 <textarea 
                   className="premium-input" 
                   value={formData.description} 
                   onChange={e => setFormData({...formData, description: e.target.value})} 
                   style={{ minHeight: '120px', resize: 'vertical' }} 
-                  placeholder="Product description in English..."
+                  placeholder={language === 'ar' ? 'وصف تفصيلي للمنتج...' : 'Detailed product description...'}
                 />
               </div>
               <div>
-                <label className="premium-label">Description (Arabic)</label>
+                <label className="premium-label">{language === 'ar' ? 'الوصف (عربي)' : 'Description (Arabic)'}</label>
                 <textarea 
                   className="premium-input" 
                   value={formData.descriptionAr} 
                   onChange={e => setFormData({...formData, descriptionAr: e.target.value})} 
                   style={{ minHeight: '120px', resize: 'vertical' }} 
-                  placeholder="وصف المنتج بالعربية..."
+                  placeholder={language === 'ar' ? 'وصف تفصيلي للمنتج باللغة العربية...' : 'Detailed product description in Arabic...'}
                   dir="rtl"
                 />
               </div>
@@ -585,17 +585,17 @@ export default function ProductForm() {
 
             <div className="responsive-grid-2">
               <div>
-                <label className="premium-label">Key Benefits (English, one per line)</label>
+                <label className="premium-label">{language === 'ar' ? 'الفوائد الرئيسية (إنجليزي، كل فائدة في سطر)' : 'Key Benefits (English, one per line)'}</label>
                 <textarea 
                   className="premium-input" 
                   value={formData.keyBenefits} 
                   onChange={e => setFormData({...formData, keyBenefits: e.target.value})} 
                   style={{ minHeight: '100px', resize: 'vertical' }} 
-                  placeholder="Premium quality&#10;Authentic product&#10;Satisfaction guaranteed"
+                  placeholder={language === 'ar' ? 'جودة عالية\nمنتج أصلي\nمضمون' : 'Premium quality\nAuthentic product\nSatisfaction guaranteed'}
                 />
               </div>
               <div>
-                <label className="premium-label">Key Benefits (Arabic, one per line)</label>
+                <label className="premium-label">{language === 'ar' ? 'الفوائد الرئيسية (عربي، كل فائدة في سطر)' : 'Key Benefits (Arabic, one per line)'}</label>
                 <textarea 
                   className="premium-input" 
                   value={formData.keyBenefitsAr} 
@@ -612,7 +612,7 @@ export default function ProductForm() {
           {/* Right Col: Image Upload */}
           <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
             <div className="form-accordion-header" onClick={() => toggleSection('media')}>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Product Media</h3>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'صور المنتج' : 'Product Media'}</h3>
               {expandedSections.media ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </div>
             
@@ -674,7 +674,7 @@ export default function ProductForm() {
                 <div style={{ width: '40px', height: '40px', backgroundColor: isDragging ? '#dbeafe' : '#e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px', color: isDragging ? 'var(--primary)' : '#64748b', transition: 'all 0.2s' }}>
                   <UploadCloud size={20} />
                 </div>
-                <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: isDragging ? 'var(--primary)' : '#475569' }}>{isDragging ? 'Drop Image Here' : 'Add Image'}</p>
+                <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: isDragging ? 'var(--primary)' : '#475569' }}>{isDragging ? (language === 'ar' ? 'افلت الصورة هنا' : 'Drop Image Here') : (language === 'ar' ? 'إضافة صورة' : 'Add Image')}</p>
               </div>
             </div>
             </div>
@@ -684,14 +684,14 @@ export default function ProductForm() {
         {/* Pricing & Offers */}
         <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
           <div className="form-accordion-header" onClick={() => toggleSection('pricing')}>
-            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Pricing & Offers</h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'التسعير والعروض' : 'Pricing & Offers'}</h3>
             {expandedSections.pricing ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </div>
           
           <div className={`form-accordion-content ${expandedSections.pricing ? '' : 'collapsed'}`}>
           <div className="responsive-grid-2">
             <div>
-              <label className="premium-label">Regular Price (EGP)</label>
+              <label className="premium-label">{language === 'ar' ? 'السعر الأساسي (جنيه)' : 'Regular Price (EGP)'}</label>
               <input type="number" step="0.01" className="premium-input" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="0.00" />
             </div>
           </div>
@@ -705,7 +705,7 @@ export default function ProductForm() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                   <span style={{ fontSize: '14px', fontWeight: 600, color: '#334155', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Tag size={16} color="var(--primary)" /> Product is on sale
+                    <Tag size={16} color="var(--primary)" /> {language === 'ar' ? 'المنتج في تخفيض' : 'Product is on sale'}
                   </span>
                   
                   <div style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
@@ -798,7 +798,7 @@ export default function ProductForm() {
               {/* Offer Dates */}
               <div className="responsive-grid-2">
                 <div>
-                  <label className="premium-label">Sale Start Date/Time (Optional)</label>
+                  <label className="premium-label">{language === 'ar' ? 'تاريخ بداية العرض (اختياري)' : 'Sale Start Date/Time (Optional)'}</label>
                   <input 
                     type="datetime-local" 
                     className="premium-input" 
@@ -807,7 +807,7 @@ export default function ProductForm() {
                   />
                 </div>
                 <div>
-                  <label className="premium-label">Sale End Date/Time (Optional)</label>
+                  <label className="premium-label">{language === 'ar' ? 'تاريخ نهاية العرض (اختياري)' : 'Sale End Date/Time (Optional)'}</label>
                   <input 
                     type="datetime-local" 
                     className="premium-input" 
@@ -832,7 +832,7 @@ export default function ProductForm() {
           <div className={`form-accordion-content ${expandedSections.inventory ? '' : 'collapsed'}`}>
           <div className="responsive-grid-2">
             <div>
-              <label className="premium-label">Base Stock Quantity</label>
+              <label className="premium-label">{language === 'ar' ? 'كمية المخزون الأساسية' : 'Base Stock Quantity'}</label>
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                 <input type="number" className="premium-input" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '120px' }} min="0" placeholder="Unlimited" />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -889,7 +889,7 @@ export default function ProductForm() {
         {/* Customer Reviews Section */}
         <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
           <div className="form-accordion-header" onClick={() => toggleSection('reviews')}>
-            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Customer Reviews</h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'تقييمات العملاء' : 'Customer Reviews'}</h3>
             {expandedSections.reviews ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </div>
           
@@ -945,13 +945,13 @@ export default function ProductForm() {
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}>
           <button type="button" className="btn btn-secondary" onClick={() => navigate('/diaradmin26/products')} style={{ padding: '12px 32px', backgroundColor: '#ffffff', color: '#475569', border: '1px solid #cbd5e1', borderRadius: '8px' }}>
-            Cancel
+            {language === 'ar' ? 'إلغاء' : 'Cancel'}
           </button>
           <button type="submit" className="btn btn-primary" disabled={isSubmitting || formData.images.length === 0} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 40px', borderRadius: '8px', fontSize: '15px' }}>
             {isSubmitting ? (
               <div className="spinner" style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
             ) : <Save size={18} />}
-            {isSubmitting ? 'Saving...' : (isEditing ? 'Update Product' : 'Save Product')}
+            {isSubmitting ? (language === 'ar' ? 'جاري الحفظ...' : 'Saving...') : (isEditing ? (language === 'ar' ? 'تحديث المنتج' : 'Update Product') : (language === 'ar' ? 'حفظ المنتج' : 'Save Product'))}
           </button>
         </div>
       </form>

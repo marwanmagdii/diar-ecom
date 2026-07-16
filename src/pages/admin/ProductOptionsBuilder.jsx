@@ -3,8 +3,10 @@ import { Plus, Trash2, Image as ImageIcon, ChevronDown, ChevronUp, Search } from
 import ImageLightbox from '../../components/ImageLightbox';
 import { compressImage } from '../../utils/imageCompression';
 import { getColorHex } from '../../utils/colors';
+import { useStore } from '../../store';
 
 export const VariantOptionSelector = ({ variantId, opt, val, onChange }) => {
+  const { language } = useStore();
   const isColor = opt.name.toLowerCase().includes('color') || opt.name.toLowerCase().includes('لون');
   const isWeight = opt.name.toLowerCase().includes('weight') || opt.name.toLowerCase().includes('الوزن');
   const [isOpen, setIsOpen] = React.useState(false);
@@ -154,6 +156,7 @@ export const VariantOptionSelector = ({ variantId, opt, val, onChange }) => {
 
 
 export default function ProductOptionsBuilder({ formData, setFormData, globalOptions }) {
+  const { language } = useStore();
   const variants = formData.variants || [];
   const [draggingVariant, setDraggingVariant] = React.useState(null);
   
@@ -309,7 +312,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
   return (
     <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
       <div className="form-accordion-header" onClick={() => setIsExpanded(!isExpanded)}>
-        <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Variants & Attributes</h3>
+        <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'الأنواع والخصائص' : 'Variants & Attributes'}</h3>
         {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
       </div>
       
@@ -324,7 +327,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
         )}
         
         <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
-          Manually add child products if you want to sell the same product with a different image, color, size, or price.
+          {language === 'ar' ? 'قم بإضافة خيارات فرعية للمنتج يدوياً إذا كنت ترغب في بيع نفس المنتج بصورة، لون، مقاس، أو سعر مختلف.' : 'Manually add child products if you want to sell the same product with a different image, color, size, or price.'}
         </p>
 
         {variants.length > 0 && (
@@ -332,7 +335,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
             {variants.map((variant, index) => (
               <div key={variant.id} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Variant #{index + 1}</h4>
+                  <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{language === 'ar' ? 'خيار' : 'Variant'} #{index + 1}</h4>
                   <button type="button" className="icon-btn" onClick={() => handleRemoveVariant(variant.id)} style={{ color: '#ef4444' }}>
                   <Trash2 size={16} />
                 </button>
@@ -355,7 +358,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
 
               <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                 <div style={{ flex: 1 }}>
-                  <label className="premium-label">Images</label>
+                  <label className="premium-label">{language === 'ar' ? 'الصور' : 'Images'}</label>
                   <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                     {(variant.images || []).map((img, idx) => (
                       <div 
@@ -407,21 +410,21 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
 
                 <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div>
-                    <label className="premium-label">Price (Optional)</label>
+                    <label className="premium-label">{language === 'ar' ? 'السعر (اختياري)' : 'Price (Optional)'}</label>
                     <input 
                       type="number" 
                       className="premium-input" 
-                      placeholder="Overrides base price"
+                      placeholder={language === 'ar' ? 'يتخطى السعر الأساسي' : 'Overrides base price'}
                       value={variant.price}
                       onChange={e => handleUpdateVariant(variant.id, 'price', e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="premium-label">Stock (Optional)</label>
+                    <label className="premium-label">{language === 'ar' ? 'المخزون (اختياري)' : 'Stock (Optional)'}</label>
                     <input 
                       type="number" 
                       className="premium-input" 
-                      placeholder="Track stock"
+                      placeholder={language === 'ar' ? 'تتبع المخزون' : 'Track stock'}
                       value={variant.stock}
                       onChange={e => handleUpdateVariant(variant.id, 'stock', e.target.value)}
                     />
@@ -439,7 +442,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
         onClick={handleAddVariant}
         style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
       >
-        <Plus size={18} /> Add Variant / Different Attribute
+        <Plus size={18} /> {language === 'ar' ? 'إضافة خيار جديد' : 'Add Variant / Different Attribute'}
       </button>
       </div>
     </div>
