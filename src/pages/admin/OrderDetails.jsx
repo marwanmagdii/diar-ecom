@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronRight, ChevronDown, Trash2, Edit, Check, X, Plus, Copy, Search } from 'lucide-react';
 import { PremiumInput } from '../../components/AdminUI';
@@ -347,50 +348,48 @@ export default function OrderDetails() {
         {t('orders')}
       </button>
 
-      {/* Header */}
-      <div className="admin-page-header" style={{ marginBottom: '24px', padding: 0 }}>
-        <div className="admin-page-header-left" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <h2 
-            style={{ fontSize: '24px', fontWeight: 700, margin: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-            onClick={() => handleCopyForDriver('ar')}
-            title="Click to copy Telegram confirmation message"
+      {/* Header Actions moved to Portal */}
+      {document.getElementById('admin-header-actions') && createPortal(
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button 
+            className="icon-btn" 
+            onClick={() => handleCopyForDriver('ar')} 
+            title={lang === 'ar' ? 'نسخ التفاصيل' : 'Copy Details'}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', padding: '6px 12px', border: '1px solid var(--outline-variant)', borderRadius: '8px' }}
           >
-            {t('orders')} {order.id}
-            <Copy size={18} color="#64748b" />
-          </h2>
+            <Copy size={16} /> <span className="mobile-hidden">{lang === 'ar' ? 'نسخ' : 'Copy'}</span>
+          </button>
           
           {order.telegramMessageUrl && (
             <a 
               href={order.telegramMessageUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#e0f2fe', color: '#0284c7', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}
-              title="Open message in Telegram Group"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#e0f2fe', color: '#0284c7', padding: '8px', borderRadius: '8px', textDecoration: 'none' }}
+              title="Open in Telegram"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
-              {lang === 'ar' ? 'عرض في تليجرام' : 'View in Telegram'}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
             </a>
           )}
-        </div>
-        
-        <div className="admin-page-header-right" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          
           <select 
             className="input-field" 
-            style={{ width: 'auto', padding: '4px 12px', fontSize: '13px', height: '36px' }}
+            style={{ width: 'auto', padding: '4px 12px', fontSize: '13px', height: '36px', minWidth: '100px' }}
             value={order.status}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
-            <option value="Pending">Pending</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Cancelled">Cancelled</option>
+            <option value="Pending">{t('pending') || 'Pending'}</option>
+            <option value="Shipped">{t('shipped') || 'Shipped'}</option>
+            <option value="Delivered">{t('delivered') || 'Delivered'}</option>
+            <option value="Cancelled">{t('cancelled') || 'Cancelled'}</option>
           </select>
           
           <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={handleDelete} title="Delete Order">
             <Trash2 size={18} />
           </button>
-        </div>
-      </div>
+        </div>,
+        document.getElementById('admin-header-actions')
+      )}
 
       <div className="admin-order-layout">
         
@@ -433,8 +432,9 @@ export default function OrderDetails() {
               </div>
             )}
 
-            <div className="admin-table-container" style={{ overflow: 'auto' }}>
-              <table className="admin-table">
+            <div style={{ overflow: 'hidden', overflowX: 'auto', maxWidth: '100%', margin: '0 -16px', padding: '0 16px' }}>
+              <div className="admin-table-container">
+                <table className="admin-table">
                 <thead>
                   <tr>
                     <th>{lang === 'ar' ? 'المنتج' : 'Product'}</th>
@@ -622,6 +622,16 @@ export default function OrderDetails() {
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px' }}>
               <span style={{ fontWeight: 700, fontSize: '20px', color: '#0f172a' }}>{t('totalAmount')}</span>
               <span style={{ fontWeight: 700, fontSize: '24px', color: '#ea580c' }}>{order.total?.toFixed(2)} EGP</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px', marginTop: '20px', borderTop: '2px dashed #e2e8f0' }}>
+              <span style={{ fontWeight: 700, fontSize: '18px', color: '#0f172a' }}>{lang === 'ar' ? 'صافي الربح للمنتجات' : 'Products Net Profit'}</span>
+              <span style={{ fontWeight: 700, fontSize: '20px', color: '#10b981' }}>
+                {((order.subtotal || 0) - (order.discount || 0) - (order.items || []).reduce((sum, item) => {
+                  const p = products.find(prod => prod.id === item.id);
+                  const cost = p && p.costPrice ? parseFloat(p.costPrice) : 0;
+                  return sum + (cost * item.qty);
+                }, 0)).toFixed(2)} EGP
+              </span>
             </div>
           </div>
         </div>
