@@ -86,7 +86,7 @@ export default function CreateOrder() {
   };
 
   return (
-    <div style={{ width: '100%', color: '#1e293b' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#1e293b' }}>
       {/* Header and Breadcrumbs removed as they are now in the top navbar */}
 
       <form onSubmit={handleSubmit}>

@@ -68,7 +68,7 @@ export default function InfluencersAnalysis() {
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '24px' }}>
         <div>
           <h2 className="headline-lg m-0">{language === 'ar' ? 'تحليل المؤثرين' : 'Influencer Analysis'}</h2>
