@@ -834,16 +834,16 @@ export default function ProductForm() {
             <div>
               <label className="premium-label">{language === 'ar' ? 'كمية المخزون الأساسية' : 'Base Stock Quantity'}</label>
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <input type="number" className="premium-input" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '120px' }} min="0" placeholder="Unlimited" />
+                <input type="number" className="premium-input" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '120px' }} min="0" placeholder={language === 'ar' ? 'غير محدود' : 'Unlimited'} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <label className="toggle-switch">
                     <input type="checkbox" checked={formData.showStock} onChange={e => setFormData({...formData, showStock: e.target.checked})} />
                     <span className="toggle-slider"></span>
                   </label>
-                  <span style={{ fontSize: '14px', color: '#475569', cursor: 'pointer', fontWeight: 500 }} onClick={() => setFormData({...formData, showStock: !formData.showStock})}>Show stock quantity</span>
+                  <span style={{ fontSize: '14px', color: '#475569', cursor: 'pointer', fontWeight: 500 }} onClick={() => setFormData({...formData, showStock: !formData.showStock})}>{language === 'ar' ? 'إظهار كمية المخزون' : 'Show stock quantity'}</span>
                 </div>
               </div>
-              <p style={{ margin: '8px 0 0 0', fontSize: '12px', color: '#64748b' }}>If you add variants below, the variant stock will take precedence.</p>
+              <p style={{ margin: '8px 0 0 0', fontSize: '12px', color: '#64748b' }}>{language === 'ar' ? 'إذا قمت بإضافة أنواع وخصائص بالأسفل، سيتم الاعتماد على مخزون الخصائص.' : 'If you add variants below, the variant stock will take precedence.'}</p>
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '24px' }}>
@@ -852,17 +852,17 @@ export default function ProductForm() {
                   <input type="checkbox" checked={formData.featured} onChange={e => setFormData({...formData, featured: e.target.checked})} />
                   <span className="toggle-slider"></span>
                 </label>
-                <span style={{ fontSize: '15px', fontWeight: 600, color: '#334155', cursor: 'pointer' }} onClick={() => setFormData({...formData, featured: !formData.featured})}>Featured Product</span>
+                <span style={{ fontSize: '15px', fontWeight: 600, color: '#334155', cursor: 'pointer' }} onClick={() => setFormData({...formData, featured: !formData.featured})}>{language === 'ar' ? 'منتج مميز' : 'Featured Product'}</span>
               </div>
-              <p style={{ margin: '0 0 0 48px', fontSize: '13px', color: '#64748b' }}>Show in featured sections</p>
+              <p style={{ margin: '0 0 0 48px', fontSize: '13px', color: '#64748b' }}>{language === 'ar' ? 'عرض في الأقسام المميزة' : 'Show in featured sections'}</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
                 <label className="toggle-switch">
                   <input type="checkbox" checked={formData.isActive} onChange={e => setFormData({...formData, isActive: e.target.checked})} />
                   <span className="toggle-slider"></span>
                 </label>
-                <span style={{ fontSize: '15px', fontWeight: 600, color: formData.isActive ? '#22c55e' : '#64748b', cursor: 'pointer' }} onClick={() => setFormData({...formData, isActive: !formData.isActive})}>{formData.isActive ? 'Active (Visible)' : 'Inactive (Hidden)'}</span>
+                <span style={{ fontSize: '15px', fontWeight: 600, color: formData.isActive ? '#22c55e' : '#64748b', cursor: 'pointer' }} onClick={() => setFormData({...formData, isActive: !formData.isActive})}>{formData.isActive ? (language === 'ar' ? 'نشط (مرئي)' : 'Active (Visible)') : (language === 'ar' ? 'غير نشط (مخفي)' : 'Inactive (Hidden)')}</span>
               </div>
-              <p style={{ margin: '0 0 0 48px', fontSize: '13px', color: '#64748b' }}>If inactive, product will be completely hidden from store</p>
+              <p style={{ margin: '0 0 0 48px', fontSize: '13px', color: '#64748b' }}>{language === 'ar' ? 'إذا كان غير نشط، سيتم إخفاء المنتج تماماً من المتجر' : 'If inactive, product will be completely hidden from store'}</p>
           </div>
           </div>
           </div>
@@ -895,7 +895,7 @@ export default function ProductForm() {
           
           <div className={`form-accordion-content ${expandedSections.reviews ? '' : 'collapsed'}`}>
           <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
-            Upload screenshots of customer reviews (WhatsApp, Messenger, etc.) to show on this product's page.
+            {language === 'ar' ? 'قم برفع صور لتقييمات العملاء (واتساب، ماسنجر، إلخ) لعرضها في صفحة المنتج.' : 'Upload screenshots of customer reviews (WhatsApp, Messenger, etc.) to show on this product\'s page.'}
           </p>
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '16px' }}>
@@ -937,7 +937,7 @@ export default function ProductForm() {
                 onChange={handleReviewFileInput} 
               />
               <UploadCloud size={24} color={isReviewDragging ? 'var(--primary)' : '#94a3b8'} style={{ marginBottom: '8px' }} />
-              <div style={{ fontSize: '13px', fontWeight: 500, color: '#334155' }}>Upload Screenshot</div>
+              <div style={{ fontSize: '13px', fontWeight: 500, color: '#334155' }}>{language === 'ar' ? 'رفع صورة' : 'Upload Screenshot'}</div>
             </div>
           </div>
           </div>
