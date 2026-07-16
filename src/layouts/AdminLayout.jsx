@@ -261,11 +261,21 @@ export default function AdminLayout() {
           </nav>
 
           <div className="admin-sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '0 12px' }} className={isDesktopCollapsed ? 'mobile-hidden' : ''}>
-              <div className="admin-user-avatar" title={currentAdmin || 'Admin'} style={{ width: '32px', height: '32px', fontSize: '14px', flexShrink: 0 }}>
-                {currentAdmin ? currentAdmin.charAt(0).toUpperCase() : 'A'}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 12px' }} className={isDesktopCollapsed ? 'mobile-hidden' : ''}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span className="nav-link-text" style={{ fontWeight: 600, fontSize: '14px', color: 'var(--on-surface)' }}>{currentAdmin || 'Admin'}</span>
+                <div className="admin-user-avatar" title={currentAdmin || 'Admin'} style={{ width: '32px', height: '32px', fontSize: '14px', flexShrink: 0 }}>
+                  {currentAdmin ? currentAdmin.charAt(0).toUpperCase() : 'A'}
+                </div>
               </div>
-              <span className="nav-link-text" style={{ fontWeight: 600, fontSize: '14px', color: 'var(--on-surface)' }}>{currentAdmin || 'Admin'}</span>
+              <button 
+                onClick={toggleLang} 
+                className="icon-btn" 
+                style={{ padding: '6px 10px', fontSize: '14px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9', borderRadius: '6px', color: '#475569' }}
+                title={language === 'ar' ? 'English' : 'عربي'}
+              >
+                {language === 'ar' ? 'E' : 'ع'}
+              </button>
             </div>
             <Link to="/" className="admin-nav-link" title={language === 'ar' ? 'العودة للمتجر' : 'Back to Store'}>
               <LogOut size={20} />
