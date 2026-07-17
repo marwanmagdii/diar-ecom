@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Save, UploadCloud, X, Tag, Plus, BarChart2, Trash2, Crop, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Save, UploadCloud, X, Tag, Plus, BarChart2, Trash2, Crop, ChevronDown, ChevronUp, Check, GripVertical, Globe } from 'lucide-react';
 
 import ProductOptionsBuilder, { VariantOptionSelector } from './ProductOptionsBuilder';
 import ImageLightbox from '../../components/ImageLightbox';
@@ -14,20 +14,21 @@ const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, language, 
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   
   const startX = useRef(0);
   const currentX = useRef(0);
 
-  const handleTouchStart = (e) => {
-    startX.current = e.touches[0].clientX;
+  const handlePointerDown = (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    startX.current = e.clientX;
     currentX.current = swipeOffset;
     setIsSwiping(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
-  const handleTouchMove = (e) => {
+  const handlePointerMove = (e) => {
     if (!isSwiping) return;
-    const diff = e.touches[0].clientX - startX.current;
+    const diff = e.clientX - startX.current;
     
     const isRtl = dir === 'rtl';
     let newOffset = currentX.current + diff;
@@ -40,12 +41,15 @@ const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, language, 
       if (newOffset < -100) newOffset = -100;
     }
     
-    setSwipeOffset(newOffset);
+    if (Math.abs(diff) > 5) {
+      setSwipeOffset(newOffset);
+    }
   };
 
-  const handleTouchEnd = () => {
+  const handlePointerUp = (e) => {
     if (!isSwiping) return;
     setIsSwiping(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
     
     const isRtl = dir === 'rtl';
     const threshold = isRtl ? 30 : -30;
@@ -67,26 +71,16 @@ const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, language, 
        onDelete();
     } else {
        setShowConfirm(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    if (!isSwiping && swipeOffset === 0) {
-       setShowConfirm(false);
+       const isRtl = dir === 'rtl';
+       setSwipeOffset(isRtl ? 80 : -80);
     }
   };
 
   const isRtl = dir === 'rtl';
-  const displayOffset = isSwiping || swipeOffset !== 0 ? swipeOffset : 0;
-  const isTrashVisible = displayOffset !== 0 || isHovered;
+  const displayOffset = swipeOffset;
 
   return (
-    <div 
-      style={{ position: 'relative', overflow: 'hidden', borderRadius: '8px', display: 'flex', alignItems: 'center' }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '8px', display: 'flex', alignItems: 'center' }}>
       <div 
         style={{
           position: 'absolute',
@@ -100,42 +94,61 @@ const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, language, 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontWeight: 600,
-          fontSize: '13px',
           cursor: 'pointer',
-          zIndex: isHovered && swipeOffset === 0 ? 3 : 1,
-          transition: 'all 0.2s ease',
-          opacity: isTrashVisible ? 1 : 0,
-          pointerEvents: isTrashVisible ? 'auto' : 'none'
+          zIndex: 1,
+          transition: 'opacity 0.2s ease',
         }}
+        onPointerDown={(e) => e.stopPropagation()}
         onClick={handleDeleteTap}
       >
-        {showConfirm ? (language === 'ar' ? 'تأكيد؟' : 'Delete?') : <Trash2 size={16} />}
+        {showConfirm ? <Check size={20} /> : <Trash2 size={16} />}
       </div>
 
       <div
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         style={{
           width: '100%',
           transform: `translateX(${displayOffset}px)`,
           transition: isSwiping ? 'none' : 'transform 0.2s ease',
           zIndex: 2,
           backgroundColor: '#ffffff',
-          position: 'relative'
+          position: 'relative',
+          display: 'flex'
         }}
       >
-        <input 
-          type="text" 
+        <textarea 
           className="premium-input" 
           value={value} 
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           dir={dir}
-          style={{ width: '100%', paddingLeft: isRtl ? '12px' : '16px', paddingRight: isRtl ? '16px' : '12px' }}
+          style={{ 
+            width: '100%', 
+            paddingLeft: isRtl ? '12px' : '36px', 
+            paddingRight: isRtl ? '36px' : '12px',
+            minHeight: '60px',
+            resize: 'vertical'
+          }}
+          onPointerDown={(e) => {
+            if (e.pointerType === 'mouse') e.stopPropagation();
+          }}
         />
+        <div style={{
+           position: 'absolute',
+           left: isRtl ? 'auto' : '8px',
+           right: isRtl ? '8px' : 'auto',
+           top: '50%',
+           transform: 'translateY(-50%)',
+           cursor: 'grab',
+           color: '#cbd5e1',
+           display: 'flex',
+           alignItems: 'center'
+        }}>
+           <GripVertical size={16} />
+        </div>
       </div>
     </div>
   );
@@ -190,12 +203,42 @@ export default function ProductForm() {
   
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
-    media: false,
-    pricing: false,
-    inventory: false,
-    variants: false,
-    reviews: false
+    pricing: true,
+    inventory: true,
+    display: true,
+    arabic: true,
+    images: true,
+    options: true
   });
+
+  const handleAutoTranslate = async () => {
+    try {
+      const translateText = async (text) => {
+        if (!text) return '';
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+        return data[0].map(x => x[0]).join('');
+      };
+
+      addToast(language === 'ar' ? 'جاري الترجمة...' : 'Translating...', 'info');
+      
+      const titleAr = formData.title ? await translateText(formData.title) : formData.titleAr;
+      const descriptionAr = formData.description ? await translateText(formData.description) : formData.descriptionAr;
+      const keyBenefitsAr = formData.keyBenefits ? await translateText(formData.keyBenefits) : formData.keyBenefitsAr;
+      
+      setFormData(prev => ({
+        ...prev,
+        titleAr,
+        descriptionAr,
+        keyBenefitsAr
+      }));
+      
+      addToast(language === 'ar' ? 'تمت الترجمة بنجاح' : 'Translation complete', 'success');
+    } catch (err) {
+      console.error(err);
+      addToast(language === 'ar' ? 'فشلت الترجمة' : 'Translation failed', 'error');
+    }
+  };
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -573,7 +616,21 @@ export default function ProductForm() {
           {/* Left Col: Details */}
           <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
             <div className="form-accordion-header" onClick={() => toggleSection('basic')}>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'المعلومات الأساسية' : 'Basic Information'}</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'المعلومات الأساسية' : 'Basic Information'}</h3>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAutoTranslate();
+                  }}
+                  className="btn btn-secondary"
+                  style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}
+                  title={language === 'ar' ? 'ترجمة الإنجليزية إلى العربية تلقائياً' : 'Auto-translate English to Arabic'}
+                >
+                  <Globe size={14} /> {language === 'ar' ? 'ترجمة تلقائية' : 'Auto Translate'}
+                </button>
+              </div>
               {expandedSections.basic ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </div>
             
