@@ -716,10 +716,10 @@ export default function ProductForm() {
                   <button 
                     type="button" 
                     onClick={() => setFormData({...formData, keyBenefits: formData.keyBenefits ? formData.keyBenefits + '\n' : ' '})} 
-                    className="btn btn-secondary" 
-                    style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    className="icon-btn" 
+                    style={{ padding: '4px', color: 'var(--primary)', background: 'none', border: 'none', boxShadow: 'none' }}
                   >
-                    <Plus size={14} /> {language === 'ar' ? 'إضافة' : 'Add'}
+                    <Plus size={20} />
                   </button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -754,10 +754,10 @@ export default function ProductForm() {
                   <button 
                     type="button" 
                     onClick={() => setFormData({...formData, keyBenefitsAr: formData.keyBenefitsAr ? formData.keyBenefitsAr + '\n' : ' '})} 
-                    className="btn btn-secondary" 
-                    style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    className="icon-btn" 
+                    style={{ padding: '4px', color: 'var(--primary)', background: 'none', border: 'none', boxShadow: 'none' }}
                   >
-                    <Plus size={14} /> {language === 'ar' ? 'إضافة' : 'Add'}
+                    <Plus size={20} />
                   </button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
