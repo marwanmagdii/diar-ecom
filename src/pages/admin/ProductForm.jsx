@@ -398,24 +398,22 @@ export default function ProductForm() {
 
   return (
     <div style={{ width: '100%', margin: '0 auto', paddingBottom: '40px' }}>
-      {document.getElementById('admin-header-title-actions') && createPortal(
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <button 
-          className="icon-btn" 
-          onClick={() => navigate('/diaradmin26/products')}
+          type="button"
+          onClick={() => navigate('/diaradmin26/products')} 
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: 0, fontWeight: 500, fontSize: '14px' }}
         >
-          <ArrowLeft size={20} />
-        </button>,
-        document.getElementById('admin-header-title-actions')
-      )}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px', justifyContent: 'flex-end' }}>
+          <ArrowLeft size={18} /> {language === 'ar' ? 'عودة' : 'Back'}
+        </button>
         {isEditing && (
           <button 
             type="button"
             className="btn" 
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#e0e7ff', color: '#4f46e5', border: 'none' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#e0e7ff', color: '#4f46e5', border: 'none', padding: '6px 12px', fontSize: '13px' }}
             onClick={() => navigate(`/diaradmin26/products/${id}/analysis`)}
           >
-            <BarChart2 size={20} /> View Analysis
+            <BarChart2 size={16} /> {language === 'ar' ? 'عرض التحليلات' : 'View Analysis'}
           </button>
         )}
       </div>

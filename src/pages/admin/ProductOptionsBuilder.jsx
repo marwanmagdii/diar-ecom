@@ -109,47 +109,21 @@ export const VariantOptionSelector = ({ variantId, opt, val, onChange }) => {
     );
   }
 
-  // Non-color options: pill selector (Multi-select)
-  const selectedValues = val ? val.split(',').map(s => s.trim()).filter(Boolean) : [];
-  
-  const handlePillClick = (v) => {
-    if (selectedValues.includes(v)) {
-      const newValues = selectedValues.filter(x => x !== v);
-      onChange(newValues.join(', '));
-    } else {
-      const newValues = [...selectedValues, v];
-      onChange(newValues.join(', '));
-    }
-  };
-
+  // Non-color options: dropdown selector
   return (
     <div style={{ flex: '1 1 200px' }}>
       <label className="premium-label">{opt.name}</label>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-        {opt.values.map(v => {
-          const isSelected = selectedValues.includes(v);
-          return (
-            <div
-              key={v}
-              onClick={() => handlePillClick(v)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: isSelected ? '2px solid var(--primary)' : '1px solid #cbd5e1',
-                backgroundColor: isSelected ? 'var(--primary-container)' : '#fff',
-                color: isSelected ? 'var(--on-primary-container)' : '#475569',
-                fontSize: '13px',
-                fontWeight: isSelected ? 600 : 400,
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                userSelect: 'none'
-              }}
-            >
-              {v}
-            </div>
-          );
-        })}
-      </div>
+      <select 
+        className="premium-input"
+        value={val || ''}
+        onChange={(e) => onChange(e.target.value)}
+        style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--outline-variant)', backgroundColor: '#f8fafc', appearance: 'auto' }}
+      >
+        <option value="">Select {opt.name}</option>
+        {opt.values.map(v => (
+          <option key={v} value={v}>{v}</option>
+        ))}
+      </select>
     </div>
   );
 };
