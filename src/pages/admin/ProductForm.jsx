@@ -10,6 +10,135 @@ import { compressImage } from '../../utils/imageCompression';
 import { defaultOptions } from '../../utils/constants';
 import { useStore } from '../../store';
 
+const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, language, dir }) => {
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  
+  const startX = useRef(0);
+  const currentX = useRef(0);
+
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+    currentX.current = swipeOffset;
+    setIsSwiping(true);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isSwiping) return;
+    const diff = e.touches[0].clientX - startX.current;
+    
+    const isRtl = dir === 'rtl';
+    let newOffset = currentX.current + diff;
+    
+    if (isRtl) {
+      if (newOffset < 0) newOffset = 0;
+      if (newOffset > 100) newOffset = 100;
+    } else {
+      if (newOffset > 0) newOffset = 0;
+      if (newOffset < -100) newOffset = -100;
+    }
+    
+    setSwipeOffset(newOffset);
+  };
+
+  const handleTouchEnd = () => {
+    if (!isSwiping) return;
+    setIsSwiping(false);
+    
+    const isRtl = dir === 'rtl';
+    const threshold = isRtl ? 30 : -30;
+    const snappedOffset = isRtl ? 80 : -80;
+    
+    if (isRtl ? swipeOffset > threshold : swipeOffset < threshold) {
+      setSwipeOffset(snappedOffset);
+      setShowConfirm(true);
+    } else {
+      setSwipeOffset(0);
+      setShowConfirm(false);
+    }
+  };
+
+  const handleDeleteTap = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (showConfirm) {
+       onDelete();
+    } else {
+       setShowConfirm(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (!isSwiping && swipeOffset === 0) {
+       setShowConfirm(false);
+    }
+  };
+
+  const isRtl = dir === 'rtl';
+  const displayOffset = isSwiping || swipeOffset !== 0 ? swipeOffset : (isHovered ? (isRtl ? 80 : -80) : 0);
+
+  return (
+    <div 
+      style={{ position: 'relative', overflow: 'hidden', borderRadius: '8px', display: 'flex', alignItems: 'center' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div 
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          right: isRtl ? 'auto' : 0,
+          left: isRtl ? 0 : 'auto',
+          width: '80px',
+          backgroundColor: '#ef4444',
+          color: '#ffffff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 600,
+          fontSize: '13px',
+          cursor: 'pointer',
+          zIndex: 1,
+          transition: 'all 0.2s ease',
+          opacity: (displayOffset !== 0) ? 1 : 0
+        }}
+        onClick={handleDeleteTap}
+      >
+        {showConfirm ? (language === 'ar' ? 'تأكيد؟' : 'Delete?') : <Trash2 size={16} />}
+      </div>
+
+      <div
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
+        style={{
+          width: '100%',
+          transform: `translateX(${displayOffset}px)`,
+          transition: isSwiping ? 'none' : 'transform 0.2s ease',
+          zIndex: 2,
+          backgroundColor: '#ffffff',
+          position: 'relative'
+        }}
+      >
+        <input 
+          type="text" 
+          className="premium-input" 
+          value={value} 
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          dir={dir}
+          style={{ width: '100%', paddingLeft: isRtl ? '12px' : '16px', paddingRight: isRtl ? '16px' : '12px' }}
+        />
+      </div>
+    </div>
+  );
+};
+
 export default function ProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -595,30 +724,22 @@ export default function ProductForm() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {(formData.keyBenefits ? formData.keyBenefits.split('\n') : []).map((benefit, idx, arr) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <input 
-                        type="text" 
-                        className="premium-input" 
-                        value={benefit.trim() === '' && benefit !== ' ' ? '' : benefit} 
-                        onChange={(e) => {
-                          const newArr = [...arr];
-                          newArr[idx] = e.target.value;
-                          setFormData({...formData, keyBenefits: newArr.join('\n')});
-                        }}
-                        placeholder={language === 'ar' ? 'مثال: جودة عالية' : 'e.g. Premium quality'}
-                      />
-                      <button 
-                        type="button" 
-                        onClick={() => {
-                          const newArr = arr.filter((_, i) => i !== idx);
-                          setFormData({...formData, keyBenefits: newArr.length > 0 ? newArr.join('\n') : ''});
-                        }}
-                        className="icon-btn" 
-                        style={{ color: '#ef4444', backgroundColor: '#fee2e2', padding: '8px' }}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                    <SwipeToDeleteInput
+                      key={idx}
+                      value={benefit.trim() === '' && benefit !== ' ' ? '' : benefit}
+                      onChange={(val) => {
+                        const newArr = [...arr];
+                        newArr[idx] = val;
+                        setFormData({...formData, keyBenefits: newArr.join('\n')});
+                      }}
+                      onDelete={() => {
+                        const newArr = arr.filter((_, i) => i !== idx);
+                        setFormData({...formData, keyBenefits: newArr.length > 0 ? newArr.join('\n') : ''});
+                      }}
+                      placeholder={language === 'ar' ? 'مثال: جودة عالية' : 'e.g. Premium quality'}
+                      language={language}
+                      dir="ltr"
+                    />
                   ))}
                   {(!formData.keyBenefits) && (
                     <div style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic', padding: '8px 0', textAlign: 'center', border: '1px dashed #cbd5e1', borderRadius: '8px' }}>
@@ -641,31 +762,22 @@ export default function ProductForm() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {(formData.keyBenefitsAr ? formData.keyBenefitsAr.split('\n') : []).map((benefit, idx, arr) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <input 
-                        type="text" 
-                        className="premium-input" 
-                        value={benefit.trim() === '' && benefit !== ' ' ? '' : benefit} 
-                        onChange={(e) => {
-                          const newArr = [...arr];
-                          newArr[idx] = e.target.value;
-                          setFormData({...formData, keyBenefitsAr: newArr.join('\n')});
-                        }}
-                        placeholder="جودة عالية"
-                        dir="rtl"
-                      />
-                      <button 
-                        type="button" 
-                        onClick={() => {
-                          const newArr = arr.filter((_, i) => i !== idx);
-                          setFormData({...formData, keyBenefitsAr: newArr.length > 0 ? newArr.join('\n') : ''});
-                        }}
-                        className="icon-btn" 
-                        style={{ color: '#ef4444', backgroundColor: '#fee2e2', padding: '8px' }}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                    <SwipeToDeleteInput
+                      key={idx}
+                      value={benefit.trim() === '' && benefit !== ' ' ? '' : benefit}
+                      onChange={(val) => {
+                        const newArr = [...arr];
+                        newArr[idx] = val;
+                        setFormData({...formData, keyBenefitsAr: newArr.join('\n')});
+                      }}
+                      onDelete={() => {
+                        const newArr = arr.filter((_, i) => i !== idx);
+                        setFormData({...formData, keyBenefitsAr: newArr.length > 0 ? newArr.join('\n') : ''});
+                      }}
+                      placeholder="جودة عالية"
+                      language={language}
+                      dir="rtl"
+                    />
                   ))}
                   {(!formData.keyBenefitsAr) && (
                     <div style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic', padding: '8px 0', textAlign: 'center', border: '1px dashed #cbd5e1', borderRadius: '8px' }}>
