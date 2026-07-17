@@ -211,63 +211,36 @@ export default function ProductForm() {
     options: true
   });
 
-  const handleAutoTranslateEnToAr = async () => {
-    try {
-      const translateText = async (text) => {
-        if (!text) return '';
-        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(text)}`);
-        const data = await res.json();
-        return data[0].map(x => x[0]).join('');
-      };
-
-      addToast(language === 'ar' ? 'جاري الترجمة...' : 'Translating...', 'info');
-      
-      const titleAr = formData.title ? await translateText(formData.title) : formData.titleAr;
-      const descriptionAr = formData.description ? await translateText(formData.description) : formData.descriptionAr;
-      const keyBenefitsAr = formData.keyBenefits ? await translateText(formData.keyBenefits) : formData.keyBenefitsAr;
-      
-      setFormData(prev => ({
-        ...prev,
-        titleAr,
-        descriptionAr,
-        keyBenefitsAr
-      }));
-      
-      addToast(language === 'ar' ? 'تمت الترجمة بنجاح' : 'Translation complete', 'success');
-    } catch (err) {
-      console.error(err);
-      addToast(language === 'ar' ? 'فشلت الترجمة' : 'Translation failed', 'error');
-    }
-  };
-
-  const handleAutoTranslateArToEn = async () => {
-    try {
-      const translateText = async (text) => {
-        if (!text) return '';
-        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=en&dt=t&q=${encodeURIComponent(text)}`);
-        const data = await res.json();
-        return data[0].map(x => x[0]).join('');
-      };
-
-      addToast(language === 'ar' ? 'جاري الترجمة...' : 'Translating...', 'info');
-      
-      const title = formData.titleAr ? await translateText(formData.titleAr) : formData.title;
-      const description = formData.descriptionAr ? await translateText(formData.descriptionAr) : formData.description;
-      const keyBenefits = formData.keyBenefitsAr ? await translateText(formData.keyBenefitsAr) : formData.keyBenefits;
-      
-      setFormData(prev => ({
-        ...prev,
-        title,
-        description,
-        keyBenefits
-      }));
-      
-      addToast(language === 'ar' ? 'تمت الترجمة بنجاح' : 'Translation complete', 'success');
-    } catch (err) {
-      console.error(err);
-      addToast(language === 'ar' ? 'فشلت الترجمة' : 'Translation failed', 'error');
-    }
-  };
+  const TranslateIconBtn = ({ sourceText, targetField, fromLang, toLang }) => (
+    <button
+      type="button"
+      onClick={async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!sourceText) {
+          addToast(language === 'ar' ? 'الرجاء إدخال النص أولاً' : 'Please enter text first', 'info');
+          return;
+        }
+        try {
+          addToast(language === 'ar' ? 'جاري الترجمة...' : 'Translating...', 'info');
+          const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(sourceText)}`);
+          const data = await res.json();
+          const translated = data[0].map(x => x[0]).join('');
+          setFormData(prev => ({ ...prev, [targetField]: translated }));
+          addToast(language === 'ar' ? 'تمت الترجمة بنجاح' : 'Translation complete', 'success');
+        } catch (err) {
+          console.error(err);
+          addToast(language === 'ar' ? 'فشلت الترجمة' : 'Translation failed', 'error');
+        }
+      }}
+      style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: '0 4px', display: 'inline-flex', alignItems: 'center', transition: 'color 0.2s' }}
+      title={toLang === 'ar' ? 'Translate to Arabic' : 'Translate to English'}
+      onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
+      onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+    >
+      <Globe size={14} />
+    </button>
+  );
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -647,30 +620,6 @@ export default function ProductForm() {
             <div className="form-accordion-header" onClick={() => toggleSection('basic')}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'المعلومات الأساسية' : 'Basic Information'}</h3>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleAutoTranslateEnToAr();
-                  }}
-                  className="btn btn-secondary"
-                  style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}
-                  title={language === 'ar' ? 'ترجمة الإنجليزية إلى العربية تلقائياً' : 'Auto-translate English to Arabic'}
-                >
-                  <Globe size={14} /> EN → AR
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleAutoTranslateArToEn();
-                  }}
-                  className="btn btn-secondary"
-                  style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe' }}
-                  title={language === 'ar' ? 'ترجمة العربية إلى الإنجليزية تلقائياً' : 'Auto-translate Arabic to English'}
-                >
-                  <Globe size={14} /> AR → EN
-                </button>
               </div>
               {expandedSections.basic ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </div>
@@ -678,11 +627,17 @@ export default function ProductForm() {
             <div className={`form-accordion-content ${expandedSections.basic ? '' : 'collapsed'}`}>
               <div className="responsive-grid-2">
                 <div>
-                  <label className="premium-label">{language === 'ar' ? 'اسم المنتج (إنجليزي)' : 'Product Name (English)'}</label>
+                  <label className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>{language === 'ar' ? 'اسم المنتج (إنجليزي)' : 'Product Name (English)'}</span>
+                    <TranslateIconBtn sourceText={formData.title} targetField="titleAr" fromLang="en" toLang="ar" />
+                  </label>
                   <textarea className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder={language === 'ar' ? 'مثال: تيشرت قطن فاخر' : 'E.g. Premium Cotton T-Shirt'} style={{ resize: 'vertical', minHeight: '60px' }} rows={2} />
                 </div>
                 <div>
-                  <label className="premium-label">{language === 'ar' ? 'اسم المنتج (عربي)' : 'Product Name (Arabic)'}</label>
+                  <label className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>{language === 'ar' ? 'اسم المنتج (عربي)' : 'Product Name (Arabic)'}</span>
+                    <TranslateIconBtn sourceText={formData.titleAr} targetField="title" fromLang="ar" toLang="en" />
+                  </label>
                   <textarea className="premium-input" value={formData.titleAr} onChange={e => setFormData({...formData, titleAr: e.target.value})} placeholder="قميص قطن فاخر" dir="rtl" style={{ resize: 'vertical', minHeight: '60px' }} rows={2} />
                 </div>
               </div>
@@ -787,7 +742,10 @@ export default function ProductForm() {
 
             <div className="responsive-grid-2">
               <div>
-                <label className="premium-label">{language === 'ar' ? 'الوصف (إنجليزي)' : 'Description (English)'}</label>
+                <label className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>{language === 'ar' ? 'الوصف (إنجليزي)' : 'Description (English)'}</span>
+                  <TranslateIconBtn sourceText={formData.description} targetField="descriptionAr" fromLang="en" toLang="ar" />
+                </label>
                 <textarea 
                   className="premium-input" 
                   value={formData.description} 
@@ -797,7 +755,10 @@ export default function ProductForm() {
                 />
               </div>
               <div>
-                <label className="premium-label">{language === 'ar' ? 'الوصف (عربي)' : 'Description (Arabic)'}</label>
+                <label className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>{language === 'ar' ? 'الوصف (عربي)' : 'Description (Arabic)'}</span>
+                  <TranslateIconBtn sourceText={formData.descriptionAr} targetField="description" fromLang="ar" toLang="en" />
+                </label>
                 <textarea 
                   className="premium-input" 
                   value={formData.descriptionAr} 
@@ -812,7 +773,10 @@ export default function ProductForm() {
             <div className="responsive-grid-2">
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <label className="premium-label" style={{ margin: 0 }}>{language === 'ar' ? 'الفوائد الرئيسية (إنجليزي)' : 'Key Benefits (English)'}</label>
+                  <label className="premium-label" style={{ margin: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
+                    <span>{language === 'ar' ? 'الفوائد الرئيسية (إنجليزي)' : 'Key Benefits (English)'}</span>
+                    <TranslateIconBtn sourceText={formData.keyBenefits} targetField="keyBenefitsAr" fromLang="en" toLang="ar" />
+                  </label>
                   <button 
                     type="button" 
                     onClick={() => setFormData({...formData, keyBenefits: formData.keyBenefits ? formData.keyBenefits + '\n' : ' '})} 
@@ -849,7 +813,10 @@ export default function ProductForm() {
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <label className="premium-label" style={{ margin: 0 }}>{language === 'ar' ? 'الفوائد الرئيسية (عربي)' : 'Key Benefits (Arabic)'}</label>
+                  <label className="premium-label" style={{ margin: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
+                    <span>{language === 'ar' ? 'الفوائد الرئيسية (عربي)' : 'Key Benefits (Arabic)'}</span>
+                    <TranslateIconBtn sourceText={formData.keyBenefitsAr} targetField="keyBenefits" fromLang="ar" toLang="en" />
+                  </label>
                   <button 
                     type="button" 
                     onClick={() => setFormData({...formData, keyBenefitsAr: formData.keyBenefitsAr ? formData.keyBenefitsAr + '\n' : ' '})} 

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { X, Crop as CropIcon } from 'lucide-react';
@@ -68,7 +69,7 @@ export default function ImageCropperModal({ isOpen, onClose, imageSrc, onCropCom
     onCropComplete(base64Image);
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay" style={{ zIndex: 9999 }}>
       <div className="modal-content" style={{ maxWidth: '800px', width: '90%', padding: '24px' }}>
         <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -118,6 +119,7 @@ export default function ImageCropperModal({ isOpen, onClose, imageSrc, onCropCom
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
