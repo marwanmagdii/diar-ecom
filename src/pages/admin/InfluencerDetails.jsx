@@ -77,19 +77,20 @@ export default function InfluencerDetails() {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: 'var(--on-surface)' }}>
-            {influencer.influencerName || 'Unnamed'}
-          </h1>
-          <button 
-            className="btn btn-secondary" 
-            style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px' }}
-            onClick={() => navigate(`/diaradmin26/influencers/edit/${influencer.id}`)}
-          >
-            <Edit size={16} />
-            {language === 'ar' ? 'تعديل' : 'Edit'}
-          </button>
-        </div>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: 'var(--on-surface)' }}>
+              {influencer.influencerName || 'Unnamed'}
+            </h1>
+            <button 
+              className="btn btn-secondary" 
+              style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+              onClick={() => navigate(`/diaradmin26/influencers/edit/${influencer.id}`)}
+            >
+              <Edit size={16} />
+              {language === 'ar' ? 'تعديل' : 'Edit'}
+            </button>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: isLink ? '#0f172a' : '#0f172a', color: '#ffffff', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 600 }}>
               {isLink ? <LinkIcon size={14} style={{ color: '#a78bfa' }} /> : <Tag size={14} style={{ color: '#fbbf24' }} />}
