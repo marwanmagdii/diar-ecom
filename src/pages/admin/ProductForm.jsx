@@ -10,7 +10,7 @@ import { compressImage } from '../../utils/imageCompression';
 import { defaultOptions } from '../../utils/constants';
 import { useStore } from '../../store';
 
-const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, language, dir }) => {
+const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, dir }) => {
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
