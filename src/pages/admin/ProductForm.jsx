@@ -211,7 +211,7 @@ export default function ProductForm() {
     options: true
   });
 
-  const handleAutoTranslate = async () => {
+  const handleAutoTranslateEnToAr = async () => {
     try {
       const translateText = async (text) => {
         if (!text) return '';
@@ -231,6 +231,35 @@ export default function ProductForm() {
         titleAr,
         descriptionAr,
         keyBenefitsAr
+      }));
+      
+      addToast(language === 'ar' ? 'تمت الترجمة بنجاح' : 'Translation complete', 'success');
+    } catch (err) {
+      console.error(err);
+      addToast(language === 'ar' ? 'فشلت الترجمة' : 'Translation failed', 'error');
+    }
+  };
+
+  const handleAutoTranslateArToEn = async () => {
+    try {
+      const translateText = async (text) => {
+        if (!text) return '';
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=en&dt=t&q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+        return data[0].map(x => x[0]).join('');
+      };
+
+      addToast(language === 'ar' ? 'جاري الترجمة...' : 'Translating...', 'info');
+      
+      const title = formData.titleAr ? await translateText(formData.titleAr) : formData.title;
+      const description = formData.descriptionAr ? await translateText(formData.descriptionAr) : formData.description;
+      const keyBenefits = formData.keyBenefitsAr ? await translateText(formData.keyBenefitsAr) : formData.keyBenefits;
+      
+      setFormData(prev => ({
+        ...prev,
+        title,
+        description,
+        keyBenefits
       }));
       
       addToast(language === 'ar' ? 'تمت الترجمة بنجاح' : 'Translation complete', 'success');
@@ -616,19 +645,31 @@ export default function ProductForm() {
           {/* Left Col: Details */}
           <div className="premium-card" style={{ padding: 0, overflow: 'hidden' }}>
             <div className="form-accordion-header" onClick={() => toggleSection('basic')}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'المعلومات الأساسية' : 'Basic Information'}</h3>
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleAutoTranslate();
+                    handleAutoTranslateEnToAr();
                   }}
                   className="btn btn-secondary"
                   style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}
                   title={language === 'ar' ? 'ترجمة الإنجليزية إلى العربية تلقائياً' : 'Auto-translate English to Arabic'}
                 >
-                  <Globe size={14} /> {language === 'ar' ? 'ترجمة تلقائية' : 'Auto Translate'}
+                  <Globe size={14} /> EN → AR
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAutoTranslateArToEn();
+                  }}
+                  className="btn btn-secondary"
+                  style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe' }}
+                  title={language === 'ar' ? 'ترجمة العربية إلى الإنجليزية تلقائياً' : 'Auto-translate Arabic to English'}
+                >
+                  <Globe size={14} /> AR → EN
                 </button>
               </div>
               {expandedSections.basic ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -866,7 +907,7 @@ export default function ProductForm() {
                   style={{ position: 'relative', width: '160px', height: '160px', borderRadius: '12px', overflow: 'hidden', border: index === 0 ? '2px solid var(--primary)' : '1px solid #e2e8f0', cursor: 'grab', opacity: draggedImageIndex === index ? 0.5 : 1, backgroundColor: '#f8fafc' }}
                   onClick={() => openLightbox(formData.images, index)}
                 >
-                  <img src={img} alt={`Preview ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }} />
+                  <img src={img} alt={`Preview ${index}`} style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'grab' }} draggable={false} />
                   
                   <div style={{ position: 'absolute', top: '8px', right: '8px', display: 'flex', gap: '4px', zIndex: 2 }}>
                     <button 

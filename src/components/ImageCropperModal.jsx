@@ -101,6 +101,7 @@ export default function ImageCropperModal({ isOpen, onClose, imageSrc, onCropCom
                 ref={imgRef}
                 alt="Crop me"
                 src={imageSrc}
+                crossOrigin="anonymous"
                 style={{ maxHeight: '55vh', maxWidth: '100%', objectFit: 'contain' }}
                 onLoad={onImageLoad}
               />
