@@ -37,6 +37,7 @@ import PushNotifications from './pages/admin/PushNotifications';
 import Influencers from './pages/admin/Influencers';
 import InfluencersAnalysis from './pages/admin/InfluencersAnalysis';
 import CreateInfluencer from './pages/admin/CreateInfluencer';
+import InfluencerDetails from './pages/admin/InfluencerDetails';
 
 import ProductsAnalysis from './pages/admin/ProductsAnalysis';
 import ReviewSettings from './pages/admin/ReviewSettings';
@@ -148,6 +149,7 @@ function App() {
               <Route path="promos" element={<PromoSettings />} />
               <Route path="notifications" element={<PushNotifications />} />
               <Route path="influencers" element={<Influencers />} />
+              <Route path="influencers/:id" element={<InfluencerDetails />} />
               <Route path="influencers/analysis" element={<InfluencersAnalysis />} />
               <Route path="influencers/new" element={<CreateInfluencer />} />
               <Route path="influencers/edit/:id" element={<CreateInfluencer />} />

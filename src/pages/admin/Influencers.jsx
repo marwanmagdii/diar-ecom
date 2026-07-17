@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Download, Copy } from 'lucide-react';
+import { Plus, Edit, Trash2, Download, Copy, Link as LinkIcon, Tag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { exportToExcel } from '../../utils/excelExport';
 import { useStore } from '../../store';
 import DataTable from '../../components/admin/DataTable';
 
 export default function Influencers() {
-  const { config, updatePromoCodes, configLoading: loading, language } = useStore();
+  const { config, updatePromoCodes, configLoading: loading, language, orders } = useStore();
   const { addToast } = useStore();
   const navigate = useNavigate();
   const promos = config.promoCodes || [];
   
-  const influencers = promos.filter(p => p.influencerName || p.commissionValue > 0);
+  const influencers = promos.filter(p => p.influencerName || p.commissionValue > 0).map(inf => {
+    const matchingOrders = (orders || []).filter(o => o.promoCode === inf.code || o.affiliateCode === inf.code);
+    const dynamicUses = matchingOrders.length;
+    const dynamicSales = matchingOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+    return {
+      ...inf,
+      usageCount: dynamicUses,
+      totalRevenue: dynamicSales
+    };
+  });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [influencerToDelete, setInfluencerToDelete] = useState(null);
 
@@ -94,7 +103,7 @@ export default function Influencers() {
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <span style={{ fontSize: '11px', color: isLink ? '#8b5cf6' : '#f59e0b', fontWeight: 600 }}>
-              {isLink ? (language === 'ar' ? 'رابط إحالة' : 'Referral Link') : (language === 'ar' ? 'كود خصم' : 'Promo Code')}
+              {isLink ? <LinkIcon size={14} /> : <Tag size={14} />}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {isLink ? (
@@ -206,7 +215,7 @@ export default function Influencers() {
         loading={loading}
         searchFunction={searchFunction}
         emptyMessage={language === 'ar' ? 'لا يوجد مؤثرين. انقر على "إضافة مؤثر" للبدء.' : 'No influencers found. Click "Add Influencer" to get started.'}
-        onRowClick={(inf) => navigate('/diaradmin26/orders', { state: { search: inf.influencerName } })}
+        onRowClick={(inf) => navigate(`/diaradmin26/influencers/${inf.id}`)}
       />
 
       {deleteModalOpen && (
