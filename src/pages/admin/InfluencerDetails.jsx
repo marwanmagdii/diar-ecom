@@ -64,7 +64,7 @@ export default function InfluencerDetails() {
   ];
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', color: 'var(--on-surface-variant)' }}>
         <button 
           onClick={() => navigate('/diaradmin26/influencers')}
@@ -77,11 +77,20 @@ export default function InfluencerDetails() {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-        <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 8px 0', color: 'var(--on-surface)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: 'var(--on-surface)' }}>
             {influencer.influencerName || 'Unnamed'}
           </h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button 
+            className="btn btn-secondary" 
+            style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+            onClick={() => navigate(`/diaradmin26/influencers/edit/${influencer.id}`)}
+          >
+            <Edit size={16} />
+            {language === 'ar' ? 'تعديل' : 'Edit'}
+          </button>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', backgroundColor: isLink ? '#f3e8ff' : '#fef3c7', color: isLink ? '#7e22ce' : '#d97706', padding: '4px 10px', borderRadius: '999px', fontWeight: 600 }}>
               {isLink ? <LinkIcon size={14} /> : <Tag size={14} />}
               {isLink ? (language === 'ar' ? 'رابط إحالة' : 'Referral Link') : (language === 'ar' ? 'كود خصم' : 'Promo Code')}
@@ -102,9 +111,17 @@ export default function InfluencerDetails() {
             {influencer.commissionValue}{influencer.commissionType === 'percentage' ? '%' : ' EGP'}
           </div>
         </div>
-        <div className="metric-card" style={{ padding: '24px', backgroundColor: '#ffffff', border: 'none', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: '0 0 12px 0' }}>
+        <div 
+          className="metric-card" 
+          style={{ padding: '24px', backgroundColor: '#ffffff', border: 'none', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', cursor: 'pointer', transition: 'all 0.2s' }}
+          onClick={() => {
+            document.getElementById('order-history').scrollIntoView({ behavior: 'smooth' });
+          }}
+          title={language === 'ar' ? 'عرض المستخدمين' : 'View users'}
+        >
+          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#64748b', margin: '0 0 12px 0', display: 'flex', justifyContent: 'space-between' }}>
             {language === 'ar' ? 'مرات الاستخدام' : 'Total Uses'}
+            <ChevronRight size={16} />
           </h3>
           <div style={{ fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>
             {dynamicUses}
@@ -129,7 +146,7 @@ export default function InfluencerDetails() {
         </div>
       </div>
 
-      <div style={{ backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+      <div id="order-history" style={{ backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
         <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f5f9' }}>
           <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
             {language === 'ar' ? 'سجل الطلبات' : 'Order History'}
