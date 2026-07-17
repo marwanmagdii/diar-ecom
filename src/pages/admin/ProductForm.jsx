@@ -78,7 +78,8 @@ const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, language, 
   };
 
   const isRtl = dir === 'rtl';
-  const displayOffset = isSwiping || swipeOffset !== 0 ? swipeOffset : (isHovered ? (isRtl ? 80 : -80) : 0);
+  const displayOffset = isSwiping || swipeOffset !== 0 ? swipeOffset : 0;
+  const isTrashVisible = displayOffset !== 0 || isHovered;
 
   return (
     <div 
@@ -102,9 +103,10 @@ const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, language, 
           fontWeight: 600,
           fontSize: '13px',
           cursor: 'pointer',
-          zIndex: 1,
+          zIndex: isHovered && swipeOffset === 0 ? 3 : 1,
           transition: 'all 0.2s ease',
-          opacity: (displayOffset !== 0) ? 1 : 0
+          opacity: isTrashVisible ? 1 : 0,
+          pointerEvents: isTrashVisible ? 'auto' : 'none'
         }}
         onClick={handleDeleteTap}
       >
@@ -716,8 +718,7 @@ export default function ProductForm() {
                   <button 
                     type="button" 
                     onClick={() => setFormData({...formData, keyBenefits: formData.keyBenefits ? formData.keyBenefits + '\n' : ' '})} 
-                    className="icon-btn" 
-                    style={{ padding: '4px', color: 'var(--primary)', background: 'none', border: 'none', boxShadow: 'none' }}
+                    style={{ padding: '4px', color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   >
                     <Plus size={20} />
                   </button>
@@ -754,8 +755,7 @@ export default function ProductForm() {
                   <button 
                     type="button" 
                     onClick={() => setFormData({...formData, keyBenefitsAr: formData.keyBenefitsAr ? formData.keyBenefitsAr + '\n' : ' '})} 
-                    className="icon-btn" 
-                    style={{ padding: '4px', color: 'var(--primary)', background: 'none', border: 'none', boxShadow: 'none' }}
+                    style={{ padding: '4px', color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   >
                     <Plus size={20} />
                   </button>
