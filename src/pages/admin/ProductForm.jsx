@@ -582,25 +582,97 @@ export default function ProductForm() {
 
             <div className="responsive-grid-2">
               <div>
-                <label className="premium-label">{language === 'ar' ? 'الفوائد الرئيسية (إنجليزي، كل فائدة في سطر)' : 'Key Benefits (English, one per line)'}</label>
-                <textarea 
-                  className="premium-input" 
-                  value={formData.keyBenefits} 
-                  onChange={e => setFormData({...formData, keyBenefits: e.target.value})} 
-                  style={{ minHeight: '100px', resize: 'vertical' }} 
-                  placeholder={language === 'ar' ? 'جودة عالية\nمنتج أصلي\nمضمون' : 'Premium quality\nAuthentic product\nSatisfaction guaranteed'}
-                />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <label className="premium-label" style={{ margin: 0 }}>{language === 'ar' ? 'الفوائد الرئيسية (إنجليزي)' : 'Key Benefits (English)'}</label>
+                  <button 
+                    type="button" 
+                    onClick={() => setFormData({...formData, keyBenefits: formData.keyBenefits ? formData.keyBenefits + '\n' : ' '})} 
+                    className="btn btn-secondary" 
+                    style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <Plus size={14} /> {language === 'ar' ? 'إضافة' : 'Add'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {(formData.keyBenefits ? formData.keyBenefits.split('\n') : []).map((benefit, idx, arr) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <input 
+                        type="text" 
+                        className="premium-input" 
+                        value={benefit.trim() === '' && benefit !== ' ' ? '' : benefit} 
+                        onChange={(e) => {
+                          const newArr = [...arr];
+                          newArr[idx] = e.target.value;
+                          setFormData({...formData, keyBenefits: newArr.join('\n')});
+                        }}
+                        placeholder={language === 'ar' ? 'مثال: جودة عالية' : 'e.g. Premium quality'}
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const newArr = arr.filter((_, i) => i !== idx);
+                          setFormData({...formData, keyBenefits: newArr.length > 0 ? newArr.join('\n') : ''});
+                        }}
+                        className="icon-btn" 
+                        style={{ color: '#ef4444', backgroundColor: '#fee2e2', padding: '8px' }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                  {(!formData.keyBenefits) && (
+                    <div style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic', padding: '8px 0', textAlign: 'center', border: '1px dashed #cbd5e1', borderRadius: '8px' }}>
+                      {language === 'ar' ? 'لم تتم إضافة فوائد. انقر على إضافة للبدء.' : 'No benefits added. Click Add to start.'}
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
-                <label className="premium-label">{language === 'ar' ? 'الفوائد الرئيسية (عربي، كل فائدة في سطر)' : 'Key Benefits (Arabic, one per line)'}</label>
-                <textarea 
-                  className="premium-input" 
-                  value={formData.keyBenefitsAr} 
-                  onChange={e => setFormData({...formData, keyBenefitsAr: e.target.value})} 
-                  style={{ minHeight: '100px', resize: 'vertical' }} 
-                  placeholder="جودة عالية&#10;منتج أصلي&#10;مضمون"
-                  dir="rtl"
-                />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <label className="premium-label" style={{ margin: 0 }}>{language === 'ar' ? 'الفوائد الرئيسية (عربي)' : 'Key Benefits (Arabic)'}</label>
+                  <button 
+                    type="button" 
+                    onClick={() => setFormData({...formData, keyBenefitsAr: formData.keyBenefitsAr ? formData.keyBenefitsAr + '\n' : ' '})} 
+                    className="btn btn-secondary" 
+                    style={{ padding: '4px 8px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <Plus size={14} /> {language === 'ar' ? 'إضافة' : 'Add'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {(formData.keyBenefitsAr ? formData.keyBenefitsAr.split('\n') : []).map((benefit, idx, arr) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <input 
+                        type="text" 
+                        className="premium-input" 
+                        value={benefit.trim() === '' && benefit !== ' ' ? '' : benefit} 
+                        onChange={(e) => {
+                          const newArr = [...arr];
+                          newArr[idx] = e.target.value;
+                          setFormData({...formData, keyBenefitsAr: newArr.join('\n')});
+                        }}
+                        placeholder="جودة عالية"
+                        dir="rtl"
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const newArr = arr.filter((_, i) => i !== idx);
+                          setFormData({...formData, keyBenefitsAr: newArr.length > 0 ? newArr.join('\n') : ''});
+                        }}
+                        className="icon-btn" 
+                        style={{ color: '#ef4444', backgroundColor: '#fee2e2', padding: '8px' }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                  {(!formData.keyBenefitsAr) && (
+                    <div style={{ color: '#94a3b8', fontSize: '13px', fontStyle: 'italic', padding: '8px 0', textAlign: 'center', border: '1px dashed #cbd5e1', borderRadius: '8px' }}>
+                      {language === 'ar' ? 'لم تتم إضافة فوائد. انقر على إضافة للبدء.' : 'No benefits added. Click Add to start.'}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             </div>
