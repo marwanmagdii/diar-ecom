@@ -101,25 +101,24 @@ export default function Influencers() {
       render: (inf) => {
         const isLink = inf.affiliateType === 'link';
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span style={{ fontSize: '11px', color: isLink ? '#8b5cf6' : '#f59e0b', fontWeight: 600 }}>
-              {isLink ? <LinkIcon size={14} /> : <Tag size={14} />}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {isLink ? (
-                <a href={`/?ref=${inf.code}`} target="_blank" rel="noreferrer" style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap', textDecoration: 'none' }}>
-                  {inf.code}
-                </a>
-              ) : (
-                <span style={{ backgroundColor: '#0f172a', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                  {inf.code}
-                </span>
-              )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {isLink ? (
+              <a href={`/?ref=${inf.code}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#0f172a', color: '#fff', padding: '6px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap', textDecoration: 'none' }}>
+                <LinkIcon size={14} style={{ color: '#a78bfa' }} />
+                {inf.code}
+              </a>
+            ) : (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#0f172a', color: '#fff', padding: '6px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                <Tag size={14} style={{ color: '#fbbf24' }} />
+                {inf.code}
+              </span>
+            )}
               {isLink && (
                 <button 
                   className="icon-btn" 
                   title="Copy Link"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     const link = `${window.location.origin}/?ref=${inf.code}`;
                     navigator.clipboard.writeText(link);
                     addToast('Link copied!', 'success');
@@ -129,7 +128,6 @@ export default function Influencers() {
                   <Copy size={14} style={{ color: '#64748b' }} />
                 </button>
               )}
-            </div>
           </div>
         );
       }

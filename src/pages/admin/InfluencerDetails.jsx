@@ -90,13 +90,13 @@ export default function InfluencerDetails() {
             {language === 'ar' ? 'تعديل' : 'Edit'}
           </button>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', backgroundColor: isLink ? '#f3e8ff' : '#fef3c7', color: isLink ? '#7e22ce' : '#d97706', padding: '4px 10px', borderRadius: '999px', fontWeight: 600 }}>
-              {isLink ? <LinkIcon size={14} /> : <Tag size={14} />}
-              {isLink ? (language === 'ar' ? 'رابط إحالة' : 'Referral Link') : (language === 'ar' ? 'كود خصم' : 'Promo Code')}
-            </span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 600, color: '#475569', backgroundColor: '#f1f5f9', padding: '4px 10px', borderRadius: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: isLink ? '#0f172a' : '#0f172a', color: '#ffffff', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: 600 }}>
+              {isLink ? <LinkIcon size={14} style={{ color: '#a78bfa' }} /> : <Tag size={14} style={{ color: '#fbbf24' }} />}
               {influencer.code}
+            </span>
+            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 500 }}>
+              {isLink ? (language === 'ar' ? 'رابط إحالة' : 'Referral Link') : (language === 'ar' ? 'كود خصم' : 'Promo Code')}
             </span>
           </div>
         </div>
