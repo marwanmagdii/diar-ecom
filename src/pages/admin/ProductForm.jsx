@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save, UploadCloud, X, Tag, Plus, BarChart2, Trash2, Crop, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -397,11 +398,16 @@ export default function ProductForm() {
 
   return (
     <div style={{ width: '100%', margin: '0 auto', paddingBottom: '40px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
-        <button className="icon-btn" onClick={() => navigate('/diaradmin26/products')} style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}><ArrowLeft size={20} /></button>
-        <div style={{ flex: 1 }}>
-          {/* Title moved to top navbar */}
-        </div>
+      {document.getElementById('admin-header-title-actions') && createPortal(
+        <button 
+          className="icon-btn" 
+          onClick={() => navigate('/diaradmin26/products')}
+        >
+          <ArrowLeft size={20} />
+        </button>,
+        document.getElementById('admin-header-title-actions')
+      )}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px', justifyContent: 'flex-end' }}>
         {isEditing && (
           <button 
             type="button"
@@ -446,48 +452,41 @@ export default function ProductForm() {
               <div className="responsive-grid-2">
                 <div>
                   <label className="premium-label">{language === 'ar' ? 'اسم المنتج (إنجليزي)' : 'Product Name (English)'}</label>
-                  <input type="text" className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder={language === 'ar' ? 'مثال: تيشرت قطن فاخر' : 'E.g. Premium Cotton T-Shirt'} />
+                  <textarea className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder={language === 'ar' ? 'مثال: تيشرت قطن فاخر' : 'E.g. Premium Cotton T-Shirt'} style={{ resize: 'vertical', minHeight: '60px' }} rows={2} />
                 </div>
                 <div>
                   <label className="premium-label">{language === 'ar' ? 'اسم المنتج (عربي)' : 'Product Name (Arabic)'}</label>
-                  <input type="text" className="premium-input" value={formData.titleAr} onChange={e => setFormData({...formData, titleAr: e.target.value})} placeholder="قميص قطن فاخر" dir="rtl" />
+                  <textarea className="premium-input" value={formData.titleAr} onChange={e => setFormData({...formData, titleAr: e.target.value})} placeholder="قميص قطن فاخر" dir="rtl" style={{ resize: 'vertical', minHeight: '60px' }} rows={2} />
                 </div>
               </div>
             
             <div className="responsive-grid-2">
               <div style={{ gridColumn: '1 / -1' }}>
                 <label className="premium-label">{language === 'ar' ? 'الفئة' : 'Category'}</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', padding: '16px', border: '1px solid var(--outline-variant)', borderRadius: '12px', backgroundColor: '#f8fafc', maxHeight: '300px', overflowY: 'auto' }}>
+                <select 
+                  className="premium-input" 
+                  value={formData.category} 
+                  onChange={e => setFormData({...formData, category: e.target.value})}
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--outline-variant)', backgroundColor: '#f8fafc' }}
+                >
+                  <option value="">{language === 'ar' ? 'اختر الفئة' : 'Select Category'}</option>
                   {config.categories?.map(cat => {
                     const catName = typeof cat === 'string' ? cat : cat.name;
-                    return (
-                      <div key={catName} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
-                          <input 
-                            type="checkbox" 
-                            name="category"
-                            checked={formData.category === catName}
-                            onChange={() => setFormData({...formData, category: catName})}
-                            style={{ width: '16px', height: '16px', accentColor: 'var(--primary)' }}
-                          />
-                          <span style={{ fontSize: '14px', color: 'var(--on-surface)' }}>{language === 'ar' && cat.nameAr ? cat.nameAr : catName}</span>
-                        </label>
-                        {typeof cat === 'object' && cat.subcategories?.map((sub, idx) => (
-                          <label key={`${catName}-${sub}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginLeft: '24px' }}>
-                            <input 
-                              type="checkbox" 
-                              name="category"
-                              checked={formData.category === sub}
-                              onChange={() => setFormData({...formData, category: sub})}
-                              style={{ width: '16px', height: '16px', accentColor: 'var(--primary)' }}
-                            />
-                            <span style={{ fontSize: '14px', color: 'var(--on-surface-variant)' }}>{language === 'ar' && cat.subcategoriesAr?.[idx] ? cat.subcategoriesAr[idx] : sub}</span>
-                          </label>
-                        ))}
-                      </div>
-                    );
+                    if (typeof cat === 'object' && cat.subcategories?.length > 0) {
+                      return (
+                        <optgroup key={catName} label={language === 'ar' && cat.nameAr ? cat.nameAr : catName}>
+                          <option value={catName}>{language === 'ar' && cat.nameAr ? cat.nameAr : catName}</option>
+                          {cat.subcategories.map((sub, idx) => (
+                            <option key={`${catName}-${sub}`} value={sub}>
+                              {language === 'ar' && cat.subcategoriesAr?.[idx] ? `- ${cat.subcategoriesAr[idx]}` : `- ${sub}`}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    }
+                    return <option key={catName} value={catName}>{language === 'ar' && cat.nameAr ? cat.nameAr : catName}</option>;
                   })}
-                </div>
+                </select>
               </div>
               <div>
                 <label className="premium-label">{language === 'ar' ? 'لون خلفية المنتج (اختياري)' : 'Product Background Color (Optional)'}</label>
