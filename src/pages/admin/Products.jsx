@@ -10,6 +10,7 @@ export default function Products() {
   const { addToast } = useStore();
   const navigate = useNavigate();
   
+  const [statusFilter, setStatusFilter] = useState('active');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
@@ -85,7 +86,7 @@ export default function Products() {
       { header: 'Featured', key: 'featured', width: 15 }
     ];
 
-    const data = products.map(p => ({
+    const data = filteredProducts.map(p => ({
       id: p.id,
       title: getProductTitle(p),
       category: getCategoryName(p.category),
@@ -171,9 +172,13 @@ export default function Products() {
   };
 
   const filteredProducts = React.useMemo(() => {
-    if (categoryFilter === 'all') return products;
-    return products.filter(p => p.category === categoryFilter);
-  }, [products, categoryFilter]);
+    return products.filter(p => {
+      if (statusFilter === 'active' && p.isActive === false) return false;
+      if (statusFilter === 'inactive' && p.isActive !== false) return false;
+      if (categoryFilter !== 'all' && p.category !== categoryFilter) return false;
+      return true;
+    });
+  }, [products, categoryFilter, statusFilter]);
 
   const actionsNode = (
     <React.Fragment>
@@ -190,20 +195,36 @@ export default function Products() {
   );
 
   const filtersNode = (
-    <select 
-      id="products_category_filter"
-      name="productsCategoryFilter"
-      aria-label="Filter products by category"
-      className="input-field" 
-      style={{ width: '200px' }}
-      value={categoryFilter}
-      onChange={(e) => setCategoryFilter(e.target.value)}
-    >
-      <option value="all">{language === 'ar' ? 'جميع الفئات' : 'All Categories'}</option>
-      {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(cat => (
-        <option key={cat} value={cat}>{getCategoryName(cat)}</option>
-      ))}
-    </select>
+    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+      <select 
+        id="products_status_filter"
+        name="productsStatusFilter"
+        aria-label="Filter products by status"
+        className="input-field" 
+        style={{ minWidth: '130px', flex: '1 1 auto' }}
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+      >
+        <option value="active">{language === 'ar' ? 'النشطة' : 'Active'}</option>
+        <option value="inactive">{language === 'ar' ? 'غير النشطة' : 'Inactive'}</option>
+        <option value="all">{language === 'ar' ? 'جميع الحالات' : 'All Statuses'}</option>
+      </select>
+
+      <select 
+        id="products_category_filter"
+        name="productsCategoryFilter"
+        aria-label="Filter products by category"
+        className="input-field" 
+        style={{ minWidth: '150px', flex: '1 1 auto' }}
+        value={categoryFilter}
+        onChange={(e) => setCategoryFilter(e.target.value)}
+      >
+        <option value="all">{language === 'ar' ? 'جميع الفئات' : 'All Categories'}</option>
+        {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(cat => (
+          <option key={cat} value={cat}>{getCategoryName(cat)}</option>
+        ))}
+      </select>
+    </div>
   );
 
   return (
