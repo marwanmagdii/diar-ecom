@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Image as ImageIcon, ChevronDown, ChevronUp, Search } from 'lucide-react';
+import { Plus, Trash2, Image as ImageIcon, ChevronDown, ChevronUp, Search, Check } from 'lucide-react';
 import ImageLightbox from '../../components/ImageLightbox';
 import { compressImage } from '../../utils/imageCompression';
 import { getColorHex } from '../../utils/colors';
@@ -96,43 +96,145 @@ export const VariantOptionSelector = ({ variantId, opt, val, onChange }) => {
     );
   }
 
-  // Weight option: custom text input
-  if (isWeight) {
-    const inputId = `opt_weight_${opt.name}`;
-    return (
-      <div style={{ flex: '1 1 200px' }}>
-        <label htmlFor={inputId} className="premium-label">{opt.name}</label>
+  // Non-color options (Size, Material, Weight, Style, etc.): Combobox supporting direct writing AND preset dropdown selection
+  const isSize = opt.name.toLowerCase().includes('size') || opt.name.toLowerCase().includes('مقاس');
+  const isMaterial = opt.name.toLowerCase().includes('material') || opt.name.toLowerCase().includes('خامة') || opt.name.toLowerCase().includes('مادة');
+  
+  let placeholderText = language === 'ar' ? `اكتب ${opt.name} أو اختر...` : `Type ${opt.name} or select...`;
+  if (isSize) {
+    placeholderText = language === 'ar' ? 'اكتب المقاس أو اختر (مثال: M, 42)...' : 'Type size or select (e.g. M, 42)...';
+  } else if (isMaterial) {
+    placeholderText = language === 'ar' ? 'اكتب الخامة أو اختر (مثال: قطن، جلد)...' : 'Type material or select (e.g. Cotton, Leather)...';
+  } else if (isWeight) {
+    placeholderText = language === 'ar' ? 'اكتب الوزن أو اختر (مثال: 500g)...' : 'Type weight or select (e.g. 500g)...';
+  }
+
+  const values = opt.values || [];
+  const filteredValues = values.filter(v => 
+    !val || v.toLowerCase().includes(String(val).toLowerCase())
+  );
+  const inputId = `opt_input_${variantId || 'main'}_${opt.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+  const isRtl = language === 'ar';
+
+  return (
+    <div style={{ flex: '1 1 200px', position: 'relative', zIndex: isOpen ? 50 : 1 }} ref={dropdownRef}>
+      <label htmlFor={inputId} className="premium-label">{opt.name}</label>
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
         <input 
           type="text"
           id={inputId}
           name={inputId}
           className="premium-input"
-          placeholder="e.g. 100g, 1kg"
+          placeholder={placeholderText}
           value={val || ''}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            onChange(e.target.value);
+            if (!isOpen && values.length > 0) setIsOpen(true);
+          }}
+          onFocus={() => {
+            if (values.length > 0) setIsOpen(true);
+          }}
+          style={{ 
+            width: '100%', 
+            paddingLeft: isRtl ? '36px' : '14px',
+            paddingRight: isRtl ? '14px' : '36px',
+            borderRadius: '10px',
+            backgroundColor: '#ffffff',
+            borderColor: isOpen ? 'var(--primary)' : '#cbd5e1'
+          }}
         />
+        {values.length > 0 && (
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setIsOpen(!isOpen)}
+            style={{
+              position: 'absolute',
+              right: isRtl ? 'auto' : '10px',
+              left: isRtl ? '10px' : 'auto',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#64748b'
+            }}
+            aria-label={`Toggle ${opt.name} options`}
+          >
+            <ChevronDown 
+              size={18} 
+              style={{ 
+                transform: isOpen ? 'rotate(180deg)' : 'none', 
+                transition: 'transform 0.2s' 
+              }} 
+            />
+          </button>
+        )}
       </div>
-    );
-  }
 
-  // Non-color options: dropdown selector
-  const selectId = `opt_select_${opt.name}`;
-  return (
-    <div style={{ flex: '1 1 200px' }}>
-      <label htmlFor={selectId} className="premium-label">{opt.name}</label>
-      <select 
-        id={selectId}
-        name={selectId}
-        className="premium-input"
-        value={val || ''}
-        onChange={(e) => onChange(e.target.value)}
-        style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--outline-variant)', backgroundColor: '#f8fafc', appearance: 'auto' }}
-      >
-        <option value="">Select {opt.name}</option>
-        {opt.values.map(v => (
-          <option key={v} value={v}>{v}</option>
-        ))}
-      </select>
+      {isOpen && values.length > 0 && (
+        <div 
+          onMouseDown={(e) => e.stopPropagation()}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 100,
+            marginTop: '4px',
+            backgroundColor: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '10px',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+            maxHeight: '220px',
+            overflowY: 'auto'
+          }}
+        >
+          {val && (
+            <div 
+              style={{ padding: '8px 14px', cursor: 'pointer', fontSize: '13px', color: '#64748b', fontStyle: 'italic', borderBottom: '1px solid #f1f5f9' }}
+              onClick={() => { onChange(''); setIsOpen(false); }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              {language === 'ar' ? 'مسح القيمة' : 'Clear Value'}
+            </div>
+          )}
+          {filteredValues.length > 0 ? (
+            filteredValues.map((v) => (
+              <div
+                key={v}
+                onClick={() => {
+                  onChange(v);
+                  setIsOpen(false);
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = v === val ? '#eff6ff' : 'transparent'}
+                style={{
+                  padding: '10px 14px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  color: v === val ? 'var(--primary)' : '#1e293b',
+                  fontWeight: v === val ? 600 : 400,
+                  backgroundColor: v === val ? '#eff6ff' : 'transparent',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <span>{v}</span>
+                {v === val && <Check size={16} color="var(--primary)" />}
+              </div>
+            ))
+          ) : (
+            <div style={{ padding: '12px 14px', fontSize: '13px', color: '#64748b' }}>
+              <span>{language === 'ar' ? `قيمة مخصصة: "${val}"` : `Custom value: "${val}"`}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
