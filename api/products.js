@@ -52,7 +52,9 @@ export default async function handler(req, res) {
 
         const product = await Product.create(productData);
         const productObj = product.toObject({ flattenMaps: true });
-        productObj.id = productData.id;
+        productObj.id = product.id || productData.id || product._id.toString();
+        delete productObj._id;
+        delete productObj.__v;
         
         res.status(201).json({ success: true, data: productObj });
       } catch (error) {

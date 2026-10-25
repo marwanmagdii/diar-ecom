@@ -8,7 +8,7 @@ import { useStore } from '../../store';
 
 export default function OrderDetails() {
   const { id } = useParams();
-  const { orders, updateOrder, deleteOrder, t, lang, ordersLoading: loading } = useStore();
+  const { orders, updateOrder, deleteOrder, t, language: lang, ordersLoading: loading } = useStore();
   const { products, users } = useStore();
   const navigate = useNavigate();
   const { addToast } = useStore();
@@ -89,7 +89,11 @@ export default function OrderDetails() {
       return opts.length > 0 ? opts.join('') : '';
     };
 
-    const itemsListAr = (order.items || []).map(item => `- (${item.qty}) ${item.titleAr || item.title} - ${item.price?.toFixed(2) || '0.00'} ج.م${buildItemOptionsText(item, true)}`).join('\n');
+    const itemsListAr = (order.items || []).map(item => {
+      const prod = products.find(p => p.id === item.id);
+      const title = item.titleAr || prod?.titleAr || item.title;
+      return `- (${item.qty}) ${title} - ${item.price?.toFixed(2) || '0.00'} ج.م${buildItemOptionsText(item, true)}`;
+    }).join('\n');
     const itemsListEn = (order.items || []).map(item => `- (${item.qty}) ${item.title} - ${item.price?.toFixed(2) || '0.00'} EGP${buildItemOptionsText(item, false)}`).join('\n');
 
     if (useLang === 'ar') {
@@ -230,6 +234,7 @@ export default function OrderDetails() {
       setEditedItems([...editedItems, { 
         id: product.id, 
         title: product.title, 
+        titleAr: product.titleAr,
         qty: 1, 
         price: product.price,
         category: product.category,
@@ -423,7 +428,7 @@ export default function OrderDetails() {
               <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid #f1f5f9', alignItems: 'center' }}>
                 <div style={{ flex: 1, minWidth: '150px', maxWidth: '300px' }}>
                   <SearchableSelect 
-                    options={products.map(p => ({ label: `${p.title} - ${p.price} EGP`, value: p.id.toString() }))}
+                    options={products.map(p => ({ label: `${(lang === 'ar' && p.titleAr) ? p.titleAr : p.title} - ${p.price} ${lang === 'ar' ? 'ج.م' : 'EGP'}`, value: p.id.toString() }))}
                     value={newItemId?.toString() || ''}
                     onChange={(val) => setNewItemId(val)}
                     placeholder={lang === 'ar' ? 'ابحث عن منتج...' : 'Search a product...'}
@@ -455,6 +460,7 @@ export default function OrderDetails() {
                       const variant = product.variants.find(v => v.id === item.variantId);
                       if (variant && variant.image) imageUrl = variant.image;
                     }
+                    const displayTitle = (lang === 'ar' && (item.titleAr || product.titleAr)) ? (item.titleAr || product.titleAr) : item.title;
 
                     return (
                       <tr key={idx}>
@@ -464,14 +470,14 @@ export default function OrderDetails() {
                               onClick={() => navigate(`/diaradmin26/products/${item.id}`)}
                               style={{ width: '48px', height: '48px', backgroundColor: '#e2e8f0', borderRadius: '6px', overflow: 'hidden', flexShrink: 0, cursor: 'pointer' }}
                             >
-                              <img src={imageUrl} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              <img src={imageUrl} alt={displayTitle} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </div>
                             <p 
                               onClick={() => navigate(`/diaradmin26/products/${item.id}`)}
                               style={{ fontSize: '14px', fontWeight: 600, margin: 0, color: '#0f172a', cursor: 'pointer' }}
                               className="hover-underline"
                             >
-                              {item.title}
+                              {displayTitle}
                             </p>
                           </div>
                         </td>

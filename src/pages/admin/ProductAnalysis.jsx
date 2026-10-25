@@ -160,10 +160,10 @@ export default function ProductAnalysis() {
         </button>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flex: 1 }}>
           <div style={{ width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', backgroundColor: '#fff' }}>
-            <img src={product.images?.[0] || product.image || ''} alt={product.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={product.images?.[0] || product.image || ''} alt={language === 'ar' && product.titleAr ? product.titleAr : product.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div>
-            <h2 className="headline-md m-0" style={{ marginBottom: '4px' }}>{product.title}</h2>
+            <h2 className="headline-md m-0" style={{ marginBottom: '4px' }}>{language === 'ar' && product.titleAr ? product.titleAr : product.title}</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#64748b', fontSize: '14px' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Target size={16} /> Product Analytics Dashboard</span>
               <span>•</span>

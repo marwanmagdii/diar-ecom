@@ -7,10 +7,14 @@ import DataTable from '../../components/admin/DataTable';
 
 export default function UserDetails() {
   const { id } = useParams();
-  const { users, mergeUsers, lang, deleteOrder } = useStore();
-  const { products } = useStore();
-  const { addToast } = useStore();
+  const { users, mergeUsers, language: lang, deleteOrder, products, addToast } = useStore();
   const navigate = useNavigate();
+
+  const getProductTitle = (item) => {
+    if (!item) return '';
+    const prod = products?.find(p => p.id === item.id);
+    return (lang === 'ar' && (item.titleAr || prod?.titleAr)) ? (item.titleAr || prod?.titleAr) : (item.title || prod?.title || '');
+  };
   
   // Merge Modal State
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false);
@@ -67,7 +71,7 @@ export default function UserDetails() {
       date: order.createdAt instanceof Date ? order.createdAt.toLocaleDateString() : 'Unknown Date',
       status: order.status || '',
       total: order.total || 0,
-      items: (order.items || []).map(item => `${item.qty}x ${item.title}`).join(', ')
+      items: (order.items || []).map(item => `${item.qty}x ${getProductTitle(item)}`).join(', ')
     }));
 
     exportToExcel({ data, columns: exportColumns, filename: `User_${user.name.replace(/\s+/g, '_')}_Orders` });
@@ -97,7 +101,7 @@ export default function UserDetails() {
     { 
       id: 'total', 
       label: lang === 'ar' ? 'المجموع' : 'Total', 
-      render: (order) => <span style={{ fontWeight: 600 }}>{order.total?.toFixed(2)} EGP</span> 
+      render: (order) => <span style={{ fontWeight: 600 }}>{order.total?.toFixed(2)} {lang === 'ar' ? 'ج.م' : 'EGP'}</span> 
     },
     {
       id: 'expand',
@@ -116,7 +120,9 @@ export default function UserDetails() {
 
   const renderExpandedOrder = (order) => (
     <div style={{ padding: '24px', backgroundColor: '#ffffff' }}>
-      <h4 style={{ fontSize: '13px', color: '#64748b', margin: '0 0 16px 0', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Items Purchased</h4>
+      <h4 style={{ fontSize: '13px', color: '#64748b', margin: '0 0 16px 0', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+        {lang === 'ar' ? 'المنتجات المشتراة' : 'Items Purchased'}
+      </h4>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
         {order.items?.map((item, idx) => (
           <div key={idx} style={{ display: 'flex', gap: '16px', alignItems: 'center', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
@@ -124,11 +130,11 @@ export default function UserDetails() {
               <Package size={20} color="#64748b" />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>{item.title}</p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Qty: {item.qty} &times; {item.price} EGP</p>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>{getProductTitle(item)}</p>
+              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>{lang === 'ar' ? 'الكمية' : 'Qty'}: {item.qty} &times; {item.price} {lang === 'ar' ? 'ج.م' : 'EGP'}</p>
             </div>
             <div style={{ fontWeight: 700, fontSize: '14px', color: '#0f172a' }}>
-              {(item.qty * item.price).toFixed(2)} EGP
+              {(item.qty * item.price).toFixed(2)} {lang === 'ar' ? 'ج.م' : 'EGP'}
             </div>
           </div>
         ))}

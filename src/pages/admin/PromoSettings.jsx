@@ -211,6 +211,9 @@ export default function PromoSettings() {
         <label className="toggle-switch">
           <input 
             type="checkbox" 
+            id={`promo_toggle_${promo.id}`}
+            name={`promo_toggle_${promo.id}`}
+            aria-label={`Toggle active status for promo ${promo.code}`}
             checked={promo.isActive !== false} 
             onChange={() => toggleActive(promo.id)} 
           />
@@ -251,7 +254,15 @@ export default function PromoSettings() {
   ) : null;
 
   const filtersNode = !isEditing ? (
-    <select className="input-field" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ padding: '8px 12px', minWidth: '150px' }}>
+    <select 
+      id="promos_filter_type"
+      name="promosFilterType"
+      aria-label="Filter promo codes by status"
+      className="input-field" 
+      value={filterType} 
+      onChange={(e) => setFilterType(e.target.value)} 
+      style={{ padding: '8px 12px', minWidth: '150px' }}
+    >
       <option value="all">{language === 'ar' ? 'جميع الحالات' : 'All Statuses'}</option>
       <option value="active">{language === 'ar' ? 'نشط' : 'Active'}</option>
       <option value="inactive">{language === 'ar' ? 'غير نشط' : 'Inactive'}</option>
@@ -268,9 +279,11 @@ export default function PromoSettings() {
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Code (e.g. SUMMER20)</label>
+                <label htmlFor="promo_form_code" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Code (e.g. SUMMER20)</label>
                 <input 
                   type="text" 
+                  id="promo_form_code"
+                  name="promoCode"
                   className="input-field" 
                   value={formData.code} 
                   onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})} 
@@ -278,10 +291,12 @@ export default function PromoSettings() {
                 />
               </div>
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Active Status</label>
+                <label htmlFor="promo_form_is_active" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Active Status</label>
                 <label className="toggle-switch">
                   <input 
                     type="checkbox" 
+                    id="promo_form_is_active"
+                    name="isActive"
                     checked={formData.isActive}
                     onChange={e => setFormData({...formData, isActive: e.target.checked})}
                   />
@@ -290,17 +305,19 @@ export default function PromoSettings() {
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Customer Discount Type</label>
-                <select className="input-field" value={formData.discountType} onChange={e => setFormData({...formData, discountType: e.target.value})}>
+                <label htmlFor="promo_form_discount_type" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Customer Discount Type</label>
+                <select id="promo_form_discount_type" name="discountType" className="input-field" value={formData.discountType} onChange={e => setFormData({...formData, discountType: e.target.value})}>
                   <option value="percentage">Percentage (%)</option>
                   <option value="fixed">Fixed Amount (EGP)</option>
                 </select>
               </div>
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Customer Discount Value</label>
+                <label htmlFor="promo_form_discount_val" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Customer Discount Value</label>
                 <input 
                   type="number" 
-                  step="0.01"
+                  id="promo_form_discount_val"
+                  name="discountValue"
+                  step="0.01" 
                   className="input-field" 
                   value={formData.discountValue} 
                   onChange={e => setFormData({...formData, discountValue: e.target.value})} 
@@ -308,10 +325,12 @@ export default function PromoSettings() {
                 />
               </div>
               <div style={{ gridColumn: '1 / -1' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Minimum Order Value (Optional, EGP)</label>
+                <label htmlFor="promo_form_min_order" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Minimum Order Value (Optional, EGP)</label>
                 <input 
                   type="number" 
-                  step="0.01"
+                  id="promo_form_min_order"
+                  name="minOrderValue"
+                  step="0.01" 
                   className="input-field" 
                   placeholder="e.g. 500"
                   value={formData.minOrderValue} 
@@ -323,9 +342,11 @@ export default function PromoSettings() {
                 <h3 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '16px', color: '#0f172a' }}>Influencer Commission Tracking (Optional)</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Influencer Name</label>
+                    <label htmlFor="promo_form_influencer_name" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Influencer Name</label>
                     <input 
                       type="text" 
+                      id="promo_form_influencer_name"
+                      name="influencerName"
                       className="input-field" 
                       placeholder="e.g. Ahmed Ali"
                       value={formData.influencerName} 
@@ -333,17 +354,19 @@ export default function PromoSettings() {
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Commission Type</label>
-                    <select className="input-field" value={formData.commissionType} onChange={e => setFormData({...formData, commissionType: e.target.value})}>
+                    <label htmlFor="promo_form_commission_type" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Commission Type</label>
+                    <select id="promo_form_commission_type" name="commissionType" className="input-field" value={formData.commissionType} onChange={e => setFormData({...formData, commissionType: e.target.value})}>
                       <option value="percentage">Percentage of Sales (%)</option>
                       <option value="fixed">Fixed Amount per Use (EGP)</option>
                     </select>
                   </div>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Commission Value</label>
+                    <label htmlFor="promo_form_commission_val" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 500 }}>Commission Value</label>
                     <input 
                       type="number" 
-                      step="0.01"
+                      id="promo_form_commission_val"
+                      name="commissionValue"
+                      step="0.01" 
                       className="input-field" 
                       value={formData.commissionValue} 
                       onChange={e => setFormData({...formData, commissionValue: e.target.value})} 

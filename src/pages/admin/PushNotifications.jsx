@@ -201,6 +201,9 @@ export default function PushNotifications() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <input 
                   type="text" 
+                  id="push_product_search"
+                  name="productSearch"
+                  aria-label="Search products to promote"
                   className="input-field" 
                   placeholder="Search products by name to promote..." 
                   value={productSearch}
@@ -287,18 +290,18 @@ export default function PushNotifications() {
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div>
-                  <label className="input-label">Notification Title <span style={{ color: 'red' }}>*</span></label>
-                  <input type="text" className="input-field" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Huge Flash Sale!" />
+                  <label htmlFor="push_title" className="input-label">Notification Title <span style={{ color: 'red' }}>*</span></label>
+                  <input type="text" id="push_title" name="pushTitle" className="input-field" value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Huge Flash Sale!" />
                 </div>
                 <div>
-                  <label className="input-label">Notification Body <span style={{ color: 'red' }}>*</span></label>
-                  <textarea className="input-field" value={body} onChange={e => setBody(e.target.value)} required placeholder="e.g. Click here to get 50% off all smartwatches today only." rows={3} />
+                  <label htmlFor="push_body" className="input-label">Notification Body <span style={{ color: 'red' }}>*</span></label>
+                  <textarea id="push_body" name="pushBody" className="input-field" value={body} onChange={e => setBody(e.target.value)} required placeholder="e.g. Click here to get 50% off all smartwatches today only." rows={3} />
                 </div>
                 <div>
-                  <label className="input-label">Image URL (Optional)</label>
+                  <label htmlFor="push_image_url" className="input-label">Image URL (Optional)</label>
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <ImageIcon size={40} color="#cbd5e1" style={{ padding: '8px', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                    <input type="url" className="input-field" value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="https://example.com/image.jpg" />
+                    <input type="url" id="push_image_url" name="pushImageUrl" className="input-field" value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="https://example.com/image.jpg" />
                   </div>
                 </div>
               </div>
@@ -312,27 +315,27 @@ export default function PushNotifications() {
               </h3>
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '12px' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                  <input type="radio" checked={targetType === 'all'} onChange={() => setTargetType('all')} /> All Subscribers
+                  <input type="radio" name="targetType" value="all" checked={targetType === 'all'} onChange={() => setTargetType('all')} /> All Subscribers
                 </label>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                  <input type="radio" checked={targetType === 'category'} onChange={() => setTargetType('category')} /> Bought Category
+                  <input type="radio" name="targetType" value="category" checked={targetType === 'category'} onChange={() => setTargetType('category')} /> Bought Category
                 </label>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                  <input type="radio" checked={targetType === 'city'} onChange={() => setTargetType('city')} /> Specific City
+                  <input type="radio" name="targetType" value="city" checked={targetType === 'city'} onChange={() => setTargetType('city')} /> Specific City
                 </label>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                  <input type="radio" checked={targetType === 'specific'} onChange={() => setTargetType('specific')} /> Specific Customers
+                  <input type="radio" name="targetType" value="specific" checked={targetType === 'specific'} onChange={() => setTargetType('specific')} /> Specific Customers
                 </label>
               </div>
 
               {targetType === 'category' && (
-                <select className="input-field" value={targetCategory} onChange={e => setTargetCategory(e.target.value)}>
+                <select id="target_category_select" name="targetCategory" aria-label="Select Category" className="input-field" value={targetCategory} onChange={e => setTargetCategory(e.target.value)}>
                   <option value="">Select Category...</option>
                   {availableCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               )}
               {targetType === 'city' && (
-                <select className="input-field" value={targetCity} onChange={e => setTargetCity(e.target.value)}>
+                <select id="target_city_select" name="targetCity" aria-label="Select City" className="input-field" value={targetCity} onChange={e => setTargetCity(e.target.value)}>
                   <option value="">Select City...</option>
                   {availableCities.map(city => <option key={city} value={city}>{city}</option>)}
                 </select>

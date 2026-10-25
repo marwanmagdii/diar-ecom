@@ -3,8 +3,8 @@ import { BarChart2, DollarSign, Plus, Trash2 } from 'lucide-react';
 import { useStore } from '../../store';
 
 export default function ProfitCalculator() {
-  const { lang } = useStore();
-  const isAr = lang === 'ar';
+  const { language } = useStore();
+  const isAr = language === 'ar';
   const [costPrice, setCostPrice] = useState('');
   const [regularPrice, setRegularPrice] = useState('');
   
@@ -80,13 +80,16 @@ export default function ProfitCalculator() {
       <div className="premium-card" style={{ marginBottom: '24px' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-start', marginBottom: '32px' }}>
           <div style={{ flex: '1 1 300px' }}>
-            <label className="premium-label">{isAr ? 'سعر التكلفة الأساسي (ج.م)' : 'Base Cost Price (EGP)'}</label>
+            <label htmlFor="calculator_cost_price" className="premium-label">{isAr ? 'سعر التكلفة الأساسي (ج.م)' : 'Base Cost Price (EGP)'}</label>
             <div style={{ position: 'relative' }}>
               <span style={{ position: 'absolute', left: isAr ? 'auto' : '16px', right: isAr ? '16px' : 'auto', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }}>
                 <DollarSign size={18} />
               </span>
               <input 
                 type="number" 
+                id="calculator_cost_price"
+                name="costPrice"
+                aria-label={isAr ? 'سعر التكلفة الأساسي' : 'Base Cost Price'}
                 step="0.01" 
                 className="premium-input" 
                 style={{ paddingLeft: isAr ? '16px' : '44px', paddingRight: isAr ? '44px' : '16px', fontSize: '18px', fontWeight: 600 }}
@@ -100,13 +103,16 @@ export default function ProfitCalculator() {
             </p>
           </div>
           <div style={{ flex: '1 1 300px' }}>
-            <label className="premium-label">{isAr ? 'سعر البيع النهائي (ج.م)' : 'Final Selling Price (EGP)'}</label>
+            <label htmlFor="calculator_regular_price" className="premium-label">{isAr ? 'سعر البيع النهائي (ج.م)' : 'Final Selling Price (EGP)'}</label>
             <div style={{ position: 'relative' }}>
               <span style={{ position: 'absolute', left: isAr ? 'auto' : '16px', right: isAr ? '16px' : 'auto', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }}>
                 <DollarSign size={18} />
               </span>
               <input 
                 type="number" 
+                id="calculator_regular_price"
+                name="regularPrice"
+                aria-label={isAr ? 'سعر البيع النهائي' : 'Final Selling Price'}
                 step="0.01" 
                 className="premium-input" 
                 style={{ paddingLeft: isAr ? '16px' : '44px', paddingRight: isAr ? '44px' : '16px', fontSize: '18px', fontWeight: 600, backgroundColor: customProfiles.length > 0 ? '#f8fafc' : '#ffffff' }}
@@ -132,6 +138,9 @@ export default function ProfitCalculator() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
             <input 
               type="text" 
+              id="calculator_profile_name"
+              name="profileName"
+              aria-label={isAr ? 'اسم الإضافة' : 'Addition Name'}
               className="premium-input" 
               placeholder={isAr ? 'اسم الإضافة (مثال: شحن, إعلانات)...' : 'Name (e.g., Shipping, Ads)...'}
               value={profileName}
@@ -141,6 +150,9 @@ export default function ProfitCalculator() {
             />
             
             <select 
+              id="calculator_custom_type"
+              name="customType"
+              aria-label={isAr ? 'نوع الإضافة' : 'Addition Type'}
               className="premium-input" 
               style={{ flex: '1 1 120px', cursor: costPrice ? 'pointer' : 'not-allowed' }}
               value={customType}
@@ -153,6 +165,9 @@ export default function ProfitCalculator() {
             
             <input 
               type="number" 
+              id="calculator_custom_value"
+              name="customValue"
+              aria-label={isAr ? 'قيمة الإضافة' : 'Addition Value'}
               className="premium-input" 
               placeholder={isAr ? 'القيمة...' : 'Value...'}
               value={customValue}

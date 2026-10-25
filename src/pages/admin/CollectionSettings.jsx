@@ -4,10 +4,27 @@ import { PremiumInput } from '../../components/AdminUI';
 import { useStore } from '../../store';
 
 export default function CollectionSettings() {
-  const { config, updateCollections } = useStore();
-  const { products } = useStore();
-  const { addToast } = useStore();
-  const { t } = useStore();
+  const { config, updateCollections, products, addToast, t, language } = useStore();
+
+  const getProductTitle = (product) => {
+    if (!product) return '';
+    return (language === 'ar' && product.titleAr) ? product.titleAr : (product.title || '');
+  };
+
+  const getCategoryName = (catName) => {
+    if (!catName) return '';
+    const found = config?.categories?.find(c => c.name === catName || c.nameAr === catName || c.slug === catName);
+    if (found) {
+      return language === 'ar' && found.nameAr ? found.nameAr : found.name;
+    }
+    for (const c of config?.categories || []) {
+      const sub = c.subcategories?.find(s => s.name === catName || s.nameAr === catName || s.slug === catName);
+      if (sub) {
+        return language === 'ar' && sub.nameAr ? sub.nameAr : sub.name;
+      }
+    }
+    return t ? t(catName) : catName;
+  };
 
   const [collectionsForm, setCollectionsForm] = useState(config.collections || []);
 
@@ -238,6 +255,9 @@ export default function CollectionSettings() {
                       </button>
                       <input 
                         type="text" 
+                        id={`collection_name_${col.id}`}
+                        name={`collectionName_${col.id}`}
+                        aria-label={`Collection name for ${col.name || col.id}`}
                         className="input-field" 
                         value={col.name} 
                         onChange={e => handleCollectionChange(col.id, 'name', e.target.value)} 
@@ -374,8 +394,8 @@ export default function CollectionSettings() {
                                         <img src={p.image} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                       </div>
                                       <div>
-                                        <div style={{ fontSize: '14px', fontWeight: 500, color: '#0f172a' }}>{p.title}</div>
-                                        <div style={{ fontSize: '12px', color: '#64748b' }}>{p.category}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 500, color: '#0f172a' }}>{getProductTitle(p)}</div>
+                                        <div style={{ fontSize: '12px', color: '#64748b' }}>{getCategoryName(p.category)}</div>
                                       </div>
                                     </div>
                                   </td>
@@ -388,6 +408,9 @@ export default function CollectionSettings() {
                                     <div style={{ position: 'relative', width: '100px' }}>
                                       <input 
                                         type="number" 
+                                        id={`col_${col.id}_disc_${id}`}
+                                        name={`col_${col.id}_disc_${id}`}
+                                        aria-label={`Discount percentage for ${getProductTitle(p)}`}
                                         className="input-field" 
                                         placeholder="0"
                                         value={discountPercentage}
@@ -400,6 +423,9 @@ export default function CollectionSettings() {
                                   <td style={{ padding: '12px 16px' }}>
                                     <input 
                                       type="number" 
+                                      id={`col_${col.id}_price_${id}`}
+                                      name={`col_${col.id}_price_${id}`}
+                                      aria-label={`Sale price for ${p.title}`}
                                       className="input-field" 
                                       placeholder={t('noDiscount')}
                                       value={overridePrice}
@@ -466,6 +492,9 @@ export default function CollectionSettings() {
                 <Search size={18} color="#64748b" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input 
                   type="text" 
+                  id="modal_product_search"
+                  name="modalProductSearch"
+                  aria-label="Search products by name"
                   className="input-field" 
                   placeholder="Search products by name..." 
                   value={modalSearchQuery}
@@ -474,6 +503,9 @@ export default function CollectionSettings() {
                 />
               </div>
               <select 
+                id="modal_product_category"
+                name="modalProductCategory"
+                aria-label="Filter products by category"
                 className="input-field"
                 value={modalSelectedCategory}
                 onChange={e => setModalSelectedCategory(e.target.value)}
@@ -481,7 +513,7 @@ export default function CollectionSettings() {
               >
                 <option value="">All Categories</option>
                 {[...new Set(products.map(p => p.category))].filter(Boolean).map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option key={cat} value={cat}>{getCategoryName(cat)}</option>
                 ))}
               </select>
             </div>
@@ -493,10 +525,19 @@ export default function CollectionSettings() {
                     <th style={{ padding: '12px 24px', width: '40px' }}>
                       <input 
                         type="checkbox" 
+                        id="modal_select_all_products"
+                        name="modalSelectAll"
+                        aria-label="Select all products"
                         onChange={(e) => {
                           const availableProducts = products
                             .filter(p => !collectionsForm.find(c => c.id === activeCollectionForModal)?.productIds?.includes(p.id))
-                            .filter(p => p.title.toLowerCase().includes(modalSearchQuery.toLowerCase()) || p.category.toLowerCase().includes(modalSearchQuery.toLowerCase()))
+                            .filter(p => {
+                              const pTitle = getProductTitle(p).toLowerCase();
+                              const rawTitle = (p.title || '').toLowerCase();
+                              const pCat = getCategoryName(p.category).toLowerCase();
+                              const q = modalSearchQuery.toLowerCase();
+                              return pTitle.includes(q) || rawTitle.includes(q) || pCat.includes(q);
+                            })
                             .filter(p => modalSelectedCategory ? p.category === modalSelectedCategory : true);
                           if (e.target.checked) {
                             setModalSelectedProductIds(availableProducts.map(p => p.id));
@@ -508,7 +549,13 @@ export default function CollectionSettings() {
                           modalSelectedProductIds.length > 0 && 
                           modalSelectedProductIds.length === products
                             .filter(p => !collectionsForm.find(c => c.id === activeCollectionForModal)?.productIds?.includes(p.id))
-                            .filter(p => p.title.toLowerCase().includes(modalSearchQuery.toLowerCase()) || p.category.toLowerCase().includes(modalSearchQuery.toLowerCase()))
+                            .filter(p => {
+                              const pTitle = getProductTitle(p).toLowerCase();
+                              const rawTitle = (p.title || '').toLowerCase();
+                              const pCat = getCategoryName(p.category).toLowerCase();
+                              const q = modalSearchQuery.toLowerCase();
+                              return pTitle.includes(q) || rawTitle.includes(q) || pCat.includes(q);
+                            })
                             .filter(p => modalSelectedCategory ? p.category === modalSelectedCategory : true)
                             .length
                         }
@@ -522,7 +569,13 @@ export default function CollectionSettings() {
                 <tbody>
                   {products
                     .filter(p => !collectionsForm.find(c => c.id === activeCollectionForModal)?.productIds?.includes(p.id))
-                    .filter(p => p.title.toLowerCase().includes(modalSearchQuery.toLowerCase()) || p.category.toLowerCase().includes(modalSearchQuery.toLowerCase()))
+                    .filter(p => {
+                      const pTitle = getProductTitle(p).toLowerCase();
+                      const rawTitle = (p.title || '').toLowerCase();
+                      const pCat = getCategoryName(p.category).toLowerCase();
+                      const q = modalSearchQuery.toLowerCase();
+                      return pTitle.includes(q) || rawTitle.includes(q) || pCat.includes(q);
+                    })
                     .filter(p => modalSelectedCategory ? p.category === modalSelectedCategory : true)
                     .map(p => (
                     <tr 
@@ -533,6 +586,9 @@ export default function CollectionSettings() {
                       <td style={{ padding: '12px 24px' }}>
                         <input 
                           type="checkbox" 
+                          id={`modal_select_product_${p.id}`}
+                          name={`modal_select_product_${p.id}`}
+                          aria-label={`Select product ${getProductTitle(p)}`}
                           checked={modalSelectedProductIds.includes(p.id)} 
                           onChange={() => {}} 
                         />
@@ -540,13 +596,13 @@ export default function CollectionSettings() {
                       <td style={{ padding: '12px 16px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           <div style={{ width: '40px', height: '40px', borderRadius: '6px', overflow: 'hidden', backgroundColor: p.bgColor || '#f1f5f9', flexShrink: 0 }}>
-                            <img src={p.image} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            <img src={p.image} alt={getProductTitle(p)} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                           </div>
-                          <div style={{ fontSize: '14px', fontWeight: 500, color: '#0f172a' }}>{p.title}</div>
+                          <div style={{ fontSize: '14px', fontWeight: 500, color: '#0f172a' }}>{getProductTitle(p)}</div>
                         </div>
                       </td>
                       <td style={{ padding: '12px 16px', fontSize: '13px', color: '#64748b' }}>
-                        {p.category}
+                        {getCategoryName(p.category)}
                       </td>
                       <td style={{ padding: '12px 24px', fontSize: '14px', fontWeight: 500, color: '#0f172a', textAlign: 'right' }}>
                         {Number(p.price).toFixed(2)}
@@ -555,7 +611,13 @@ export default function CollectionSettings() {
                   ))}
                   {products
                     .filter(p => !collectionsForm.find(c => c.id === activeCollectionForModal)?.productIds?.includes(p.id))
-                    .filter(p => p.title.toLowerCase().includes(modalSearchQuery.toLowerCase()) || p.category.toLowerCase().includes(modalSearchQuery.toLowerCase()))
+                    .filter(p => {
+                      const pTitle = getProductTitle(p).toLowerCase();
+                      const rawTitle = (p.title || '').toLowerCase();
+                      const pCat = getCategoryName(p.category).toLowerCase();
+                      const q = modalSearchQuery.toLowerCase();
+                      return pTitle.includes(q) || rawTitle.includes(q) || pCat.includes(q);
+                    })
                     .filter(p => modalSelectedCategory ? p.category === modalSelectedCategory : true)
                     .length === 0 && (
                     <tr>

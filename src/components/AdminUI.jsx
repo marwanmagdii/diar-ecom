@@ -2,24 +2,45 @@ import React from 'react';
 
 // ponytail: single file for admin UI components to avoid boilerplate
 
-export function PremiumInput({ label, type = 'text', value, onChange, placeholder, required = false, className = '', ...props }) {
+export function PremiumInput({ label, type = 'text', value, onChange, placeholder, required = false, className = '', id, name, ...props }) {
+  const generatedId = id || (label ? `input_${label.toLowerCase().replace(/[^a-z0-9]/g, '_')}` : undefined);
+  const generatedName = name || generatedId;
   return (
     <div className={`input-group ${className}`}>
-      {label && <label className="input-label">{label}</label>}
-      <input type={type} className="input-field" value={value} onChange={onChange} placeholder={placeholder} required={required} {...props} />
+      {label && <label htmlFor={generatedId} className="input-label">{label}</label>}
+      <input 
+        id={generatedId} 
+        name={generatedName} 
+        type={type} 
+        className="input-field" 
+        value={value} 
+        onChange={onChange} 
+        placeholder={placeholder} 
+        required={required} 
+        {...props} 
+      />
     </div>
   );
 }
 
-export function PremiumToggle({ label, checked, onChange, description }) {
+export function PremiumToggle({ label, checked, onChange, description, id, name }) {
+  const generatedId = id || (label ? `toggle_${label.toLowerCase().replace(/[^a-z0-9]/g, '_')}` : undefined);
+  const generatedName = name || generatedId;
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', backgroundColor: 'var(--surface-container-lowest)', border: '1px solid var(--outline-variant)', borderRadius: '12px' }}>
       <div>
         <div style={{ fontWeight: 600 }}>{label}</div>
         {description && <div style={{ fontSize: '13px', color: 'var(--on-surface-variant)', marginTop: '4px' }}>{description}</div>}
       </div>
-      <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', position: 'relative' }}>
-        <input type="checkbox" checked={checked} onChange={onChange} style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }} />
+      <label htmlFor={generatedId} style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', position: 'relative' }}>
+        <input 
+          id={generatedId}
+          name={generatedName}
+          type="checkbox" 
+          checked={checked} 
+          onChange={onChange} 
+          style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }} 
+        />
         <span style={{ 
           display: 'inline-block', width: '44px', height: '24px', 
           backgroundColor: checked ? 'var(--primary)' : 'var(--outline-variant)', 

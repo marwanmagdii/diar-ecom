@@ -116,11 +116,13 @@ export default function CreateInfluencer() {
           <h3 style={{ fontSize: '18px', fontWeight: 600, borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', margin: 0 }}>Basic Profile</h3>
           
           <div style={{ position: 'relative' }}>
-            <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Influencer Name / Map to Customer</label>
+            <label htmlFor="influencer_user_search" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Influencer Name / Map to Customer</label>
             <div style={{ position: 'relative' }}>
               <Search size={16} style={{ position: 'absolute', left: '12px', top: '12px', color: '#94a3b8' }} />
               <input 
                 type="text" 
+                id="influencer_user_search"
+                name="userSearch"
                 className="input-field"
                 placeholder="Search customers or type a name..."
                 value={userSearch}
@@ -160,8 +162,10 @@ export default function CreateInfluencer() {
             {formData.socialAccounts.map((account, index) => (
               <div key={index} style={{ display: 'flex', gap: '16px', alignItems: 'flex-end', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                 <div style={{ flex: 1 }}>
-                  <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Platform</label>
+                  <label htmlFor={`social_platform_${index}`} className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Platform</label>
                   <select 
+                    id={`social_platform_${index}`}
+                    name={`socialPlatform_${index}`}
                     className="input-field"
                     value={account.platform}
                     onChange={(e) => {
@@ -179,9 +183,11 @@ export default function CreateInfluencer() {
                   </select>
                 </div>
                 <div style={{ flex: 2 }}>
-                  <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Handle / URL</label>
+                  <label htmlFor={`social_handle_${index}`} className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Handle / URL</label>
                   <input 
                     type="text" 
+                    id={`social_handle_${index}`}
+                    name={`socialHandle_${index}`}
                     className="input-field"
                     placeholder="e.g. @sarah_creates"
                     value={account.handle}
@@ -207,22 +213,24 @@ export default function CreateInfluencer() {
           <h3 style={{ fontSize: '18px', fontWeight: 600, borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', margin: '16px 0 0 0' }}>Affiliate Configuration</h3>
           
           <div style={{ display: 'flex', gap: '24px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <input type="radio" name="affiliateType" value="promo" checked={formData.affiliateType === 'promo'} onChange={() => setFormData({...formData, affiliateType: 'promo'})} style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }} />
+            <label htmlFor="affiliate_type_promo" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input type="radio" id="affiliate_type_promo" name="affiliateType" value="promo" checked={formData.affiliateType === 'promo'} onChange={() => setFormData({...formData, affiliateType: 'promo'})} style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }} />
               <span style={{ fontWeight: 500, color: '#334155' }}>Promo Code (Discount)</span>
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <input type="radio" name="affiliateType" value="link" checked={formData.affiliateType === 'link'} onChange={() => setFormData({...formData, affiliateType: 'link'})} style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }} />
+            <label htmlFor="affiliate_type_link" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input type="radio" id="affiliate_type_link" name="affiliateType" value="link" checked={formData.affiliateType === 'link'} onChange={() => setFormData({...formData, affiliateType: 'link'})} style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }} />
               <span style={{ fontWeight: 500, color: '#334155' }}>Referral Link (No Discount)</span>
             </label>
           </div>
           
           <div>
-            <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+            <label htmlFor="influencer_code" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
               {formData.affiliateType === 'link' ? 'Assigned Referral Code (Used to generate link)' : 'Assigned Promo Code'}
             </label>
             <input 
               type="text" 
+              id="influencer_code"
+              name="influencerCode"
               className="input-field"
               placeholder={formData.affiliateType === 'link' ? 'e.g. SARAH_TRACK' : 'e.g. SARAH20'}
               value={formData.code}
@@ -234,28 +242,28 @@ export default function CreateInfluencer() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
             <div>
-              <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Commission Type</label>
-              <select className="input-field" value={formData.commissionType} onChange={(e) => setFormData({...formData, commissionType: e.target.value})}>
+              <label htmlFor="influencer_commission_type" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Commission Type</label>
+              <select id="influencer_commission_type" name="commissionType" className="input-field" value={formData.commissionType} onChange={(e) => setFormData({...formData, commissionType: e.target.value})}>
                 <option value="percentage">Percentage (%)</option>
                 <option value="fixed">Fixed Amount (EGP)</option>
               </select>
             </div>
             <div>
-              <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Commission Value</label>
-              <input type="number" className="input-field" min="0" step="0.01" value={formData.commissionValue} onChange={(e) => setFormData({...formData, commissionValue: e.target.value})} required />
+              <label htmlFor="influencer_commission_value" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Commission Value</label>
+              <input type="number" id="influencer_commission_value" name="commissionValue" className="input-field" min="0" step="0.01" value={formData.commissionValue} onChange={(e) => setFormData({...formData, commissionValue: e.target.value})} required />
             </div>
             {formData.affiliateType === 'promo' && (
               <>
                 <div>
-                  <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Given to Customer</label>
-                  <select className="input-field" value={formData.discountType} onChange={(e) => setFormData({...formData, discountType: e.target.value})}>
+                  <label htmlFor="influencer_discount_type" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Given to Customer</label>
+                  <select id="influencer_discount_type" name="discountType" className="input-field" value={formData.discountType} onChange={(e) => setFormData({...formData, discountType: e.target.value})}>
                     <option value="percentage">Percentage (%)</option>
                     <option value="fixed">Fixed Amount (EGP)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Value</label>
-                  <input type="number" className="input-field" min="0" step="0.01" value={formData.discountValue} onChange={(e) => setFormData({...formData, discountValue: e.target.value})} required />
+                  <label htmlFor="influencer_discount_value" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Value</label>
+                  <input type="number" id="influencer_discount_value" name="discountValue" className="input-field" min="0" step="0.01" value={formData.discountValue} onChange={(e) => setFormData({...formData, discountValue: e.target.value})} required />
                 </div>
               </>
             )}
@@ -266,8 +274,8 @@ export default function CreateInfluencer() {
               <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 600 }}>Active Status</h4>
               <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>If inactive, the promo code cannot be used at checkout.</p>
             </div>
-            <label className="toggle-switch">
-              <input type="checkbox" checked={formData.isActive} onChange={(e) => setFormData({...formData, isActive: e.target.checked})} />
+            <label htmlFor="influencer_is_active" className="toggle-switch">
+              <input type="checkbox" id="influencer_is_active" name="isActive" checked={formData.isActive} onChange={(e) => setFormData({...formData, isActive: e.target.checked})} />
               <span className="toggle-slider"></span>
             </label>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store';
 
@@ -8,7 +8,7 @@ export default function ProductCard({ product }) {
   const { language, t } = useStore();
   
   // Find color options
-  const colorOption = product.options?.find(opt => opt.name.toLowerCase() === 'color' || opt.name.toLowerCase() === 'لون');
+  const colorOption = product.options?.find(opt => opt.name.toLowerCase() === 'color' || opt.name.toLowerCase() === 'Ù„ÙˆÙ†');
   
   // Extract colors: prefer options array, then fallback to product.color (handling both string and array)
   let availableColors = colorOption ? colorOption.values : null;
@@ -26,7 +26,7 @@ export default function ProductCard({ product }) {
   if (selectedColor && product.colorImages && product.colorImages[selectedColor]) {
     displayImage = product.colorImages[selectedColor];
   } else if (selectedColor && product.variants) {
-    const variant = product.variants.find(v => v.attributes && (v.attributes.Color === selectedColor || v.attributes['اللون'] === selectedColor || v.attributes.color === selectedColor));
+    const variant = product.variants.find(v => v.attributes && (v.attributes.Color === selectedColor || v.attributes['Ø§Ù„Ù„ÙˆÙ†'] === selectedColor || v.attributes.color === selectedColor));
     if (variant && variant.image) displayImage = variant.image;
     else if (variant && variant.images && variant.images.length > 0) displayImage = variant.images[0];
   }
@@ -37,7 +37,7 @@ export default function ProductCard({ product }) {
   if (selectedColor && product.colorPrices && product.colorPrices[selectedColor]) {
     variantPrice = Number(product.colorPrices[selectedColor]);
   } else if (selectedColor && product.variants) {
-    const variant = product.variants.find(v => v.attributes && (v.attributes.Color === selectedColor || v.attributes['اللون'] === selectedColor || v.attributes.color === selectedColor));
+    const variant = product.variants.find(v => v.attributes && (v.attributes.Color === selectedColor || v.attributes['Ø§Ù„Ù„ÙˆÙ†'] === selectedColor || v.attributes.color === selectedColor));
     if (variant && variant.price) variantPrice = Number(variant.price);
   }
 
@@ -79,7 +79,7 @@ export default function ProductCard({ product }) {
     if (cartItem) {
       const newQty = Math.min(Number(product.stock) || 99, cartQty + 1);
       updateQuantity(cartItem.cartItemId, newQty);
-      addToast(`${language === 'ar' ? 'تم تحديث الكمية:' : 'Updated quantity:'} ${newQty}`);
+      addToast(`${language === 'ar' ? 'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„ÙƒÙ…ÙŠØ©:' : 'Updated quantity:'} ${newQty}`);
     }
   };
 
@@ -89,11 +89,11 @@ export default function ProductCard({ product }) {
     if (cartItem) {
       if (cartQty === 1) {
         removeFromCart(cartItem.cartItemId);
-        addToast(language === 'ar' ? 'تم الحذف من السلة' : 'Removed from cart');
+        addToast(language === 'ar' ? 'ØªÙ… Ø§Ù„Ø­Ø°Ù Ù…Ù† Ø§Ù„Ø³Ù„Ø©' : 'Removed from cart');
       } else {
         const newQty = cartQty - 1;
         updateQuantity(cartItem.cartItemId, newQty);
-        addToast(`${language === 'ar' ? 'تم تحديث الكمية:' : 'Updated quantity:'} ${newQty}`);
+        addToast(`${language === 'ar' ? 'ØªÙ… ØªØ­Ø¯ÙŠØ« Ø§Ù„ÙƒÙ…ÙŠØ©:' : 'Updated quantity:'} ${newQty}`);
       }
     }
   };
@@ -107,9 +107,9 @@ export default function ProductCard({ product }) {
       'blue': '#3b82f6', 'green': '#10b981', 'yellow': '#eab308',
       'gray': '#6b7280', 'silver': '#e5e7eb', 'gold': '#fbbf24',
       'pink': '#ec4899', 'purple': '#a855f7', 'brown': '#92400e',
-      'أسود': '#000000', 'أبيض': '#ffffff', 'أحمر': '#ef4444',
-      'أزرق': '#3b82f6', 'أخضر': '#10b981', 'أصفر': '#eab308',
-      'رمادي': '#6b7280', 'فضي': '#e5e7eb', 'ذهبي': '#fbbf24'
+      'Ø£Ø³ÙˆØ¯': '#000000', 'Ø£Ø¨ÙŠØ¶': '#ffffff', 'Ø£Ø­Ù…Ø±': '#ef4444',
+      'Ø£Ø²Ø±Ù‚': '#3b82f6', 'Ø£Ø®Ø¶Ø±': '#10b981', 'Ø£ØµÙØ±': '#eab308',
+      'Ø±Ù…Ø§Ø¯ÙŠ': '#6b7280', 'ÙØ¶ÙŠ': '#e5e7eb', 'Ø°Ù‡Ø¨ÙŠ': '#fbbf24'
     };
 
     return (
@@ -130,7 +130,7 @@ export default function ProductCard({ product }) {
                 style={{ 
                   width: '20px', height: '20px', borderRadius: '50%', 
                   backgroundColor: colorMap[c.toLowerCase()] || c,
-                  border: colorMap[c.toLowerCase()] === '#ffffff' || c.toLowerCase() === 'white' || c === 'أبيض' ? '1px solid #cbd5e1' : '1px solid rgba(0,0,0,0.1)',
+                  border: colorMap[c.toLowerCase()] === '#ffffff' || c.toLowerCase() === 'white' || c === 'Ø£Ø¨ÙŠØ¶' ? '1px solid #cbd5e1' : '1px solid rgba(0,0,0,0.1)',
                   boxShadow: isSelected ? '0 0 0 2px #ffffff, 0 0 0 4px var(--primary)' : 'inset 0 1px 2px rgba(0,0,0,0.1)',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
@@ -155,12 +155,12 @@ export default function ProductCard({ product }) {
     if (language !== 'ar') return text;
     
     const translations = {
-      'Best Seller': 'الأكثر مبيعاً',
-      'Trending': 'رائج',
-      'New Arrival': 'وصل حديثاً',
-      'Limited Stock': 'كمية محدودة',
-      'Top Rated': 'الأعلى تقييماً',
-      'Staff Pick': 'اختيار الخبراء'
+      'Best Seller': 'Ø§Ù„Ø£ÙƒØ«Ø± Ù…Ø¨ÙŠØ¹Ø§Ù‹',
+      'Trending': 'Ø±Ø§Ø¦Ø¬',
+      'New Arrival': 'ÙˆØµÙ„ Ø­Ø¯ÙŠØ«Ø§Ù‹',
+      'Limited Stock': 'ÙƒÙ…ÙŠØ© Ù…Ø­Ø¯ÙˆØ¯Ø©',
+      'Top Rated': 'Ø§Ù„Ø£Ø¹Ù„Ù‰ ØªÙ‚ÙŠÙŠÙ…Ø§Ù‹',
+      'Staff Pick': 'Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„Ø®Ø¨Ø±Ø§Ø¡'
     };
     return translations[text] || text;
   };
@@ -179,7 +179,13 @@ export default function ProductCard({ product }) {
 
       <Link to={`/product/${product.id}?color=${encodeURIComponent(selectedColor || '')}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', flex: 1 }}>
         <div className="product-image-container" style={{ backgroundColor: product.bgColor || '#f8fafc', borderRadius: '0', margin: '0', aspectRatio: '1/1' }}>
-          <img src={displayImage} alt={language === 'ar' && product.titleAr ? product.titleAr : product.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img
+            src={displayImage}
+            alt={language === 'ar' && product.titleAr ? product.titleAr : product.title}
+            loading="lazy"
+            decoding="async"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
         </div>
         <div className="product-info-container" style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1 }}>
           <div className="product-category" style={{ fontSize: '11px', color: '#64748b', marginBottom: '8px' }}>{t(product.category) !== product.category ? t(product.category) : product.category}</div>
@@ -223,3 +229,4 @@ export default function ProductCard({ product }) {
     </article>
   );
 }
+

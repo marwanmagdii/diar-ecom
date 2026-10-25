@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import Header from '../components/Header';
-import { Send } from 'lucide-react';
+import { Send, X, Download } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
 import { useStore } from '../store';
 import { requestNotificationPermission } from '../firebase';
-import { useEffect } from 'react';
+import InstallAppButton from '../components/InstallAppButton';
 
 function Footer() {
   const { t, language } = useStore();
@@ -24,6 +24,8 @@ function Footer() {
         </div>
         
         <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+          <InstallAppButton />
+
           <div style={{ display: 'flex', gap: '16px' }}>
             <Link to="/page/contact" style={{ color: 'var(--on-surface-variant)', textDecoration: 'none', fontSize: '14px' }}>{t('contactUs')}</Link>
             <Link to="/help" style={{ color: 'var(--on-surface-variant)', textDecoration: 'none', fontSize: '14px' }}>{t('help')}</Link>
@@ -47,6 +49,19 @@ function Footer() {
 }
 
 export default function StoreLayout() {
+  const { language } = useStore();
+  const [showPwaBanner, setShowPwaBanner] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
   useEffect(() => {
     // Affiliate Tracking: Capture ?ref= or ?aff= from URL
     const searchParams = new URLSearchParams(window.location.search);
@@ -59,6 +74,11 @@ export default function StoreLayout() {
       localStorage.setItem('diar_affiliate_tracking', JSON.stringify(trackingData));
     }
 
+    const triggerPwaPrompt = () => {
+      // Don't show if they've dismissed it before in this session, or delay it
+      setTimeout(() => setShowPwaBanner(true), 1500);
+    };
+
     // Automatically trigger or refresh the native browser notification prompt
     if ('Notification' in window && (Notification.permission === 'default' || Notification.permission === 'granted')) {
       requestNotificationPermission().then(token => {
@@ -70,21 +90,86 @@ export default function StoreLayout() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token })
           }).catch(console.error);
-        } else {
-          console.error("Firebase failed to get device token.");
         }
+      }).finally(() => {
+        triggerPwaPrompt();
       });
+    } else {
+      triggerPwaPrompt();
     }
   }, []);
+
+  const handleInstallPwa = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    }
+    setDeferredPrompt(null);
+    setShowPwaBanner(false);
+  };
 
   return (
     <>
       <Header />
-      <div className="store-content" style={{ paddingBottom: '70px' }}>
+      {/* paddingBottom controlled exclusively by CSS (.mobile-bottom-nav media query) — not inline */}
+      <div className="store-content">
         <Outlet />
       </div>
       <Footer />
       <BottomNav />
+
+      {/* Global PWA Install Banner */}
+      {showPwaBanner && deferredPrompt && (
+        <div style={{
+          position: 'fixed',
+          bottom: '80px', /* Above bottom nav */
+          left: '16px',
+          right: '16px',
+          background: 'var(--surface-container-high)',
+          border: '1px solid var(--outline-variant)',
+          borderRadius: '16px',
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+          zIndex: 999,
+          animation: 'slideUpBottomSheet 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+            <div style={{ background: 'var(--primary-container)', color: 'var(--on-primary-container)', padding: '10px', borderRadius: '12px' }}>
+              <Download size={24} />
+            </div>
+            <div>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '15px' }}>
+                {language === 'ar' ? 'تثبيت تطبيق ديار' : 'Install Diar App'}
+              </h4>
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--on-surface-variant)' }}>
+                {language === 'ar' ? 'أضف المتجر لشاشتك الرئيسية لتجربة أسرع' : 'Add to home screen for a faster experience'}
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button 
+              onClick={() => setShowPwaBanner(false)}
+              className="icon-btn"
+              style={{ background: 'none', border: 'none', padding: '8px', color: 'var(--on-surface-variant)' }}
+            >
+              <X size={20} />
+            </button>
+            <button 
+              onClick={handleInstallPwa}
+              className="btn btn-primary"
+              style={{ padding: '8px 16px', fontSize: '14px', borderRadius: '8px' }}
+            >
+              {language === 'ar' ? 'تثبيت' : 'Install'}
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

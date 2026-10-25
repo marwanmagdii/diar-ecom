@@ -343,7 +343,7 @@ ${orderLink}`;
 
       clearCart();
       clearTrackingData();
-      navigate('/success', { state: { orderId: assignedOrderId } });
+      navigate('/success', { state: { orderId: assignedOrderId, total: newOrder.total } });
     };
 
     submitOrder();

@@ -197,6 +197,9 @@ export default function ActivityLogs() {
               <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
               <input 
                 type="text" 
+                id="activity_logs_search"
+                name="activityLogsSearch"
+                aria-label={language === 'ar' ? 'بحث في السجلات' : 'Search logs'}
                 placeholder={language === 'ar' ? 'بحث...' : 'Search logs...'}
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}

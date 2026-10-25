@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Geist:wght@400;500;600;700&display=swap');
 
 :root {
   /* Colors */
@@ -34,10 +34,11 @@
   --on-error: #ffffff;
   --error-container: #ffdad6;
   --on-error-container: #93000a;
-  
-  /* Typography */
-  --font-body: 'Inter', sans-serif;
-  --font-display: 'Plus Jakarta Sans', sans-serif;
+
+  /* Typography — Geist (body) + Outfit (display) + system mono for prices */
+  --font-body: 'Geist', 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
 
   /* Spacing & Borders */
   --rounded-sm: 8px;
@@ -78,36 +79,45 @@ img {
 /* Typography Classes */
 .headline-lg {
   font-family: var(--font-display);
-  font-size: 32px;
-  line-height: 1.2;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.1;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 .headline-md {
   font-family: var(--font-display);
-  font-size: 24px;
-  line-height: 1.3;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  line-height: 1.25;
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 .title-md {
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
 }
 .label-md {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.01em;
 }
 .body-lg {
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 400;
+  line-height: 1.6;
 }
 .body-md {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
+  line-height: 1.5;
+}
+/* Monospace for prices, metrics, order IDs — better number readability */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Buttons */
@@ -156,6 +166,19 @@ img {
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+/* Apple-style tactile feedback — responds on pointer-down, not click */
+.btn:not(:disabled):active {
+  transform: scale(0.97);
+  transition: transform 80ms ease-out;
+}
+.btn-primary:not(:disabled):active {
+  background-color: var(--on-primary-container);
+}
+.icon-btn:active {
+  background-color: var(--surface-container-highest);
+  transform: scale(0.93);
+  transition: transform 80ms ease-out, background-color 80ms ease-out;
 }
 .icon-btn {
   display: inline-flex;
@@ -214,18 +237,19 @@ img {
   border: 1px solid var(--surface-container);
 }
 
-/* Header Wrapper */
+/* Header Wrapper — Apple-style translucent material */
 .header-wrapper {
-  background-color: rgba(255, 248, 246, 0.85); /* Matches --surface but translucent */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 248, 246, 0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   color: var(--on-surface);
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 1000;
   margin-bottom: 32px;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+  /* Scroll-edge fade instead of hard border */
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
   padding-top: env(safe-area-inset-top);
 }
 
@@ -817,25 +841,69 @@ img {
 }
 
 @media (max-width: 768px) {
+  /* Feature F3: CSS scroll-snap swipe gallery
+     On mobile, convert the vertical gallery to a full-width swipe carousel.
+     Desktop behavior (vertical thumbnails + click) is unchanged. */
   .vertical-gallery-container {
-    flex-direction: column-reverse;
+    flex-direction: column;
     height: auto;
+    gap: 0;
   }
+
+  /* Main image becomes the full-width swipe track */
+  .gallery-main-image {
+    flex: none;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--rounded-md);
+    scroll-snap-align: start;
+  }
+
+  /* Thumbnails become a scroll-snap strip below */
   .gallery-thumbnails {
     flex-direction: row;
     width: 100%;
-    height: 80px;
+    height: 72px;
     overflow-x: auto;
     overflow-y: hidden;
-    padding-right: 0;
-    padding-bottom: 4px;
+    padding: 8px 0 4px;
+    gap: 8px;
+    /* Momentum scroll on iOS */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Snap thumbnails */
+    scroll-snap-type: x mandatory;
   }
+  .gallery-thumbnails::-webkit-scrollbar { display: none; }
+
   .gallery-thumbnail {
-    width: 80px;
-    height: 80px;
+    width: 72px;
+    height: 72px;
     flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  /* Selected thumbnail ring */
+  .gallery-thumbnail.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--surface-container-lowest), 0 0 0 4px var(--primary);
+  }
+
+  /* Main image touch swipe hint — fade in/out gradient edges */
+  .gallery-main-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      transparent 80%,
+      rgba(0,0,0,0.04) 100%
+    );
+    border-radius: var(--rounded-md);
   }
 }
+
 
 /* Variant Cards */
 .variant-grid {
@@ -1198,8 +1266,10 @@ html[dir="rtl"] .variant-circle {
   overflow-y: auto;
 }
 .admin-logo {
-  padding: 24px;
+  height: 72px;
+  padding: 0 24px;
   border-bottom: 1px solid var(--outline-variant);
+  box-sizing: border-box;
 }
 .admin-nav {
   padding: 24px 12px;
@@ -1801,21 +1871,66 @@ html[dir="rtl"] .variant-circle {
   }
 }
 
-/* --- Mobile Bottom Nav --- */
+/* ── Sticky Mobile Add-to-Cart (Feature F2) ─────────────────────────────── */
+.sticky-mobile-cta {
+  display: none; /* hidden on desktop */
+}
+
+@media (max-width: 768px) {
+  .sticky-mobile-cta {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 900; /* below BottomNav (1000) but above page content */
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    background: rgba(255, 248, 246, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-top: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.06);
+    animation: slideUpCTA 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes slideUpCTA {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Store content bottom padding — clears the BottomNav on mobile, zero on desktop */
+.store-content {
+  padding-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .store-content {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+}
+
+/* --- Mobile Bottom Nav — Apple glass material, matches header --- */
 .mobile-bottom-nav {
   display: none;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 64px;
-  background-color: var(--surface);
-  border-top: 1px solid var(--outline-variant);
+  height: calc(56px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: rgba(255, 248, 246, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(0,0,0,0.06);
   z-index: 1000;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.04);
   justify-content: space-around;
   align-items: center;
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .bottom-nav-item {
@@ -1890,9 +2005,9 @@ html[dir="rtl"] .variant-circle {
     padding-bottom: 80px;
   }
 
-  /* Phase 3: Ensure the footer has enough padding so the floating bottom nav doesn't cover its contents */
+  /* Footer must clear the fixed BottomNav + safe area on iOS */
   .footer-premium {
-    padding-bottom: 88px !important; /* 64px nav height + 24px padding */
+    padding-bottom: calc(64px + env(safe-area-inset-bottom) + 24px) !important;
   }
 }
 
@@ -1938,7 +2053,7 @@ html[dir="rtl"] .variant-circle {
 }
 
 .flash-sale-section { background: linear-gradient(135deg, #ef4444 0%, #9f1239 100%); padding: 40px; border-radius: 24px; box-shadow: 0 24px 48px rgba(225, 29, 72, 0.25); position: relative; overflow: hidden; }
-@media (max-width: 768px) { .flash-sale-section { border-radius: 0; margin-left: -16px; margin-right: -16px; padding: 24px 16px; } }
+@media (max-width: 768px) { .flash-sale-section { border-radius: 0; /* Use full-bleed without negative margins that can cause overflow */ width: 100vw; margin-inline: calc(-1 * 16px); padding: 24px 16px; } }
 
 .cat-checkbox-wrapper { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: all 0.2s; border: 1px solid transparent; background: transparent; } .cat-checkbox-wrapper:hover { background: var(--surface-container-lowest); } .cat-checkbox-wrapper.active { background: #fff0f2; border-color: #fecdd3; color: var(--primary); font-weight: 600; } .cat-custom-checkbox { width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; } .cat-checkbox-wrapper.active .cat-custom-checkbox { background: var(--primary); border-color: var(--primary); } .cat-checkbox-wrapper input:focus-visible + .cat-custom-checkbox { outline: 2px solid var(--primary); outline-offset: 2px; } .subcat-wrapper { margin-top: 4px; border-left: 2px solid #f1f5f9; margin-left: 20px; padding-left: 16px; display: flex; flex-direction: column; gap: 4px; } html[dir="rtl"] .subcat-wrapper { border-left: none; border-right: 2px solid #f1f5f9; margin-left: 0; margin-right: 20px; padding-left: 0; padding-right: 16px; }
 
@@ -2259,12 +2374,14 @@ html[dir="rtl"] .variant-circle {
     white-space: nowrap;
   }
 
-  /* Allow horizontal overflow for tables inside admin content */
+  /* Allow table containers inside admin to scroll horizontally.
+     Use overflow-x: clip (not hidden) — clip blocks scroll bleed from the parent
+     without creating a new scroll container that would swallow child overflow-x: auto. */
   .admin-main {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   .admin-content {
-    overflow-x: hidden;
+    overflow-x: clip;
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -2316,11 +2433,11 @@ html[dir="rtl"] .variant-circle {
     overflow-y: auto;
   }
 
-  /* Toast mobile fix */
+  /* Toast must sit above the fixed mobile checkout action bar (~80px) */
   .toast-container {
     left: 16px !important;
     right: 16px !important;
-    bottom: 16px !important;
+    bottom: calc(80px + env(safe-area-inset-bottom) + 8px) !important;
     top: auto !important;
   }
   .toast {

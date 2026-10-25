@@ -1,0 +1,21 @@
+{
+  "short_name": "Diar",
+  "name": "Diar E-Commerce",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#fff8f6",
+  "display": "standalone",
+  "theme_color": "#ff7c5c",
+  "orientation": "portrait"
+}

@@ -114,9 +114,11 @@ export default function LocationSettings() {
           </div>
         </div>
         <div className="loc-cost-row" style={{ opacity: shippingActive ? 1 : 0.5, pointerEvents: shippingActive ? 'auto' : 'none' }}>
-          <label style={{ fontWeight: '500', fontSize: '14px' }}>{t('flatRateShippingCost')}</label>
+          <label htmlFor="flat_rate_shipping_cost" style={{ fontWeight: '500', fontSize: '14px' }}>{t('flatRateShippingCost')}</label>
           <input 
             type="number" 
+            id="flat_rate_shipping_cost"
+            name="flatRateShippingCost"
             className="input-field" 
             value={shippingCost} 
             onChange={e => setShippingCost(e.target.value)} 
@@ -164,9 +166,11 @@ export default function LocationSettings() {
                 {/* Gov Name Inputs */}
                 <div className="loc-gov-inputs">
                   <div className="loc-input-group">
-                    <label className="input-label">{t('governorateEn')}</label>
+                    <label htmlFor={`gov_name_en_${gov.id}`} className="input-label">{t('governorateEn')}</label>
                     <input 
                       type="text" 
+                      id={`gov_name_en_${gov.id}`}
+                      name={`govNameEn_${gov.id}`}
                       className="input-field" 
                       value={gov.nameEn} 
                       onChange={e => updateGovField(gov.id, 'nameEn', e.target.value)} 
@@ -174,9 +178,11 @@ export default function LocationSettings() {
                     />
                   </div>
                   <div className="loc-input-group" dir="rtl">
-                    <label className="input-label" style={{ textAlign: 'right' }}>{t('governorateAr')}</label>
+                    <label htmlFor={`gov_name_ar_${gov.id}`} className="input-label" style={{ textAlign: 'right' }}>{t('governorateAr')}</label>
                     <input 
                       type="text" 
+                      id={`gov_name_ar_${gov.id}`}
+                      name={`govNameAr_${gov.id}`}
                       className="input-field" 
                       value={gov.nameAr} 
                       onChange={e => updateGovField(gov.id, 'nameAr', e.target.value)} 
@@ -194,6 +200,9 @@ export default function LocationSettings() {
                         <div className="loc-district-inputs">
                           <input 
                             type="text" 
+                            id={`dist_en_${dist.id}`}
+                            name={`distEn_${dist.id}`}
+                            aria-label={`District English name for ${dist.nameEn || dist.id}`}
                             className="input-field" 
                             value={dist.nameEn} 
                             onChange={e => updateDistrictField(gov.id, dist.id, 'nameEn', e.target.value)} 
@@ -202,6 +211,9 @@ export default function LocationSettings() {
                           />
                           <input 
                             type="text" 
+                            id={`dist_ar_${dist.id}`}
+                            name={`distAr_${dist.id}`}
+                            aria-label={`District Arabic name for ${dist.nameAr || dist.id}`}
                             className="input-field" 
                             value={dist.nameAr} 
                             onChange={e => updateDistrictField(gov.id, dist.id, 'nameAr', e.target.value)} 

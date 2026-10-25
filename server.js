@@ -51,6 +51,9 @@ app.all('/api/logs', wrapHandler(logsHandler));
 app.all('/api/subscribe', wrapHandler(subscribeHandler));
 app.all('/api/notifications', wrapHandler(notificationsHandler));
 
+import ollamaHandler from './api/ollama.js';
+app.all('/api/ollama', wrapHandler(ollamaHandler));
+
 const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => {
   console.log(`Local Express API server listening on port ${PORT}`);

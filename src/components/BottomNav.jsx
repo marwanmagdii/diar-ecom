@@ -1,12 +1,20 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Tag, Search, ShoppingBag, User } from 'lucide-react';
+import { Home, Store, ShoppingBag, User } from 'lucide-react';
 import { useStore } from '../store';
+
+// Routes where the BottomNav must be hidden to avoid competing with page-level action bars
+const HIDDEN_ROUTES = ['/cart', '/checkout', '/success'];
 
 export default function BottomNav() {
   const location = useLocation();
   const { cartCount } = useStore();
   const { t } = useStore();
+
+  // Hide on cart, checkout, and success — these have their own fixed action bars
+  if (HIDDEN_ROUTES.some(route => location.pathname.startsWith(route))) {
+    return null;
+  }
 
   const isActive = (path) => {
     if (path === '/' && location.pathname !== '/') return false;
@@ -19,22 +27,22 @@ export default function BottomNav() {
     <div className="mobile-bottom-nav">
       <Link to="/" className={`bottom-nav-item ${isActive('/') ? 'active' : ''}`}>
         <div className="nav-icon-wrapper">
-          <Tag size={22} />
+          <Home size={22} />
         </div>
         <span>{t('home')}</span>
       </Link>
       <Link to="/shop" className={`bottom-nav-item ${isActive('/shop') ? 'active' : ''}`}>
         <div className="nav-icon-wrapper">
-          <Search size={22} />
+          <Store size={22} />
         </div>
         <span>{t('shop')}</span>
       </Link>
-      <Link to="/cart" className={`bottom-nav-item ${isActive('/cart') || isActive('/checkout') ? 'active' : ''}`}>
-        <div className="nav-icon-wrapper">
+      <Link to="/cart" className={`bottom-nav-item ${isActive('/cart') ? 'active' : ''}`}>
+        <div className="nav-icon-wrapper" style={{ position: 'relative' }}>
           <ShoppingBag size={22} />
           {cartCount > 0 && (
             <span className="cart-badge-bottom">
-              {cartCount}
+              {cartCount > 9 ? '9+' : cartCount}
             </span>
           )}
         </div>

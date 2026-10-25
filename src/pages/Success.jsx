@@ -11,12 +11,21 @@ export default function Success() {
 
   useEffect(() => {
     if (orderNumber) {
+      if (window.fbq) {
+        window.fbq('track', 'Purchase', {
+          value: location.state?.total || 0,
+          currency: 'EGP',
+          content_ids: [orderNumber],
+          content_type: 'product'
+        });
+      }
+
       const timer = setTimeout(() => {
         navigate('/offers');
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [orderNumber, navigate]);
+  }, [orderNumber, navigate, location.state]);
 
   // If no orderId in state, it means they navigated here directly, redirect to shop
   if (!orderNumber) {

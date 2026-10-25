@@ -39,6 +39,9 @@ export default function SearchableSelect({ options, placeholder, value, onChange
             <Search size={16} color="var(--on-surface-variant)" />
             <input 
               type="text" 
+              name="searchable_select_search"
+              id="searchable_select_search"
+              aria-label="Search options"
               placeholder="Search..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}

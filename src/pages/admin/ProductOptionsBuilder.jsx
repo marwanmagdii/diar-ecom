@@ -53,6 +53,9 @@ export const VariantOptionSelector = ({ variantId, opt, val, onChange }) => {
               <Search size={14} color="#94a3b8" />
               <input 
                 type="text" 
+                id={`color_search_${opt.name}`}
+                name={`colorSearch_${opt.name}`}
+                aria-label={`Search ${opt.name}`}
                 placeholder="Search colors..." 
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -95,11 +98,14 @@ export const VariantOptionSelector = ({ variantId, opt, val, onChange }) => {
 
   // Weight option: custom text input
   if (isWeight) {
+    const inputId = `opt_weight_${opt.name}`;
     return (
       <div style={{ flex: '1 1 200px' }}>
-        <label className="premium-label">{opt.name}</label>
+        <label htmlFor={inputId} className="premium-label">{opt.name}</label>
         <input 
           type="text"
+          id={inputId}
+          name={inputId}
           className="premium-input"
           placeholder="e.g. 100g, 1kg"
           value={val || ''}
@@ -110,10 +116,13 @@ export const VariantOptionSelector = ({ variantId, opt, val, onChange }) => {
   }
 
   // Non-color options: dropdown selector
+  const selectId = `opt_select_${opt.name}`;
   return (
     <div style={{ flex: '1 1 200px' }}>
-      <label className="premium-label">{opt.name}</label>
+      <label htmlFor={selectId} className="premium-label">{opt.name}</label>
       <select 
+        id={selectId}
+        name={selectId}
         className="premium-input"
         value={val || ''}
         onChange={(e) => onChange(e.target.value)}
@@ -377,16 +386,27 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
                       <span style={{ fontSize: '10px', color: draggingVariant === variant.id ? 'var(--primary)' : '#64748b' }}>
                         {draggingVariant === variant.id ? 'Drop!' : 'Add Image'}
                       </span>
-                      <input type="file" hidden accept="image/*" multiple onChange={(e) => handleVariantImageUpload(variant.id, e)} />
+                      <input 
+                        type="file" 
+                        id={`variant_image_upload_${variant.id}`}
+                        name={`variantImageUpload_${variant.id}`}
+                        aria-label={`Upload image for variant ${variant.id}`}
+                        hidden 
+                        accept="image/*" 
+                        multiple 
+                        onChange={(e) => handleVariantImageUpload(variant.id, e)} 
+                      />
                     </label>
                   </div>
                 </div>
 
                 <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div>
-                    <label className="premium-label">{language === 'ar' ? 'السعر (اختياري)' : 'Price (Optional)'}</label>
+                    <label htmlFor={`variant_price_${variant.id}`} className="premium-label">{language === 'ar' ? 'السعر (اختياري)' : 'Price (Optional)'}</label>
                     <input 
                       type="number" 
+                      id={`variant_price_${variant.id}`}
+                      name={`variant_price_${variant.id}`}
                       className="premium-input" 
                       placeholder={language === 'ar' ? 'يتخطى السعر الأساسي' : 'Overrides base price'}
                       value={variant.price}
@@ -394,9 +414,11 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
                     />
                   </div>
                   <div>
-                    <label className="premium-label">{language === 'ar' ? 'المخزون (اختياري)' : 'Stock (Optional)'}</label>
+                    <label htmlFor={`variant_stock_${variant.id}`} className="premium-label">{language === 'ar' ? 'المخزون (اختياري)' : 'Stock (Optional)'}</label>
                     <input 
                       type="number" 
+                      id={`variant_stock_${variant.id}`}
+                      name={`variant_stock_${variant.id}`}
                       className="premium-input" 
                       placeholder={language === 'ar' ? 'تتبع المخزون' : 'Track stock'}
                       value={variant.stock}

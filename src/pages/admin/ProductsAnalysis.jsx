@@ -6,10 +6,28 @@ import { useStore } from '../../store';
 import DataTable from '../../components/admin/DataTable';
 
 export default function ProductsAnalysis() {
-  const { orders } = useStore();
-  const { products } = useStore();
+  const { orders, products, config, t, language } = useStore();
   const navigate = useNavigate();
-  const { t, language } = useStore();
+
+  const getProductTitle = (item) => {
+    if (!item) return '';
+    return (language === 'ar' && item.titleAr) ? item.titleAr : (item.title || '');
+  };
+
+  const getCategoryName = (catName) => {
+    if (!catName) return '';
+    const found = config?.categories?.find(c => c.name === catName || c.nameAr === catName || c.slug === catName);
+    if (found) {
+      return language === 'ar' && found.nameAr ? found.nameAr : found.name;
+    }
+    for (const c of config?.categories || []) {
+      const sub = c.subcategories?.find(s => s.name === catName || s.nameAr === catName || s.slug === catName);
+      if (sub) {
+        return language === 'ar' && sub.nameAr ? sub.nameAr : sub.name;
+      }
+    }
+    return t ? t(catName) : catName;
+  };
   
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [stockFilter, setStockFilter] = useState('all');
@@ -23,6 +41,7 @@ export default function ProductsAnalysis() {
         id: p.id,
         image: p.image,
         title: p.title,
+        titleAr: p.titleAr,
         category: p.category || 'Uncategorized',
         price: p.price,
         stock: p.stock !== undefined ? p.stock : 0,
@@ -82,19 +101,19 @@ export default function ProductsAnalysis() {
 
   const handleExport = () => {
     const exportColumns = [
-      { header: 'Product ID', key: 'id', width: 20 },
-      { header: 'Product Name', key: 'title', width: 40 },
-      { header: 'Category', key: 'category', width: 25 },
-      { header: 'Price (EGP)', key: 'price', width: 15 },
-      { header: 'Units Sold', key: 'unitsSold', width: 15 },
-      { header: 'Total Revenue (EGP)', key: 'totalRevenue', width: 20 },
-      { header: 'Current Stock', key: 'stock', width: 15 }
+      { header: language === 'ar' ? 'معرف المنتج' : 'Product ID', key: 'id', width: 20 },
+      { header: language === 'ar' ? 'اسم المنتج' : 'Product Name', key: 'title', width: 40 },
+      { header: language === 'ar' ? 'الفئة' : 'Category', key: 'category', width: 25 },
+      { header: language === 'ar' ? 'السعر (ج.م)' : 'Price (EGP)', key: 'price', width: 15 },
+      { header: language === 'ar' ? 'الوحدات المباعة' : 'Units Sold', key: 'unitsSold', width: 15 },
+      { header: language === 'ar' ? 'إجمالي الإيرادات (ج.م)' : 'Total Revenue (EGP)', key: 'totalRevenue', width: 20 },
+      { header: language === 'ar' ? 'المخزون الحالي' : 'Current Stock', key: 'stock', width: 15 }
     ];
 
     const data = filteredData.map(item => ({
       id: item.id,
-      title: item.title,
-      category: item.category,
+      title: getProductTitle(item),
+      category: getCategoryName(item.category),
       price: item.price || 0,
       unitsSold: item.unitsSold || 0,
       totalRevenue: item.totalRevenue || 0,
@@ -110,13 +129,13 @@ export default function ProductsAnalysis() {
       label: language === 'ar' ? 'المنتج' : 'Product', 
       render: (item) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img src={item.image || 'https://via.placeholder.com/40'} alt={item.title} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
-          <span style={{ fontWeight: 500 }}>{item.title}</span>
+          <img src={item.image || 'https://via.placeholder.com/40'} alt={getProductTitle(item)} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+          <span style={{ fontWeight: 500 }}>{getProductTitle(item)}</span>
         </div>
       )
     },
-    { id: 'category', label: language === 'ar' ? 'الفئة' : 'Category', render: (item) => item.category },
-    { id: 'price', label: language === 'ar' ? 'السعر' : 'Price', render: (item) => `${item.price} EGP` },
+    { id: 'category', label: language === 'ar' ? 'الفئة' : 'Category', render: (item) => getCategoryName(item.category) },
+    { id: 'price', label: language === 'ar' ? 'السعر' : 'Price', render: (item) => `${item.price} ${language === 'ar' ? 'ج.م' : 'EGP'}` },
     { 
       id: 'stock', 
       label: language === 'ar' ? 'المخزون الحالي' : 'Current Stock', 
@@ -136,13 +155,16 @@ export default function ProductsAnalysis() {
       id: 'totalRevenue', 
       label: language === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue', 
       align: 'right',
-      render: (item) => <span style={{ fontWeight: 'bold', color: '#10b981' }}>{item.totalRevenue.toFixed(2)} EGP</span>
+      render: (item) => <span style={{ fontWeight: 'bold', color: '#10b981' }}>{item.totalRevenue.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}</span>
     }
   ];
 
   const searchFunction = (item, term) => {
     const lower = term.toLowerCase();
-    return item.title.toLowerCase().includes(lower) || item.category.toLowerCase().includes(lower);
+    const pTitle = getProductTitle(item).toLowerCase();
+    const rawTitle = (item.title || '').toLowerCase();
+    const pCat = getCategoryName(item.category).toLowerCase();
+    return pTitle.includes(lower) || rawTitle.includes(lower) || pCat.includes(lower);
   };
 
   const actionsNode = (
@@ -154,6 +176,9 @@ export default function ProductsAnalysis() {
   const filtersNode = (
     <React.Fragment>
       <select 
+        id="prod_analysis_cat_filter"
+        name="categoryFilter"
+        aria-label="Filter analysis by category"
         className="input-field" 
         style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)' }}
         value={categoryFilter}
@@ -161,11 +186,14 @@ export default function ProductsAnalysis() {
       >
         <option value="all">{language === 'ar' ? 'كل الفئات' : 'All Categories'}</option>
         {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(cat => (
-          <option key={cat} value={cat}>{cat}</option>
+          <option key={cat} value={cat}>{getCategoryName(cat)}</option>
         ))}
       </select>
 
       <select 
+        id="prod_analysis_stock_filter"
+        name="stockFilter"
+        aria-label="Filter analysis by stock status"
         className="input-field" 
         style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)' }}
         value={stockFilter}
@@ -178,6 +206,9 @@ export default function ProductsAnalysis() {
       </select>
 
       <select 
+        id="prod_analysis_sort_by"
+        name="sortBy"
+        aria-label="Sort product analysis"
         className="input-field" 
         style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--outline-variant)' }}
         value={sortBy}

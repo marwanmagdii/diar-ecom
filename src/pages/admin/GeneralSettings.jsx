@@ -91,9 +91,11 @@ export default function GeneralSettings() {
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '14px', fontWeight: 500 }}>{language === 'ar' ? 'الحساب المباشر' : 'Live Tracking'}</span>
-              <label className="toggle-switch">
+              <label htmlFor="toggle_real_time_capacity" className="toggle-switch">
                 <input 
                   type="checkbox" 
+                  id="toggle_real_time_capacity"
+                  name="realTimeCapacity"
                   checked={realTimeCapacity}
                   onChange={(e) => setRealTimeCapacity(e.target.checked)}
                 />
@@ -224,11 +226,12 @@ export default function GeneralSettings() {
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
             <div className="form-group">
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
+              <label htmlFor="settings_store_email" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
                 <Mail size={16} /> {language === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
               </label>
               <input 
                 type="email" 
+                id="settings_store_email"
                 name="email"
                 value={storeInfo.email}
                 onChange={handleChange}
@@ -237,11 +240,12 @@ export default function GeneralSettings() {
               />
             </div>
             <div className="form-group">
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
+              <label htmlFor="settings_store_phone" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
                 <Phone size={16} /> {language === 'ar' ? 'رقم الهاتف' : 'Phone Number'}
               </label>
               <input 
                 type="text" 
+                id="settings_store_phone"
                 name="phone"
                 value={storeInfo.phone}
                 onChange={handleChange}
@@ -250,10 +254,11 @@ export default function GeneralSettings() {
               />
             </div>
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
+              <label htmlFor="settings_store_address" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
                 <MapPin size={16} /> {language === 'ar' ? 'العنوان' : 'Address'}
               </label>
               <textarea 
+                id="settings_store_address"
                 name="address"
                 value={storeInfo.address}
                 onChange={handleChange}
@@ -275,12 +280,14 @@ export default function GeneralSettings() {
             {/* Facebook */}
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
+                <label htmlFor="settings_facebook_url" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
                   <LinkIcon size={16} /> Facebook URL
                 </label>
-                <label className="toggle-switch">
+                <label htmlFor="toggle_facebook_active" className="toggle-switch">
                   <input 
                     type="checkbox" 
+                    id="toggle_facebook_active"
+                    name="facebookActive"
                     checked={storeInfo.facebookActive}
                     onChange={(e) => setStoreInfo(prev => ({ ...prev, facebookActive: e.target.checked }))}
                   />
@@ -289,6 +296,7 @@ export default function GeneralSettings() {
               </div>
               <input 
                 type="url" 
+                id="settings_facebook_url"
                 name="facebook"
                 value={storeInfo.facebook}
                 onChange={handleChange}
@@ -302,12 +310,14 @@ export default function GeneralSettings() {
             {/* Instagram */}
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
+                <label htmlFor="settings_instagram_url" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
                   <LinkIcon size={16} /> Instagram URL
                 </label>
-                <label className="toggle-switch">
+                <label htmlFor="toggle_instagram_active" className="toggle-switch">
                   <input 
                     type="checkbox" 
+                    id="toggle_instagram_active"
+                    name="instagramActive"
                     checked={storeInfo.instagramActive}
                     onChange={(e) => setStoreInfo(prev => ({ ...prev, instagramActive: e.target.checked }))}
                   />
@@ -316,6 +326,7 @@ export default function GeneralSettings() {
               </div>
               <input 
                 type="url" 
+                id="settings_instagram_url"
                 name="instagram"
                 value={storeInfo.instagram}
                 onChange={handleChange}
@@ -329,12 +340,14 @@ export default function GeneralSettings() {
             {/* Twitter */}
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
+                <label htmlFor="settings_twitter_url" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
                   <LinkIcon size={16} /> Twitter / X URL
                 </label>
-                <label className="toggle-switch">
+                <label htmlFor="toggle_twitter_active" className="toggle-switch">
                   <input 
                     type="checkbox" 
+                    id="toggle_twitter_active"
+                    name="twitterActive"
                     checked={storeInfo.twitterActive}
                     onChange={(e) => setStoreInfo(prev => ({ ...prev, twitterActive: e.target.checked }))}
                   />
@@ -343,6 +356,7 @@ export default function GeneralSettings() {
               </div>
               <input 
                 type="url" 
+                id="settings_twitter_url"
                 name="twitter"
                 value={storeInfo.twitter}
                 onChange={handleChange}
@@ -356,12 +370,14 @@ export default function GeneralSettings() {
             {/* TikTok */}
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
+                <label htmlFor="settings_tiktok_url" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500, margin: 0 }}>
                   <MessageCircle size={16} /> TikTok URL
                 </label>
-                <label className="toggle-switch">
+                <label htmlFor="toggle_tiktok_active" className="toggle-switch">
                   <input 
                     type="checkbox" 
+                    id="toggle_tiktok_active"
+                    name="tiktokActive"
                     checked={storeInfo.tiktokActive}
                     onChange={(e) => setStoreInfo(prev => ({ ...prev, tiktokActive: e.target.checked }))}
                   />
@@ -370,6 +386,7 @@ export default function GeneralSettings() {
               </div>
               <input 
                 type="url" 
+                id="settings_tiktok_url"
                 name="tiktok"
                 value={storeInfo.tiktok}
                 onChange={handleChange}
@@ -389,11 +406,13 @@ export default function GeneralSettings() {
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
             <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
+              <label htmlFor="settings_clarity_project_id" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontWeight: 500 }}>
                 Microsoft Clarity Project ID
               </label>
               <input 
                 type="text" 
+                id="settings_clarity_project_id"
+                name="clarityProjectId"
                 value={clarityProjectId}
                 onChange={(e) => setClarityProjectId(e.target.value)}
                 className="premium-input"

@@ -496,8 +496,8 @@ export const useStore = create((set, get) => ({
         body: JSON.stringify(product)
       });
       if (!res.ok) {
-        await res.text().catch(() => {});
-        throw new Error('Failed to add product');
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || errData.message || 'Failed to add product');
       }
       const { data } = await res.json();
       set((state) => ({ products: [data, ...state.products] }));
@@ -516,8 +516,8 @@ export const useStore = create((set, get) => ({
         body: JSON.stringify(updatedFields)
       });
       if (!res.ok) {
-        await res.text().catch(() => {});
-        throw new Error('Failed to update product');
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || errData.message || 'Failed to update product');
       }
       const { data } = await res.json();
       set((state) => ({
@@ -536,8 +536,8 @@ export const useStore = create((set, get) => ({
         method: 'DELETE'
       });
       if (!res.ok) {
-        await res.text().catch(() => {});
-        throw new Error('Failed to delete product');
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || errData.message || 'Failed to delete product');
       }
       set((state) => ({
         products: state.products.filter(p => p.id !== id)

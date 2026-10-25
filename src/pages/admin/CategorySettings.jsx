@@ -137,6 +137,9 @@ export default function CategorySettings() {
         <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
           <input 
             type="text" 
+            id="new_category_name_en"
+            name="newCategoryNameEn"
+            aria-label="New Main Category Name (English)"
             className="input-field" 
             placeholder="New Main Category Name (EN)..." 
             value={newCategoryName}
@@ -145,6 +148,9 @@ export default function CategorySettings() {
           />
           <input 
             type="text" 
+            id="new_category_name_ar"
+            name="newCategoryNameAr"
+            aria-label="New Main Category Name (Arabic)"
             className="input-field" 
             placeholder="الاسم بالعربي..." 
             value={newCategoryNameAr}
@@ -174,6 +180,9 @@ export default function CategorySettings() {
                       <span style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a' }}>{cat.name}</span>
                       <input 
                         type="text" 
+                        id={`category_ar_${cat.name}`}
+                        name={`categoryAr_${cat.name}`}
+                        aria-label={`Arabic name for ${cat.name}`}
                         value={cat.nameAr || ''} 
                         onChange={(e) => setCategoriesForm(categoriesForm.map(c => c.name === cat.name ? { ...c, nameAr: e.target.value } : c))}
                         placeholder="الاسم بالعربي"
@@ -229,6 +238,9 @@ export default function CategorySettings() {
                       <span style={{ fontSize: '14px', color: '#475569' }}>{sub}</span>
                       <input 
                         type="text" 
+                        id={`subcat_ar_${cat.name}_${idx}`}
+                        name={`subcatAr_${cat.name}_${idx}`}
+                        aria-label={`Arabic name for ${sub}`}
                         value={cat.subcategoriesAr?.[idx] || ''} 
                         onChange={(e) => {
                           const newAr = [...(cat.subcategoriesAr || [])];
@@ -258,6 +270,9 @@ export default function CategorySettings() {
               <div style={{ display: 'flex', gap: '8px' }}>
                 <input 
                   type="text" 
+                  id={`new_subcat_en_${cat.name}`}
+                  name={`newSubcatEn_${cat.name}`}
+                  aria-label={`New subcategory in English for ${cat.name}`}
                   className="input-field" 
                   placeholder="Subcategory (EN)" 
                   value={newSubCategoryNames[cat.name] || ''}
@@ -266,6 +281,9 @@ export default function CategorySettings() {
                 />
                 <input 
                   type="text" 
+                  id={`new_subcat_ar_${cat.name}`}
+                  name={`newSubcatAr_${cat.name}`}
+                  aria-label={`New subcategory in Arabic for ${cat.name}`}
                   className="input-field" 
                   placeholder="بالعربي" 
                   value={newSubCategoryNamesAr[cat.name] || ''}
@@ -291,6 +309,9 @@ export default function CategorySettings() {
             <p style={{ margin: '0 0 16px 0', color: 'var(--on-surface-variant)' }}>Are you sure you want to delete the category <strong>"{categoryToDelete}"</strong>? All subcategories will also be removed. Type <strong>delete</strong> to confirm:</p>
             <input 
               type="text" 
+              id="confirm_delete_category_input"
+              name="confirmDeleteInput"
+              aria-label="Confirm category deletion by typing delete"
               className="input-field" 
               style={{ marginBottom: '24px', width: '100%' }}
               value={deleteInput}

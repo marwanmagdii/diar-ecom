@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus, PanelLeft, PanelLeftClose, BellRing } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus, PanelLeft, PanelLeftClose, BellRing, Brain } from 'lucide-react';
 import { useStore } from '../store';
 import { requestNotificationPermission } from '../firebase';
 
@@ -54,6 +54,7 @@ export default function AdminLayout() {
     { name: t('promoCodes'), path: '/diaradmin26/promos', icon: <Ticket size={20} /> },
     { name: t('influencers'), path: '/diaradmin26/influencers', icon: <Star size={20} /> },
     { name: 'Notifications', path: '/diaradmin26/notifications', icon: <BellRing size={20} /> },
+    { name: 'Data Engine', path: '/diaradmin26/data-engine', icon: <Brain size={20} /> },
     { name: t('settings') || 'Store Settings', path: '/diaradmin26/settings', icon: <Settings size={20} /> },
   ];
 
@@ -87,20 +88,11 @@ export default function AdminLayout() {
 
         {/* Sidebar */}
         <aside className={`admin-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''} ${isDesktopCollapsed ? 'collapsed' : ''}`}>
-          <div className="admin-logo" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+          <div className="admin-logo" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
             <Link to="/" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '20px', fontWeight: 700 }} className={isDesktopCollapsed ? 'mobile-hidden' : ''}>
               <img src="/logo_transparent.svg" alt="Admin" style={{ height: '48px', width: 'auto', flexShrink: 0 }} />
               <span className="nav-link-text">Admin</span>
             </Link>
-            
-            <button 
-              className="icon-btn desktop-menu-btn" 
-              style={{ cursor: 'pointer', background: 'none', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', position: isDesktopCollapsed ? 'static' : 'absolute', right: 0 }}
-              onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
-              title={language === 'ar' ? 'طي / توسيع' : 'Collapse / Expand'}
-            >
-              {isDesktopCollapsed ? <PanelLeft size={24} /> : <PanelLeftClose size={24} />}
-            </button>
             
             <button className="icon-btn mobile-menu-btn desktop-hidden" style={{ background: 'none', border: 'none' }} onClick={() => setIsMobileMenuOpen(false)}>
               <X size={20} />
@@ -288,6 +280,14 @@ export default function AdminLayout() {
         <main className="admin-main">
           <header className="admin-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <button 
+                className="icon-btn mobile-hidden" 
+                style={{ cursor: 'pointer', background: 'none', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', color: 'var(--on-surface-variant)' }}
+                onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
+                title={language === 'ar' ? 'طي / توسيع' : 'Collapse / Expand'}
+              >
+                {isDesktopCollapsed ? <PanelLeftClose size={24} /> : <PanelLeft size={24} />}
+              </button>
               <button 
                 type="button"
                 className="icon-btn desktop-hidden" 

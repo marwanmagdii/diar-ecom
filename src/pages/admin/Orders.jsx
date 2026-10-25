@@ -121,6 +121,9 @@ export default function Orders() {
 
   const filtersNode = (
     <select 
+      id="orders_status_filter"
+      name="ordersStatusFilter"
+      aria-label="Filter orders by status"
       className="input-field" 
       style={{ width: '160px' }}
       value={statusFilter}

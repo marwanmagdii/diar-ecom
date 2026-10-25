@@ -162,6 +162,9 @@ export default function DataTable({
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
             <input 
               type="text" 
+              id={`table-search-${tableId || 'default'}`}
+              name={`table_search_${tableId || 'default'}`}
+              aria-label={searchPlaceholder || (currentLang === 'ar' ? 'بحث...' : 'Search...')}
               className="input-field" 
               placeholder={searchPlaceholder || (currentLang === 'ar' ? 'بحث...' : 'Search...')} 
               style={{ width: '100%', paddingLeft: '36px' }} 
@@ -204,9 +207,11 @@ export default function DataTable({
                   const colDef = columns.find(c => c.id === colId);
                   if (!colDef) return null;
                   return (
-                    <label key={colId} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', cursor: 'pointer', fontSize: '14px', padding: '0 8px' }}>
+                    <label key={colId} htmlFor={`col-toggle-${tableId || 'default'}-${colId}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', cursor: 'pointer', fontSize: '14px', padding: '0 8px' }}>
                       <input 
                         type="checkbox" 
+                        id={`col-toggle-${tableId || 'default'}-${colId}`}
+                        name={`col_toggle_${colId}`}
                         checked={visibleColumns[colId] !== false} 
                         onChange={(e) => handleToggleColumn(colId, e.target.checked)}
                       />

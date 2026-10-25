@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import StoreLayout from './layouts/StoreLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -27,6 +27,7 @@ import UserDetails from './pages/admin/UserDetails';
 import UsersAnalysis from './pages/admin/UsersAnalysis';
 import CustomerAnalytics from './pages/admin/CustomerAnalytics';
 import CustomerJourneyDetail from './pages/admin/CustomerJourneyDetail';
+import DataEnginePage from './pages/admin/DataEnginePage';
 import GeneralSettings from './pages/admin/GeneralSettings';
 import CollectionSettings from './pages/admin/CollectionSettings';
 import CategorySettings from './pages/admin/CategorySettings';
@@ -102,19 +103,26 @@ function App() {
   }, [clarityProjectId]);
 
   return (
-          <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <PageTracker />
           <Routes>
             {/* Storefront Routes */}
-            <Route element={<StoreLayout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/product/:id" element={<Product />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/success" element={<Success />} />
-              <Route path="/page/:pageId" element={<ContentPage />} />
-              <Route path="/partner" element={<InfluencerTracker />} />
+            <Route path="/" element={<StoreLayout />}>
+              <Route index element={<Home />} />
+              <Route path="shop" element={<Shop />} />
+              <Route path="product/:id" element={<Product />} />
+              <Route path="cart" element={<Cart />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="success" element={<Success />} />
+              <Route path="influencer" element={<InfluencerTracker />} />
+              
+              {/* Content Pages */}
+              <Route path="about" element={<ContentPage pageKey="about" />} />
+              <Route path="shipping" element={<ContentPage pageKey="shipping" />} />
+              <Route path="refunds" element={<ContentPage pageKey="refunds" />} />
+              <Route path="privacy" element={<ContentPage pageKey="privacy" />} />
+              <Route path="terms" element={<ContentPage pageKey="terms" />} />
+              <Route path="contact" element={<ContentPage pageKey="contact" />} />
             </Route>
 
             {/* Admin Routes */}
@@ -137,6 +145,7 @@ function App() {
               <Route path="users/analysis" element={<UsersAnalysis />} />
               <Route path="users/tracking" element={<CustomerAnalytics />} />
               <Route path="users/tracking/journey/:orderId" element={<CustomerJourneyDetail />} />
+              <Route path="data-engine" element={<DataEnginePage />} />
               <Route path="users/:id" element={<UserDetails />} />
               <Route path="settings/general" element={<GeneralSettings />} />
               <Route path="settings/collections" element={<CollectionSettings />} />
@@ -149,10 +158,10 @@ function App() {
               <Route path="promos" element={<PromoSettings />} />
               <Route path="notifications" element={<PushNotifications />} />
               <Route path="influencers" element={<Influencers />} />
-              <Route path="influencers/:id" element={<InfluencerDetails />} />
               <Route path="influencers/analysis" element={<InfluencersAnalysis />} />
               <Route path="influencers/new" element={<CreateInfluencer />} />
               <Route path="influencers/edit/:id" element={<CreateInfluencer />} />
+              <Route path="influencers/:id" element={<InfluencerDetails />} />
               {/* Fallback settings page to collections */}
               <Route path="settings" element={<Navigate to="/diaradmin26/settings/collections" replace />} />
             </Route>
@@ -161,8 +170,10 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <ToastContainer />
-          </BrowserRouter>
+        </BrowserRouter>
   );
 }
 
 export default App;
+
+

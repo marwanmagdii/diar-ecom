@@ -335,13 +335,13 @@ export default function Product() {
                       className={`gallery-thumbnail ${mainImage === img ? 'active' : ''}`}
                       onClick={() => setMainImage(img)}
                     >
-                      <img src={img} alt={`${product.title} view ${idx + 1}`} />
+                      <img src={img} alt={`${product.title} view ${idx + 1}`} loading="lazy" decoding="async" />
                     </div>
                   ))}
                 </div>
               )}
               <div className="gallery-main-image" style={{ backgroundColor: product.bgColor }}>
-                <img src={mainImage} alt={product.title} />
+                <img src={mainImage} alt={product.title} loading="lazy" decoding="async" />
               </div>
             </div>
 
@@ -675,6 +675,7 @@ export default function Product() {
           </div>
         )}
 
+
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <section style={{ maxWidth: '1200px', margin: '40px auto 40px', padding: '0 16px', borderTop: '1px solid var(--outline-variant)', paddingTop: '32px' }}>
@@ -696,6 +697,106 @@ export default function Product() {
           </section>
         )}
       </main>
+
+      {/* ── Sticky Mobile Add-to-Cart Bar (Feature F2) ──────────────────────────
+          Visible only on mobile (<768px) when the native .product-view-actions
+          is scrolled off-screen. Uses IntersectionObserver to avoid duplication. */}
+      <StickyMobileCTA
+        product={product}
+        currentPrice={currentPrice}
+        currentStock={currentStock}
+        cartQty={cartQty}
+        cartItem={cartItem}
+        cartItemId={cartItemId}
+        handleAdd={handleAdd}
+        updateQuantity={updateQuantity}
+        t={t}
+        language={language}
+      />
     </>
+  );
+}
+
+// ── Sticky Mobile CTA Component ──────────────────────────────────────────────
+function StickyMobileCTA({ product, currentPrice, currentStock, cartQty, cartItem, cartItemId, handleAdd, updateQuantity, t, language }) {
+  const [hidden, setHidden] = React.useState(true);
+
+  React.useEffect(() => {
+    // Watch the native product-view-actions — hide sticky bar when it's visible
+    const target = document.querySelector('.product-view-actions');
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHidden(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  if (hidden) return null;
+
+  return (
+    <div
+      className="sticky-mobile-cta"
+      role="complementary"
+      aria-label={language === 'ar' ? 'إضافة للسلة' : 'Add to cart'}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
+        <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)', fontWeight: 500 }}>
+          {language === 'ar' ? 'السعر' : 'Price'}
+        </span>
+        <span style={{ fontSize: '20px', fontWeight: 700, color: 'var(--primary)', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
+          {currentPrice.toFixed(2)} {t('currency')}
+        </span>
+      </div>
+
+      {cartQty > 0 ? (
+        <Link
+          to="/cart"
+          style={{
+            flex: 1,
+            maxWidth: '220px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            backgroundColor: 'var(--primary)',
+            color: 'white',
+            padding: '14px 20px',
+            borderRadius: '100px',
+            textDecoration: 'none',
+            fontWeight: 700,
+            fontSize: '15px',
+          }}
+        >
+          <ShoppingBag size={18} />
+          {language === 'ar' ? `إتمام الطلب (${cartQty})` : `Checkout (${cartQty})`}
+        </Link>
+      ) : (
+        <button
+          onClick={(e) => { e.preventDefault(); handleAdd(); }}
+          disabled={currentStock === 0}
+          style={{
+            flex: 1,
+            maxWidth: '220px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            backgroundColor: currentStock === 0 ? 'var(--surface-container-high)' : 'var(--primary)',
+            color: currentStock === 0 ? 'var(--on-surface-variant)' : 'white',
+            padding: '14px 20px',
+            borderRadius: '100px',
+            border: 'none',
+            fontWeight: 700,
+            fontSize: '15px',
+            cursor: currentStock === 0 ? 'not-allowed' : 'pointer',
+          }}
+        >
+          <ShoppingBag size={18} />
+          {currentStock === 0 ? t('outOfStock') : t('addToCart')}
+        </button>
+      )}
+    </div>
   );
 }

@@ -11,6 +11,9 @@
     "seed": "node scripts/seed.js"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.2.6",
+    "ai": "^7.0.99",
+    "clsx": "^2.1.1",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "firebase": "^12.16.0",
@@ -22,6 +25,7 @@
     "react-image-crop": "^11.1.2",
     "react-router-dom": "^6.30.4",
     "recharts": "^3.8.1",
+    "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {

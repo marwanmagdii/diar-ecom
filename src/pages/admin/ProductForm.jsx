@@ -10,7 +10,7 @@ import { compressImage } from '../../utils/imageCompression';
 import { defaultOptions } from '../../utils/constants';
 import { useStore } from '../../store';
 
-const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, dir }) => {
+const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, dir, id, name, ariaLabel }) => {
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -120,6 +120,9 @@ const SwipeToDeleteInput = ({ value, onChange, onDelete, placeholder, dir }) => 
         }}
       >
         <textarea 
+          id={id}
+          name={name}
+          aria-label={ariaLabel || placeholder || 'List item'}
           className="premium-input" 
           value={value} 
           onChange={(e) => onChange(e.target.value)}
@@ -324,13 +327,28 @@ export default function ProductForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
+
+    if (!formData.title || !formData.title.trim()) {
+      addToast(language === 'ar' ? 'يرجى إدخال اسم المنتج.' : 'Please enter a product title.', 'error');
+      return;
+    }
+
+    if (!formData.category || !formData.category.trim()) {
+      addToast(language === 'ar' ? 'يرجى اختيار فئة المنتج.' : 'Please select a product category.', 'error');
+      return;
+    }
+
+    if (!formData.price || isNaN(parseFloat(formData.price)) || parseFloat(formData.price) <= 0) {
+      addToast(language === 'ar' ? 'يرجى إدخال سعر صحيح للمنتج.' : 'Please enter a valid product price.', 'error');
+      return;
+    }
     
     if (formData.hasOffer && !formData.offerPrice) {
       addToast('Please provide an offer price.', 'error');
       return;
     }
     
-    if (!formData.image && formData.images.length === 0) {
+    if (!formData.image && (!formData.images || formData.images.length === 0)) {
       addToast('A main product image is required.', 'error');
       return;
     }
@@ -358,9 +376,11 @@ export default function ProductForm() {
     
     basicAttributes.forEach(attrName => {
       const val = formData[attrName.toLowerCase()];
-      if (val) {
+      if (val && typeof val === 'string') {
         const vals = val.split(',').map(s => s.trim()).filter(Boolean);
-        generatedOptions.push({ name: attrName, values: vals });
+        if (vals.length > 0) {
+          generatedOptions.push({ name: attrName, values: vals });
+        }
       }
     });
 
@@ -368,8 +388,9 @@ export default function ProductForm() {
       formData.variants.forEach(v => {
         if (v.attributes) {
           Object.entries(v.attributes).forEach(([name, val]) => {
-            if (!val) return;
-            const vals = val.split(',').map(s => s.trim()).filter(Boolean);
+            if (!val || !name || !name.trim()) return;
+            const vals = typeof val === 'string' ? val.split(',').map(s => s.trim()).filter(Boolean) : [String(val)];
+            if (vals.length === 0) return;
             let opt = generatedOptions.find(o => o.name === name);
             if (!opt) {
               generatedOptions.push({ name, values: vals });
@@ -385,21 +406,37 @@ export default function ProductForm() {
       });
     }
 
+    const cleanedOptions = generatedOptions.filter(opt => opt && opt.name && opt.name.trim() && opt.values && opt.values.length > 0);
+
+    const cleanedVariants = (formData.variants || []).map(v => ({
+      ...v,
+      id: v.id || Date.now().toString(),
+      price: (v.price !== '' && v.price !== null && v.price !== undefined && !isNaN(parseFloat(v.price))) ? parseFloat(v.price) : null,
+      stock: (v.stock !== '' && v.stock !== null && v.stock !== undefined && !isNaN(parseInt(v.stock, 10))) ? parseInt(v.stock, 10) : 0,
+    }));
+
+    const stockVal = (formData.stock !== '' && formData.stock !== null && formData.stock !== undefined && !isNaN(Number(formData.stock)))
+      ? Number(formData.stock)
+      : 0;
+
     const payload = {
       ...formData,
+      title: formData.title.trim(),
+      category: formData.category.trim(),
       price: parseFloat(formData.price),
-      costPrice: formData.costPrice ? parseFloat(formData.costPrice) : null,
-      offerPrice: formData.hasOffer && formData.offerPrice ? parseFloat(formData.offerPrice) : null,
-      offerStartDate: formData.hasOffer && formData.offerStartDate ? new Date(formData.offerStartDate).toISOString() : null,
-      offerEndDate: formData.hasOffer && formData.offerEndDate ? new Date(formData.offerEndDate).toISOString() : null,
-      stock: formData.stock === '' ? null : formData.stock,
-      showStock: formData.showStock,
-      isActive: formData.isActive,
-      keyBenefits: formData.keyBenefits ? formData.keyBenefits.split('\n').filter(b => b.trim() !== '') : [],
-      keyBenefitsAr: formData.keyBenefitsAr ? formData.keyBenefitsAr.split('\n').filter(b => b.trim() !== '') : [],
-      images: formData.images.length > 0 ? formData.images : undefined,
-      image: formData.images.length > 0 ? formData.images[0] : (formData.image || undefined),
-      options: generatedOptions,
+      costPrice: (formData.costPrice && !isNaN(parseFloat(formData.costPrice))) ? parseFloat(formData.costPrice) : null,
+      offerPrice: (formData.hasOffer && formData.offerPrice && !isNaN(parseFloat(formData.offerPrice))) ? parseFloat(formData.offerPrice) : null,
+      offerStartDate: (formData.hasOffer && formData.offerStartDate) ? new Date(formData.offerStartDate).toISOString() : null,
+      offerEndDate: (formData.hasOffer && formData.offerEndDate) ? new Date(formData.offerEndDate).toISOString() : null,
+      stock: stockVal,
+      showStock: Boolean(formData.showStock),
+      isActive: Boolean(formData.isActive),
+      keyBenefits: formData.keyBenefits ? formData.keyBenefits.split('\n').map(b => b.trim()).filter(Boolean) : [],
+      keyBenefitsAr: formData.keyBenefitsAr ? formData.keyBenefitsAr.split('\n').map(b => b.trim()).filter(Boolean) : [],
+      images: formData.images.length > 0 ? formData.images : (formData.image ? [formData.image] : []),
+      image: formData.images.length > 0 ? formData.images[0] : (formData.image || ''),
+      options: cleanedOptions,
+      variants: cleanedVariants,
     };
     
     delete payload.hasOffer;
@@ -627,25 +664,29 @@ export default function ProductForm() {
             <div className={`form-accordion-content ${expandedSections.basic ? '' : 'collapsed'}`}>
               <div className="responsive-grid-2">
                 <div>
-                  <label className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label htmlFor="product_title_en" className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>{language === 'ar' ? 'اسم المنتج (إنجليزي)' : 'Product Name (English)'}</span>
                     <TranslateIconBtn sourceText={formData.title} targetField="titleAr" fromLang="en" toLang="ar" />
                   </label>
-                  <textarea className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder={language === 'ar' ? 'مثال: تيشرت قطن فاخر' : 'E.g. Premium Cotton T-Shirt'} style={{ resize: 'vertical', minHeight: '60px' }} rows={2} />
+                  <textarea id="product_title_en" name="title" aria-label="Product Name (English)" className="premium-input" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder={language === 'ar' ? 'مثال: تيشرت قطن فاخر' : 'E.g. Premium Cotton T-Shirt'} style={{ resize: 'vertical', minHeight: '60px' }} rows={2} />
                 </div>
                 <div>
-                  <label className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label htmlFor="product_title_ar" className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>{language === 'ar' ? 'اسم المنتج (عربي)' : 'Product Name (Arabic)'}</span>
                     <TranslateIconBtn sourceText={formData.titleAr} targetField="title" fromLang="ar" toLang="en" />
                   </label>
-                  <textarea className="premium-input" value={formData.titleAr} onChange={e => setFormData({...formData, titleAr: e.target.value})} placeholder="قميص قطن فاخر" dir="rtl" style={{ resize: 'vertical', minHeight: '60px' }} rows={2} />
+                  <textarea id="product_title_ar" name="titleAr" aria-label="Product Name (Arabic)" className="premium-input" value={formData.titleAr} onChange={e => setFormData({...formData, titleAr: e.target.value})} placeholder="قميص قطن فاخر" dir="rtl" style={{ resize: 'vertical', minHeight: '60px' }} rows={2} />
                 </div>
               </div>
             
             <div className="responsive-grid-2">
               <div style={{ gridColumn: '1 / -1' }}>
-                <label className="premium-label">{language === 'ar' ? 'الفئة' : 'Category'}</label>
+                <label htmlFor="product_category" className="premium-label">{language === 'ar' ? 'الفئة *' : 'Category *'}</label>
                 <select 
+                  id="product_category"
+                  name="category"
+                  required
+                  aria-label={language === 'ar' ? 'الفئة' : 'Category'}
                   className="premium-input" 
                   value={formData.category} 
                   onChange={e => setFormData({...formData, category: e.target.value})}
@@ -671,16 +712,22 @@ export default function ProductForm() {
                 </select>
               </div>
               <div>
-                <label className="premium-label">{language === 'ar' ? 'لون خلفية المنتج (اختياري)' : 'Product Background Color (Optional)'}</label>
+                <label htmlFor="product_bg_color" className="premium-label">{language === 'ar' ? 'لون خلفية المنتج (اختياري)' : 'Product Background Color (Optional)'}</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <input 
                     type="color" 
+                    id="product_bg_color_picker"
+                    name="bgColorPicker"
+                    aria-label="Product Background Color Picker"
                     value={formData.bgColor || '#f8fafc'} 
                     onChange={e => setFormData({...formData, bgColor: e.target.value})}
                     style={{ width: '40px', height: '40px', padding: '0', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
                   />
                   <input 
                     type="text" 
+                    id="product_bg_color"
+                    name="bgColor"
+                    aria-label={language === 'ar' ? 'لون خلفية المنتج' : 'Product Background Color'}
                     className="premium-input" 
                     value={formData.bgColor || ''} 
                     onChange={e => setFormData({...formData, bgColor: e.target.value})}
@@ -691,8 +738,11 @@ export default function ProductForm() {
               </div>
 
               <div>
-                <label className="premium-label">{language === 'ar' ? 'نص الشارة (اختياري)' : 'Badge Text (Optional)'}</label>
+                <label htmlFor="product_badge" className="premium-label">{language === 'ar' ? 'نص الشارة (اختياري)' : 'Badge Text (Optional)'}</label>
                 <select 
+                  id="product_badge"
+                  name="badge"
+                  aria-label={language === 'ar' ? 'نص الشارة' : 'Badge Text'}
                   className="premium-input" 
                   value={formData.badge} 
                   onChange={e => setFormData({...formData, badge: e.target.value})}
@@ -742,11 +792,14 @@ export default function ProductForm() {
 
             <div className="responsive-grid-2">
               <div>
-                <label className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label htmlFor="product_description_en" className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span>{language === 'ar' ? 'الوصف (إنجليزي)' : 'Description (English)'}</span>
                   <TranslateIconBtn sourceText={formData.description} targetField="descriptionAr" fromLang="en" toLang="ar" />
                 </label>
                 <textarea 
+                  id="product_description_en"
+                  name="description"
+                  aria-label="Description (English)"
                   className="premium-input" 
                   value={formData.description} 
                   onChange={e => setFormData({...formData, description: e.target.value})} 
@@ -755,11 +808,14 @@ export default function ProductForm() {
                 />
               </div>
               <div>
-                <label className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label htmlFor="product_description_ar" className="premium-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span>{language === 'ar' ? 'الوصف (عربي)' : 'Description (Arabic)'}</span>
                   <TranslateIconBtn sourceText={formData.descriptionAr} targetField="description" fromLang="ar" toLang="en" />
                 </label>
                 <textarea 
+                  id="product_description_ar"
+                  name="descriptionAr"
+                  aria-label="Description (Arabic)"
                   className="premium-input" 
                   value={formData.descriptionAr} 
                   onChange={e => setFormData({...formData, descriptionAr: e.target.value})} 
@@ -781,6 +837,7 @@ export default function ProductForm() {
                     type="button" 
                     onClick={() => setFormData({...formData, keyBenefits: formData.keyBenefits ? formData.keyBenefits + '\n' : ' '})} 
                     style={{ padding: '4px', color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    aria-label="Add Key Benefit English"
                   >
                     <Plus size={20} />
                   </button>
@@ -789,6 +846,9 @@ export default function ProductForm() {
                   {(formData.keyBenefits ? formData.keyBenefits.split('\n') : []).map((benefit, idx, arr) => (
                     <SwipeToDeleteInput
                       key={idx}
+                      id={`product_benefit_en_${idx}`}
+                      name={`benefit_en_${idx}`}
+                      ariaLabel={`Key Benefit (English) ${idx + 1}`}
                       value={benefit.trim() === '' && benefit !== ' ' ? '' : benefit}
                       onChange={(val) => {
                         const newArr = [...arr];
@@ -821,6 +881,7 @@ export default function ProductForm() {
                     type="button" 
                     onClick={() => setFormData({...formData, keyBenefitsAr: formData.keyBenefitsAr ? formData.keyBenefitsAr + '\n' : ' '})} 
                     style={{ padding: '4px', color: 'var(--primary)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    aria-label="Add Key Benefit Arabic"
                   >
                     <Plus size={20} />
                   </button>
@@ -829,6 +890,9 @@ export default function ProductForm() {
                   {(formData.keyBenefitsAr ? formData.keyBenefitsAr.split('\n') : []).map((benefit, idx, arr) => (
                     <SwipeToDeleteInput
                       key={idx}
+                      id={`product_benefit_ar_${idx}`}
+                      name={`benefit_ar_${idx}`}
+                      ariaLabel={`Key Benefit (Arabic) ${idx + 1}`}
                       value={benefit.trim() === '' && benefit !== ' ' ? '' : benefit}
                       onChange={(val) => {
                         const newArr = [...arr];
@@ -911,6 +975,9 @@ export default function ProductForm() {
               >
                 <input 
                   type="file" 
+                  id="product_images_upload"
+                  name="productImages"
+                  aria-label="Upload Product Images"
                   accept="image/*" 
                   multiple
                   ref={fileInputRef} 
@@ -937,8 +1004,8 @@ export default function ProductForm() {
           <div className={`form-accordion-content ${expandedSections.pricing ? '' : 'collapsed'}`}>
           <div className="responsive-grid-2">
             <div>
-              <label className="premium-label">{language === 'ar' ? 'السعر الأساسي (جنيه)' : 'Regular Price (EGP)'}</label>
-              <input type="number" step="0.01" className="premium-input" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="0.00" />
+              <label htmlFor="product_price" className="premium-label">{language === 'ar' ? 'السعر الأساسي (جنيه)' : 'Regular Price (EGP)'}</label>
+              <input id="product_price" name="price" aria-label="Regular Price" type="number" step="0.01" className="premium-input" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="0.00" />
             </div>
           </div>
 
@@ -986,7 +1053,7 @@ export default function ProductForm() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'flex-start' }}>
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <label className="premium-label" style={{ margin: 0 }}>
+                    <label htmlFor={formData.offerType === 'percentage' ? 'product_offer_percentage' : 'product_offer_price'} className="premium-label" style={{ margin: 0 }}>
                       {formData.offerType === 'percentage' ? 'Discount Percentage (%)' : 'Final Sale Price (EGP)'}
                     </label>
                     {formData.price && formData.offerPrice && parseFloat(formData.offerPrice) < parseFloat(formData.price) && (
@@ -1000,6 +1067,9 @@ export default function ProductForm() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <input 
                         type="number" 
+                        id="product_offer_percentage"
+                        name="offerPercentage"
+                        aria-label="Discount Percentage"
                         min="1"
                         max="99"
                         className="premium-input" 
@@ -1023,6 +1093,9 @@ export default function ProductForm() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <input 
                         type="number" 
+                        id="product_offer_price"
+                        name="offerPrice"
+                        aria-label="Final Sale Price"
                         step="0.01" 
                         className="premium-input" 
                         required={formData.hasOffer} 
@@ -1044,18 +1117,24 @@ export default function ProductForm() {
               {/* Offer Dates */}
               <div className="responsive-grid-2">
                 <div>
-                  <label className="premium-label">{language === 'ar' ? 'تاريخ بداية العرض (اختياري)' : 'Sale Start Date/Time (Optional)'}</label>
+                  <label htmlFor="product_offer_start_date" className="premium-label">{language === 'ar' ? 'تاريخ بداية العرض (اختياري)' : 'Sale Start Date/Time (Optional)'}</label>
                   <input 
                     type="datetime-local" 
+                    id="product_offer_start_date"
+                    name="offerStartDate"
+                    aria-label="Sale Start Date/Time"
                     className="premium-input" 
                     value={formData.offerStartDate} 
                     onChange={e => setFormData({...formData, offerStartDate: e.target.value})} 
                   />
                 </div>
                 <div>
-                  <label className="premium-label">{language === 'ar' ? 'تاريخ نهاية العرض (اختياري)' : 'Sale End Date/Time (Optional)'}</label>
+                  <label htmlFor="product_offer_end_date" className="premium-label">{language === 'ar' ? 'تاريخ نهاية العرض (اختياري)' : 'Sale End Date/Time (Optional)'}</label>
                   <input 
                     type="datetime-local" 
+                    id="product_offer_end_date"
+                    name="offerEndDate"
+                    aria-label="Sale End Date/Time"
                     className="premium-input" 
                     value={formData.offerEndDate} 
                     onChange={e => setFormData({...formData, offerEndDate: e.target.value})} 
@@ -1078,12 +1157,12 @@ export default function ProductForm() {
           <div className={`form-accordion-content ${expandedSections.inventory ? '' : 'collapsed'}`}>
           <div className="responsive-grid-2">
             <div>
-              <label className="premium-label">{language === 'ar' ? 'كمية المخزون الأساسية' : 'Base Stock Quantity'}</label>
+              <label htmlFor="product_stock" className="premium-label">{language === 'ar' ? 'كمية المخزون الأساسية' : 'Base Stock Quantity'}</label>
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <input type="number" className="premium-input" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '120px' }} min="0" placeholder={language === 'ar' ? 'غير محدود' : 'Unlimited'} />
+                <input id="product_stock" name="stock" aria-label="Base Stock Quantity" type="number" className="premium-input" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value === '' ? '' : Number(e.target.value)})} style={{ width: '120px' }} min="0" placeholder={language === 'ar' ? 'غير محدود' : 'Unlimited'} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <label className="toggle-switch">
-                    <input type="checkbox" checked={formData.showStock} onChange={e => setFormData({...formData, showStock: e.target.checked})} />
+                    <input id="product_show_stock" name="showStock" aria-label="Show stock quantity" type="checkbox" checked={formData.showStock} onChange={e => setFormData({...formData, showStock: e.target.checked})} />
                     <span className="toggle-slider"></span>
                   </label>
                   <span style={{ fontSize: '14px', color: '#475569', cursor: 'pointer', fontWeight: 500 }} onClick={() => setFormData({...formData, showStock: !formData.showStock})}>{language === 'ar' ? 'إظهار كمية المخزون' : 'Show stock quantity'}</span>
@@ -1095,7 +1174,7 @@ export default function ProductForm() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '24px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <label className="toggle-switch">
-                  <input type="checkbox" checked={formData.featured} onChange={e => setFormData({...formData, featured: e.target.checked})} />
+                  <input id="product_featured" name="featured" aria-label="Featured Product" type="checkbox" checked={formData.featured} onChange={e => setFormData({...formData, featured: e.target.checked})} />
                   <span className="toggle-slider"></span>
                 </label>
                 <span style={{ fontSize: '15px', fontWeight: 600, color: '#334155', cursor: 'pointer' }} onClick={() => setFormData({...formData, featured: !formData.featured})}>{language === 'ar' ? 'منتج مميز' : 'Featured Product'}</span>
@@ -1103,7 +1182,7 @@ export default function ProductForm() {
               <p style={{ margin: '0 0 0 48px', fontSize: '13px', color: '#64748b' }}>{language === 'ar' ? 'عرض في الأقسام المميزة' : 'Show in featured sections'}</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
                 <label className="toggle-switch">
-                  <input type="checkbox" checked={formData.isActive} onChange={e => setFormData({...formData, isActive: e.target.checked})} />
+                  <input id="product_is_active" name="isActive" aria-label="Active Product" type="checkbox" checked={formData.isActive} onChange={e => setFormData({...formData, isActive: e.target.checked})} />
                   <span className="toggle-slider"></span>
                 </label>
                 <span style={{ fontSize: '15px', fontWeight: 600, color: formData.isActive ? '#22c55e' : '#64748b', cursor: 'pointer' }} onClick={() => setFormData({...formData, isActive: !formData.isActive})}>{formData.isActive ? (language === 'ar' ? 'نشط (مرئي)' : 'Active (Visible)') : (language === 'ar' ? 'غير نشط (مخفي)' : 'Inactive (Hidden)')}</span>
@@ -1176,6 +1255,9 @@ export default function ProductForm() {
             >
               <input 
                 type="file" 
+                id="product_review_images_upload"
+                name="reviewImages"
+                aria-label="Upload Review Screenshots"
                 accept="image/*" 
                 multiple 
                 hidden 

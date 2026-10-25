@@ -96,7 +96,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--on-surface)' }}>
+            <label htmlFor="admin_username" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--on-surface)' }}>
               {language === 'ar' ? 'اسم المستخدم' : 'Username'}
             </label>
             <div style={{ position: 'relative' }}>
@@ -105,6 +105,8 @@ export default function Login() {
               </div>
               <input 
                 type="text" 
+                id="admin_username"
+                name="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 style={{ 
@@ -126,7 +128,7 @@ export default function Login() {
           </div>
           
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--on-surface)' }}>
+            <label htmlFor="admin_password" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--on-surface)' }}>
               {language === 'ar' ? 'كلمة المرور' : 'Password'}
             </label>
             <div style={{ position: 'relative' }}>
@@ -135,6 +137,8 @@ export default function Login() {
               </div>
               <input 
                 type="password" 
+                id="admin_password"
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={{ 

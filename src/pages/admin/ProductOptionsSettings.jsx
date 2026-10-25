@@ -143,6 +143,9 @@ export default function ProductOptionsSettings() {
         <form onSubmit={handleAddOption} style={{ display: 'flex', gap: '8px', marginBottom: '32px', borderBottom: '1px solid var(--outline-variant)', paddingBottom: '24px', flexWrap: 'wrap' }}>
           <input
             type="text"
+            id="new_option_name_en"
+            name="newOptionNameEn"
+            aria-label={language === 'ar' ? 'اسم الخيار بالإنجليزية' : 'Option Name (English)'}
             className="input-field"
             style={{ flex: 1, minWidth: '200px' }}
             placeholder={language === 'ar' ? 'اسم الخيار بالإنجليزية (e.g. Storage)' : 'Option Name (English)'}
@@ -151,6 +154,9 @@ export default function ProductOptionsSettings() {
           />
           <input
             type="text"
+            id="new_option_name_ar"
+            name="newOptionNameAr"
+            aria-label={language === 'ar' ? 'اسم الخيار بالعربية' : 'Option Name (Arabic)'}
             className="input-field"
             style={{ flex: 1, minWidth: '200px' }}
             placeholder={language === 'ar' ? 'اسم الخيار بالعربية (مثل السعة)' : 'Option Name (Arabic)'}
@@ -224,6 +230,9 @@ export default function ProductOptionsSettings() {
                     </div>
                     <input 
                       type="text" 
+                      id={`option_val_en_${index}`}
+                      name={`optionValEn_${index}`}
+                      aria-label={language === 'ar' ? 'القيمة بالإنجليزية' : 'Value (English)'}
                       className="input-field" 
                       placeholder={language === 'ar' ? `القيمة بالإنجليزية (e.g. Red)` : `Value (English)`}
                       value={newValueInputsEn[index] || ''}
@@ -233,6 +242,9 @@ export default function ProductOptionsSettings() {
                     />
                     <input 
                       type="text" 
+                      id={`option_val_ar_${index}`}
+                      name={`optionValAr_${index}`}
+                      aria-label={language === 'ar' ? 'القيمة بالعربية' : 'Value (Arabic)'}
                       className="input-field" 
                       placeholder={language === 'ar' ? `القيمة بالعربية (مثل أحمر)` : `Value (Arabic)`}
                       value={newValueInputsAr[index] || ''}

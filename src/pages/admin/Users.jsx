@@ -128,7 +128,15 @@ export default function Users() {
   );
 
   const filtersNode = (
-    <select className="input-field" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ padding: '8px 12px', minWidth: '150px' }}>
+    <select 
+      id="users_filter_type"
+      name="usersFilterType"
+      aria-label="Filter customers by type"
+      className="input-field" 
+      value={filterType} 
+      onChange={(e) => setFilterType(e.target.value)} 
+      style={{ padding: '8px 12px', minWidth: '150px' }}
+    >
       <option value="all">{lang === 'ar' ? 'كل المستخدمين' : 'All Users'}</option>
       <option value="customer">{lang === 'ar' ? 'العملاء' : 'Customers'}</option>
       <option value="partner">{lang === 'ar' ? 'الشركاء (المؤثرين)' : 'Partners'}</option>
