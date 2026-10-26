@@ -159,7 +159,7 @@ export default function DataTable({
       <div className="admin-page-header">
         <div className="admin-page-header-left">
           <div style={{ position: 'relative', flex: '1 0 auto', minWidth: '250px' }}>
-            <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
+            <Search size={18} style={{ position: 'absolute', insetInlineStart: '12px', top: '10px', color: 'var(--on-surface-variant)' }} />
             <input 
               type="text" 
               id={`table-search-${tableId || 'default'}`}
@@ -167,7 +167,7 @@ export default function DataTable({
               aria-label={searchPlaceholder || (currentLang === 'ar' ? 'بحث...' : 'Search...')}
               className="input-field" 
               placeholder={searchPlaceholder || (currentLang === 'ar' ? 'بحث...' : 'Search...')} 
-              style={{ width: '100%', paddingLeft: '36px' }} 
+              style={{ width: '100%', paddingInlineStart: '36px' }} 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -191,7 +191,7 @@ export default function DataTable({
               <Filter size={18} /> {currentLang === 'ar' ? 'الأعمدة' : 'Columns'}
             </button>
             {showColumnsMenu && (
-              <div className="columns-dropdown" style={{ right: 0, left: 'auto', minWidth: '200px' }}>
+              <div className="columns-dropdown" style={{ insetInlineEnd: 0, insetInlineStart: 'auto', minWidth: '200px' }}>
                 <div style={{ padding: '8px', borderBottom: '1px solid var(--outline-variant)', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--on-surface-variant)' }}>{currentLang === 'ar' ? 'الأعمدة المرئية' : 'Visible Columns'}</span>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -242,7 +242,7 @@ export default function DataTable({
                     <th 
                       key={colId}
                       style={{ 
-                        textAlign: colDef.align || 'left',
+                        textAlign: colDef.align || (currentLang === 'ar' ? 'right' : 'left'),
                         width: colDef.width || 'auto'
                       }}
                     >
@@ -291,7 +291,7 @@ export default function DataTable({
                             <td 
                               key={colId} 
                               data-label={colDef.label}
-                              style={{ textAlign: colDef.align || 'left' }}
+                              style={{ textAlign: colDef.align || (currentLang === 'ar' ? 'right' : 'left') }}
                             >
                               {colDef.render ? colDef.render(row, { isExpanded, toggleExpand: (e) => toggleExpand(rowKey, e) }) : row[colId]}
                             </td>

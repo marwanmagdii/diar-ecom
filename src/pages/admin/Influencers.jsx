@@ -34,9 +34,9 @@ export default function Influencers() {
       try {
         const updatedPromos = promos.filter(p => p.id !== influencerToDelete);
         updatePromoCodes(updatedPromos);
-        addToast('Influencer deleted successfully', 'success');
+        addToast(language === 'ar' ? 'تم حذف المؤثر بنجاح' : 'Influencer deleted successfully', 'success');
       } catch (e) {
-        addToast('Failed to delete influencer', 'error');
+        addToast(language === 'ar' ? 'فشل حذف المؤثر' : 'Failed to delete influencer', 'error');
       }
       setDeleteModalOpen(false);
       setInfluencerToDelete(null);
@@ -116,12 +116,12 @@ export default function Influencers() {
               {isLink && (
                 <button 
                   className="icon-btn" 
-                  title="Copy Link"
+                  title={language === 'ar' ? 'نسخ الرابط' : 'Copy Link'}
                   onClick={(e) => {
                     e.stopPropagation();
                     const link = `${window.location.origin}/?ref=${inf.code}`;
                     navigator.clipboard.writeText(link);
-                    addToast('Link copied!', 'success');
+                    addToast(language === 'ar' ? 'تم نسخ الرابط!' : 'Link copied!', 'success');
                   }}
                   style={{ padding: '4px', backgroundColor: '#f1f5f9' }}
                 >
@@ -219,11 +219,13 @@ export default function Influencers() {
       {deleteModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
           <div className="card" style={{ padding: '24px', maxWidth: '400px', width: '100%', backgroundColor: 'var(--surface)' }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>Delete Influencer</h3>
-            <p style={{ margin: '0 0 24px 0', color: 'var(--on-surface-variant)' }}>Are you sure you want to delete this influencer? This will also delete their promo code. This action cannot be undone.</p>
+            <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>{language === 'ar' ? 'حذف المؤثر' : 'Delete Influencer'}</h3>
+            <p style={{ margin: '0 0 24px 0', color: 'var(--on-surface-variant)' }}>
+              {language === 'ar' ? 'هل أنت متأكد من حذف هذا المؤثر؟ سيؤدي ذلك أيضاً لحذف كود الخصم الخاص به. لا يمكن التراجع عن هذا الإجراء.' : 'Are you sure you want to delete this influencer? This will also delete their promo code. This action cannot be undone.'}
+            </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-              <button className="btn btn-secondary" onClick={() => { setDeleteModalOpen(false); setInfluencerToDelete(null); }}>Cancel</button>
-              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none' }} onClick={confirmDelete}>Delete</button>
+              <button className="btn btn-secondary" onClick={() => { setDeleteModalOpen(false); setInfluencerToDelete(null); }}>{language === 'ar' ? 'إلغاء' : 'Cancel'}</button>
+              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none' }} onClick={confirmDelete}>{language === 'ar' ? 'حذف' : 'Delete'}</button>
             </div>
           </div>
         </div>

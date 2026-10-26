@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, Package, Users, LogOut, Globe, Settings, ChevronDown, ChevronUp, Ticket, Menu, X, Star, Activity, Plus, PanelLeft, PanelLeftClose, BellRing, Brain } from 'lucide-react';
 import { useStore } from '../store';
 import { requestNotificationPermission } from '../firebase';
 
 export default function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { language, toggleLanguage, t, currentAdmin } = useStore();
   const [isSettingsOpen, setIsSettingsOpen] = useState(location.pathname.startsWith('/diaradmin26/settings'));
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -53,9 +54,9 @@ export default function AdminLayout() {
     { name: t('products'), path: '/diaradmin26/products', icon: <Package size={20} /> },
     { name: t('promoCodes'), path: '/diaradmin26/promos', icon: <Ticket size={20} /> },
     { name: t('influencers'), path: '/diaradmin26/influencers', icon: <Star size={20} /> },
-    { name: 'Notifications', path: '/diaradmin26/notifications', icon: <BellRing size={20} /> },
-    { name: 'Data Engine', path: '/diaradmin26/data-engine', icon: <Brain size={20} /> },
-    { name: t('settings') || 'Store Settings', path: '/diaradmin26/settings', icon: <Settings size={20} /> },
+    { name: language === 'ar' ? 'الإشعارات' : 'Notifications', path: '/diaradmin26/notifications', icon: <BellRing size={20} /> },
+    { name: language === 'ar' ? 'محرك البيانات' : 'Data Engine', path: '/diaradmin26/data-engine', icon: <Brain size={20} /> },
+    { name: t('settings') || (language === 'ar' ? 'الإعدادات' : 'Store Settings'), path: '/diaradmin26/settings', icon: <Settings size={20} /> },
   ];
 
   // Helper to determine the best header title
@@ -91,7 +92,7 @@ export default function AdminLayout() {
           <div className="admin-logo" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
             <Link to="/" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '20px', fontWeight: 700 }} className={isDesktopCollapsed ? 'mobile-hidden' : ''}>
               <img src="/logo_transparent.svg" alt="Admin" style={{ height: '48px', width: 'auto', flexShrink: 0 }} />
-              <span className="nav-link-text">Admin</span>
+              <span className="nav-link-text">{language === 'ar' ? 'لوحة التحكم' : 'Admin'}</span>
             </Link>
             
             <button className="icon-btn mobile-menu-btn desktop-hidden" style={{ background: 'none', border: 'none' }} onClick={() => setIsMobileMenuOpen(false)}>
@@ -230,7 +231,7 @@ export default function AdminLayout() {
                             fontWeight: location.pathname.includes('/settings/calculator') ? 700 : 500
                           }}
                         >
-                          {language === 'ar' ? 'حاسبة الأرباح' : 'Profit Calculator'}
+                          <span className="nav-link-text">{language === 'ar' ? 'حاسبة الأرباح' : 'Profit Calculator'}</span>
                         </Link>
                       </div>
                     )}
@@ -319,7 +320,7 @@ export default function AdminLayout() {
                 
                 return (
                   <div className="desktop-hidden">
-                    <button className="btn btn-primary" style={{ padding: '8px', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => window.location.href = createPath}>
+                    <button className="btn btn-primary" style={{ padding: '8px', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate(createPath)}>
                       <Plus size={20} />
                     </button>
                   </div>

@@ -35,7 +35,7 @@ export default function CategorySettings() {
 
   const handleSaveAll = () => {
     updateCategories(categoriesForm);
-    addToast('Category settings updated successfully!');
+    addToast(language === 'ar' ? 'تم تحديث إعدادات الأقسام بنجاح!' : 'Category settings updated successfully!', 'success');
   };
 
   const AVAILABLE_ICONS = [
@@ -52,7 +52,7 @@ export default function CategorySettings() {
   const handleAddCategory = () => {
     if (!newCategoryName.trim()) return;
     if (categoriesForm.some(c => c.name === newCategoryName.trim())) {
-      addToast('Category already exists.', 'error');
+      addToast(language === 'ar' ? 'القسم موجود بالفعل.' : 'Category already exists.', 'error');
       return;
     }
     setCategoriesForm([...categoriesForm, { 
@@ -74,7 +74,7 @@ export default function CategorySettings() {
   const confirmDeleteCategory = () => {
     if (deleteInput.trim().toLowerCase() === 'delete') {
       setCategoriesForm(categoriesForm.filter(c => c.name !== categoryToDelete));
-      addToast('Category deleted successfully', 'success');
+      addToast(language === 'ar' ? 'تم حذف القسم بنجاح' : 'Category deleted successfully', 'success');
       setDeleteModalOpen(false);
       setCategoryToDelete(null);
     }
@@ -88,7 +88,7 @@ export default function CategorySettings() {
     setCategoriesForm(categoriesForm.map(c => {
       if (c.name === catName) {
         if (c.subcategories.includes(subName)) {
-           addToast('Sub-category already exists.', 'error');
+           addToast(language === 'ar' ? 'القسم الفرعي موجود بالفعل.' : 'Sub-category already exists.', 'error');
            return c;
         }
         return { 
@@ -306,7 +306,13 @@ export default function CategorySettings() {
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
           <div className="card" style={{ padding: '24px', maxWidth: '400px', width: '100%', backgroundColor: 'var(--surface)' }}>
             <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>{t('deleteCategory')}</h3>
-            <p style={{ margin: '0 0 16px 0', color: 'var(--on-surface-variant)' }}>Are you sure you want to delete the category <strong>"{categoryToDelete}"</strong>? All subcategories will also be removed. Type <strong>delete</strong> to confirm:</p>
+            <p style={{ margin: '0 0 16px 0', color: 'var(--on-surface-variant)' }}>
+              {language === 'ar' ? (
+                <>هل أنت متأكد من حذف قسم <strong>"{categoryToDelete}"</strong>؟ سيتم حذف جميع الأقسام الفرعية أيضاً. اكتب <strong>delete</strong> للتأكيد:</>
+              ) : (
+                <>Are you sure you want to delete the category <strong>"{categoryToDelete}"</strong>? All subcategories will also be removed. Type <strong>delete</strong> to confirm:</>
+              )}
+            </p>
             <input 
               type="text" 
               id="confirm_delete_category_input"
@@ -320,8 +326,8 @@ export default function CategorySettings() {
               autoFocus
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-              <button className="btn btn-secondary" onClick={() => { setDeleteModalOpen(false); setCategoryToDelete(null); }}>Cancel</button>
-              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none', opacity: deleteInput.trim().toLowerCase() !== 'delete' ? 0.5 : 1 }} disabled={deleteInput.trim().toLowerCase() !== 'delete'} onClick={confirmDeleteCategory}>Delete</button>
+              <button className="btn btn-secondary" onClick={() => { setDeleteModalOpen(false); setCategoryToDelete(null); }}>{language === 'ar' ? 'إلغاء' : 'Cancel'}</button>
+              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none', opacity: deleteInput.trim().toLowerCase() !== 'delete' ? 0.5 : 1 }} disabled={deleteInput.trim().toLowerCase() !== 'delete'} onClick={confirmDeleteCategory}>{language === 'ar' ? 'حذف' : 'Delete'}</button>
             </div>
           </div>
         </div>

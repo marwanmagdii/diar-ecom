@@ -5,8 +5,8 @@ export default function ImageLightbox({ images, currentIndex, onClose, onNavigat
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && onNavigate) onNavigate('prev');
-      if (e.key === 'ArrowRight' && onNavigate) onNavigate('next');
+      if (e.key === 'ArrowLeft' && onNavigate) onNavigate((currentIndex - 1 + images.length) % images.length);
+      if (e.key === 'ArrowRight' && onNavigate) onNavigate((currentIndex + 1) % images.length);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -59,7 +59,7 @@ export default function ImageLightbox({ images, currentIndex, onClose, onNavigat
 
       {onNavigate && images.length > 1 && (
         <button 
-          onClick={(e) => { e.stopPropagation(); onNavigate('prev'); }}
+          onClick={(e) => { e.stopPropagation(); onNavigate((currentIndex - 1 + images.length) % images.length); }}
           style={{
             position: 'absolute',
             left: '24px',
@@ -84,7 +84,7 @@ export default function ImageLightbox({ images, currentIndex, onClose, onNavigat
 
       <img 
         src={currentImage} 
-        alt="Preview" 
+        alt="Review preview" 
         style={{
           maxWidth: '90%',
           maxHeight: '90%',
@@ -97,7 +97,7 @@ export default function ImageLightbox({ images, currentIndex, onClose, onNavigat
 
       {onNavigate && images.length > 1 && (
         <button 
-          onClick={(e) => { e.stopPropagation(); onNavigate('next'); }}
+          onClick={(e) => { e.stopPropagation(); onNavigate((currentIndex + 1) % images.length); }}
           style={{
             position: 'absolute',
             right: '24px',

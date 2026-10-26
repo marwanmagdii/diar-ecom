@@ -3,9 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, Truck, CreditCard } from 'lucide-react';
 import SearchableSelect from '../components/SearchableSelect';
 import { useStore } from '../store';
+import { localize } from '../utils/i18n';
 
 export default function Checkout() {
-  const { cart, cartTotal, clearCart, config, addToast, language: lang, t, getTrackingData, clearTrackingData, addOrder, orders, updatePromoCodes, trackEvent } = useStore();
+  const { cart, cartTotal, clearCart, config, addToast, language: lang, t, getTrackingData, clearTrackingData, addOrder, updateOrder, orders, updatePromoCodes, trackEvent } = useStore();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -33,8 +34,9 @@ export default function Checkout() {
       discountAmount = Math.min(appliedPromo.discountValue, cartTotal); // Don't discount more than cart total
     }
   }
-  const shippingCost = 0;
-  const finalTotal = cartTotal - discountAmount + shippingCost;
+  const isShippingActive = config?.shippingActive !== false;
+  const shippingCost = isShippingActive ? (Number(config?.shippingCost) || 0) : 0;
+  const finalTotal = Math.max(0, cartTotal - discountAmount + shippingCost);
   const govOptions = (config.locations || [])
     .filter(loc => loc.isActive !== false)
     .map(loc => ({
@@ -76,7 +78,11 @@ export default function Checkout() {
   };
 
   const handleSelectChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'gov') {
+      setFormData(prev => ({ ...prev, gov: value, district: '', customDistrict: '' }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleApplyPromo = async () => {
@@ -95,25 +101,25 @@ export default function Checkout() {
         
         if (found) {
           if (found.maxUses > 0 && (found.usageCount || 0) >= found.maxUses) {
-            addToast('This promo code has reached its usage limit.', 'error');
+            addToast(lang === 'ar' ? 'وصل كود الخصم للحد الأقصى للاستخدام.' : 'This promo code has reached its usage limit.', 'error');
             return;
           }
           if (found.minOrderValue && cartTotal < found.minOrderValue) {
-            addToast(`This promo requires a minimum order of ${found.minOrderValue} EGP.`, 'error');
+            addToast(lang === 'ar' ? `هذا الكود يتطلب حداً أدنى للطلب بقيمة ${found.minOrderValue} جنيه.` : `This promo requires a minimum order of ${found.minOrderValue} EGP.`, 'error');
             return;
           }
           setAppliedPromo(found);
-          addToast('Promo code applied successfully!', 'success');
+          addToast(lang === 'ar' ? 'تم تطبيق كود الخصم بنجاح!' : 'Promo code applied successfully!', 'success');
           setPromoInput('');
         } else {
-          addToast('Invalid or inactive promo code.', 'error');
+          addToast(lang === 'ar' ? 'كود الخصم غير صالح أو غير مفعل.' : 'Invalid or inactive promo code.', 'error');
         }
       } else {
-        addToast('Failed to verify promo code.', 'error');
+        addToast(lang === 'ar' ? 'فشل التحقق من كود الخصم.' : 'Failed to verify promo code.', 'error');
       }
     } catch (error) {
       console.error(error);
-      addToast('Error verifying promo code.', 'error');
+      addToast(lang === 'ar' ? 'حدث خطأ أثناء فحص كود الخصم.' : 'Error verifying promo code.', 'error');
     } finally {
       setIsApplyingPromo(false);
     }
@@ -121,11 +127,23 @@ export default function Checkout() {
 
   const handleRemovePromo = () => {
     setAppliedPromo(null);
-    addToast('Promo code removed.', 'info');
+    addToast(lang === 'ar' ? 'تمت إزالة كود الخصم.' : 'Promo code removed.', 'info');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.gov) {
+      addToast(lang === 'ar' ? 'يرجى اختيار المحافظة' : 'Please select a governorate', 'error');
+      return;
+    }
+    if (!formData.district || (formData.district === 'other' && !formData.customDistrict.trim())) {
+      addToast(lang === 'ar' ? 'يرجى اختيار أو كتابة المنطقة' : 'Please select or enter a district', 'error');
+      return;
+    }
+    if (!formData.phone || formData.phone.length < 11) {
+      addToast(lang === 'ar' ? 'يرجى إدخال رقم هاتف صحيح مكون من 11 رقم' : 'Please enter a valid 11-digit mobile number', 'error');
+      return;
+    }
     setIsSubmitting(true);
     
     const govLabel = govOptions.find(o => o.value === formData.gov)?.label || formData.gov;
@@ -446,15 +464,15 @@ ${orderLink}`;
                     <span style={{ color: 'var(--on-surface-variant)' }} dir={lang === 'ar' ? 'rtl' : 'ltr'}>{item.qty}x {lang === 'ar' && item.titleAr ? item.titleAr : item.title}</span>
                     <span style={{ fontWeight: 600 }}>{(item.price * item.qty).toFixed(2)} {t('currency')}</span>
                   </div>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {item.selectedOptions ? (
                       Object.entries(item.selectedOptions).map(([key, val]) => (
-                        <span key={key} style={{ marginRight: '8px' }}>{key}: {val}</span>
+                        <span key={key} style={{ marginInlineEnd: '8px' }}>{localize(key, lang)}: <strong>{localize(val, lang)}</strong></span>
                       ))
                     ) : (
                       <>
-                        {item.selectedColor && <span style={{ marginRight: '8px' }}>{t('color')}: {item.selectedColor}</span>}
-                        {item.selectedSize && <span>{t('size')}: {item.selectedSize}</span>}
+                        {(item.selectedColor || item.color) && <span style={{ marginInlineEnd: '8px' }}>{t('color')}: <strong>{localize(item.selectedColor || item.color, lang)}</strong></span>}
+                        {(item.selectedSize || item.size) && <span>{t('size')}: <strong>{localize(item.selectedSize || item.size, lang)}</strong></span>}
                       </>
                     )}
                   </div>
@@ -498,9 +516,15 @@ ${orderLink}`;
               )}
             </div>
 
+            {isShippingActive && (
+              <div className="summary-row">
+                <span>{t('shipping')}</span>
+                <span>{shippingCost > 0 ? `${shippingCost.toFixed(2)} ${t('currency')}` : (lang === 'ar' ? 'مجاني' : 'Free')}</span>
+              </div>
+            )}
             {appliedPromo && (
               <div className="summary-row" style={{ color: '#10b981' }}>
-                <span>Discount {appliedPromo.discountType === 'percentage' ? `(${appliedPromo.discountValue}%)` : ''}</span>
+                <span>{lang === 'ar' ? 'الخصم' : 'Discount'} {appliedPromo.discountType === 'percentage' ? `(${appliedPromo.discountValue}%)` : ''}</span>
                 <span>-{discountAmount.toFixed(2)} {t('currency')}</span>
               </div>
             )}

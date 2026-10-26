@@ -344,28 +344,28 @@ export default function ProductForm() {
     }
     
     if (formData.hasOffer && !formData.offerPrice) {
-      addToast('Please provide an offer price.', 'error');
+      addToast(language === 'ar' ? 'يرجى إدخال سعر العرض.' : 'Please provide an offer price.', 'error');
       return;
     }
     
     if (!formData.image && (!formData.images || formData.images.length === 0)) {
-      addToast('A main product image is required.', 'error');
+      addToast(language === 'ar' ? 'الصورة الرئيسية للمنتج مطلوبة.' : 'A main product image is required.', 'error');
       return;
     }
     
     if (formData.hasOffer && formData.offerPrice && parseFloat(formData.offerPrice) >= parseFloat(formData.price)) {
-      addToast('Offer price must be less than the regular price.', 'error');
+      addToast(language === 'ar' ? 'يجب أن يكون سعر العرض أقل من السعر الأصلي.' : 'Offer price must be less than the regular price.', 'error');
       return;
     }
 
     // Validate Options
     if (formData.options && formData.options.length > 0) {
       if (formData.options.some(opt => !opt.name || !opt.name.trim())) {
-        addToast('All options must have a name (e.g., Color, Size).', 'error');
+        addToast(language === 'ar' ? 'يجب إدخال اسم لكل خيار (مثل: اللون، المقاس).' : 'All options must have a name (e.g., Color, Size).', 'error');
         return;
       }
       if (formData.options.some(opt => !opt.values || opt.values.length === 0)) {
-        addToast('All options must have at least one value.', 'error');
+        addToast(language === 'ar' ? 'يجب أن يحتوي كل خيار على قيمة واحدة على الأقل.' : 'All options must have at least one value.', 'error');
         return;
       }
     }
@@ -447,15 +447,15 @@ export default function ProductForm() {
       setIsSubmitting(true);
       if (isEditing) {
         await updateProduct(id, payload);
-        addToast('Product updated successfully!', 'success');
+        addToast(language === 'ar' ? 'تم تحديث المنتج بنجاح!' : 'Product updated successfully!', 'success');
       } else {
         await addProduct(payload);
-        addToast('Product added successfully!', 'success');
+        addToast(language === 'ar' ? 'تمت إضافة المنتج بنجاح!' : 'Product added successfully!', 'success');
       }
       navigate('/diaradmin26/products');
     } catch (error) {
       console.error('Error saving product:', error);
-      addToast(error.message || 'Failed to save product. Please try again.', 'error');
+      addToast(error.message || (language === 'ar' ? 'فشل حفظ المنتج. يرجى المحاولة مرة أخرى.' : 'Failed to save product. Please try again.'), 'error');
     } finally {
       setIsSubmitting(false);
     }

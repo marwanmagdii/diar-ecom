@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ShoppingBag } from 'lucide-react';
 import { Check, Sparkles } from 'lucide-react';
 import { getColorHex } from '../utils/colors';
+import { localize, isColorOption } from '../utils/i18n';
 import ProductCard from '../components/ProductCard';
 import CustomerReviewsMarquee from '../components/CustomerReviewsMarquee';
 import { useStore } from '../store';
@@ -12,12 +13,13 @@ import { useStore } from '../store';
 export default function Product() {
   const { id } = useParams();
   const { products, productsLoading: loading, productsError: error } = useStore();
-  const productData = products.find(p => p.id === id) || products[0]; // fallback
+  const productData = products.find(p => String(p.id) === String(id));
   const { cart, addToCart, updateQuantity } = useStore();
   const trackEvent = useStore(state => state.trackEvent);
   const { addToast } = useStore();
   const { language, t } = useStore();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
   // Synthesize a virtual variant for the main product (Basic Information) so it acts like a variant
   const product = React.useMemo(() => {
@@ -101,16 +103,20 @@ export default function Product() {
           }
         });
       }
+      const colorParam = searchParams.get('color');
+      const colorOpt = product.options.find(o => isColorOption(o.name));
+      if (colorParam && colorOpt?.values?.includes(colorParam)) initial[colorOpt.name] = colorParam;
       setSelectedOptions(initial);
       setInitializedId(product.id);
     } else {
+      const colorParam = searchParams.get('color');
       const colors = Array.isArray(product.color) ? product.color : (product.color ? [product.color] : []);
       if (colors.length > 0) {
-        setSelectedColor(colors[0]);
+        setSelectedColor(colorParam && colors.includes(colorParam) ? colorParam : colors[0]);
       }
       setInitializedId(product.id);
     }
-  }, [product, hasVariants, initializedId]);
+  }, [product, hasVariants, initializedId, searchParams]);
 
   // Find active variant
   const activeVariant = useMemo(() => {
@@ -293,13 +299,13 @@ export default function Product() {
             border: '1px solid rgba(0, 0, 0, 0.04)', 
             borderRadius: '100px', 
             cursor: 'pointer', 
-            padding: '8px 20px 8px 16px', 
+            paddingBlock: '8px', paddingInlineStart: '16px', paddingInlineEnd: '20px', 
             color: 'var(--on-surface)', 
             fontWeight: 600,
             boxShadow: '0 4px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.02)',
             transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'
           }}
-          aria-label="Go Back"
+          aria-label={language === 'ar' ? 'رجوع' : 'Go back'}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
             e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04)';
@@ -335,13 +341,13 @@ export default function Product() {
                       className={`gallery-thumbnail ${mainImage === img ? 'active' : ''}`}
                       onClick={() => setMainImage(img)}
                     >
-                      <img src={img} alt={`${product.title} view ${idx + 1}`} loading="lazy" decoding="async" />
+                      <img src={img} alt={`${language === 'ar' && product.titleAr ? product.titleAr : product.title} ${idx + 1}`} loading="lazy" decoding="async" />
                     </div>
                   ))}
                 </div>
               )}
               <div className="gallery-main-image" style={{ backgroundColor: product.bgColor }}>
-                <img src={mainImage} alt={product.title} loading="lazy" decoding="async" />
+                <img src={mainImage} alt={language === 'ar' && product.titleAr ? product.titleAr : product.title} loading="lazy" decoding="async" />
               </div>
             </div>
 
@@ -349,26 +355,7 @@ export default function Product() {
 
           <div className="product-view-info">
             {(() => {
-              const getLocalizedText = (text) => {
-                if (!text) return text;
-                if (String(text).includes(' / ')) {
-                  const parts = String(text).split(' / ');
-                  return language === 'ar' ? (parts[1]?.trim() || parts[0].trim()) : parts[0].trim();
-                }
-                if (language === 'ar') {
-                  const dict = {
-                    'color': 'اللون', 'size': 'المقاس', 'material': 'الخامة', 'weight': 'الوزن', 'style': 'الستايل',
-                    'white': 'أبيض', 'black': 'أسود', 'red': 'أحمر', 'blue': 'أزرق', 'green': 'أخضر', 'yellow': 'أصفر',
-                    'gray': 'رمادي', 'silver': 'فضي', 'gold': 'ذهبي', 'pink': 'وردي', 'purple': 'بنفسجي', 'brown': 'بني',
-                    'navy': 'كحلي', 'beige': 'بيج', 'orange': 'برتقالي', 'maroon': 'عنابي', 'teal': 'تركواز',
-                    'metal': 'معدن', 'plastic': 'بلاستيك', 'wood': 'خشب', 'glass': 'زجاج', 'leather': 'جلد', 'cotton': 'قطن',
-                    'modern': 'حديث', 'classic': 'كلاسيكي', 'casual': 'كاجوال', 'formal': 'رسمي', 'sport': 'رياضي'
-                  };
-                  const lower = String(text).toLowerCase().trim();
-                  if (dict[lower]) return dict[lower];
-                }
-                return text;
-              };
+              const getLocalizedText = (text) => localize(text, language);
               
               return (
                 <>
@@ -383,21 +370,21 @@ export default function Product() {
                 {currentPrice.toFixed(2)} {t('currency')}
               </span>
               {(selectedColor && product.colorPrices && product.colorPrices[selectedColor]) ? (
-                 <span className="product-price-old" style={{ fontSize: '16px', marginLeft: '12px', textDecoration: 'line-through', opacity: 0.6 }}>
+                 <span className="product-price-old" style={{ fontSize: '16px', marginInlineStart: '12px', textDecoration: 'line-through', opacity: 0.6 }}>
                    {Number(product.price).toFixed(2)} {t('currency')}
                  </span>
               ) : (
                 // Show old price if variant has its own offer, OR if there's a global offer and variant didn't override price
                 (hasVariants && activeVariant && activeVariant.offerPrice) ? (
-                   <span className="product-price-old" style={{ fontSize: '16px', marginLeft: '12px', textDecoration: 'line-through', opacity: 0.6 }}>{Number(activeVariant.price || product.price).toFixed(2)} {t('currency')}</span>
+                   <span className="product-price-old" style={{ fontSize: '16px', marginInlineStart: '12px', textDecoration: 'line-through', opacity: 0.6 }}>{Number(activeVariant.price || product.price).toFixed(2)} {t('currency')}</span>
                 ) : (
                    Boolean(product.offerPrice) && (!hasVariants || !activeVariant || !activeVariant.price) && (
-                     <span className="product-price-old" style={{ fontSize: '16px', marginLeft: '12px', textDecoration: 'line-through', opacity: 0.6 }}>{Number(product.price).toFixed(2)} {t('currency')}</span>
+                     <span className="product-price-old" style={{ fontSize: '16px', marginInlineStart: '12px', textDecoration: 'line-through', opacity: 0.6 }}>{Number(product.price).toFixed(2)} {t('currency')}</span>
                    )
                 )
               )}
               {(!Boolean(product.offerPrice) && product.oldPrice && !(selectedColor && product.colorPrices && product.colorPrices[selectedColor]) && (!hasVariants || !activeVariant || !activeVariant.offerPrice && !activeVariant.price)) && (
-                <span className="product-price-old" style={{ fontSize: '16px', marginLeft: '12px', textDecoration: 'line-through', opacity: 0.6 }}>{Number(product.oldPrice).toFixed(2)} {t('currency')}</span>
+                <span className="product-price-old" style={{ fontSize: '16px', marginInlineStart: '12px', textDecoration: 'line-through', opacity: 0.6 }}>{Number(product.oldPrice).toFixed(2)} {t('currency')}</span>
               )}
               {(() => {
                 let oldP = null;
@@ -414,7 +401,7 @@ export default function Product() {
                 if (oldP && currentPrice < oldP) {
                    const discount = ((oldP - currentPrice) / oldP * 100).toFixed(1);
                    return (
-                     <span style={{ marginLeft: '16px', backgroundColor: '#cc0c39', color: 'white', padding: '4px 10px', borderRadius: '4px', fontSize: '14px', fontWeight: 'bold', letterSpacing: '0.5px' }}>
+                     <span style={{ marginInlineStart: '16px', backgroundColor: '#cc0c39', color: 'white', padding: '4px 10px', borderRadius: '4px', fontSize: '14px', fontWeight: 'bold', letterSpacing: '0.5px' }}>
                        -{discount}%
                      </span>
                    );
@@ -429,7 +416,7 @@ export default function Product() {
               {hasVariants ? (
                 <div className="variants-wrapper mb-4">
                   {product.options.map((option, optIndex) => {
-                    const isColor = option.name.toLowerCase() === 'color' || option.name.toLowerCase() === 'لون';
+                    const isColor = isColorOption(option.name);
                     
                     let visibleValues = option.values;
                     if (optIndex > 0) {
@@ -461,32 +448,13 @@ export default function Product() {
                     
                     if (visibleValues.length === 0) return null;
                     
-                    const getLocalizedTextForVariant = (text) => {
-                      if (!text) return text;
-                      if (String(text).includes(' / ')) {
-                        const parts = String(text).split(' / ');
-                        return language === 'ar' ? (parts[1]?.trim() || parts[0].trim()) : parts[0].trim();
-                      }
-                      if (language === 'ar') {
-                        const dict = {
-                          'color': 'اللون', 'size': 'المقاس', 'material': 'الخامة', 'weight': 'الوزن', 'style': 'الستايل',
-                          'white': 'أبيض', 'black': 'أسود', 'red': 'أحمر', 'blue': 'أزرق', 'green': 'أخضر', 'yellow': 'أصفر',
-                          'gray': 'رمادي', 'silver': 'فضي', 'gold': 'ذهبي', 'pink': 'وردي', 'purple': 'بنفسجي', 'brown': 'بني',
-                          'navy': 'كحلي', 'beige': 'بيج', 'orange': 'برتقالي', 'maroon': 'عنابي', 'teal': 'تركواز',
-                          'metal': 'معدن', 'plastic': 'بلاستيك', 'wood': 'خشب', 'glass': 'زجاج', 'leather': 'جلد', 'cotton': 'قطن',
-                          'modern': 'حديث', 'classic': 'كلاسيكي', 'casual': 'كاجوال', 'formal': 'رسمي', 'sport': 'رياضي'
-                        };
-                        const lower = String(text).toLowerCase().trim();
-                        if (dict[lower]) return dict[lower];
-                      }
-                      return text;
-                    };
+                    const getLocalizedTextForVariant = getLocalizedText;
 
                     return (
                       <div key={option.name} className={`variant-item ${isColor ? 'mobile-order-first' : ''}`} style={{ marginBottom: '16px' }}>
                         <h3 className="label-md mb-2">
-                          {getLocalizedTextForVariant(option.name)}{isColor && selectedOptions[option.name] ? `: ` : ''}
-                          {isColor && <span style={{ fontWeight: '600', color: 'var(--on-surface)' }}>{getLocalizedTextForVariant(selectedOptions[option.name])}</span>}
+                          {getLocalizedTextForVariant(option.name)}{selectedOptions[option.name] ? `: ` : ''}
+                          {selectedOptions[option.name] && <span style={{ fontWeight: '600', color: 'var(--on-surface)' }}>{getLocalizedTextForVariant(selectedOptions[option.name])}</span>}
                         </h3>
                         
                         {isColor ? (
@@ -512,7 +480,7 @@ export default function Product() {
                                   }}
                                 >
                                   {isSelected && (
-                                    <div style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '50%', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div style={{ position: 'absolute', top: '-4px', insetInlineEnd: '-4px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '50%', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                       <Check size={12} strokeWidth={4} />
                                     </div>
                                   )}
@@ -563,7 +531,7 @@ export default function Product() {
                         return (
                           <div
                             key={c}
-                            title={c}
+                            title={getLocalizedText(c)}
                             onClick={() => setSelectedColor(c)}
                             style={{
                               width: '40px',
@@ -579,7 +547,7 @@ export default function Product() {
                             }}
                           >
                             {selectedColor === c && (
-                              <div style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '50%', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <div style={{ position: 'absolute', top: '-4px', insetInlineEnd: '-4px', backgroundColor: 'var(--primary)', color: 'white', borderRadius: '50%', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <Check size={12} strokeWidth={4} />
                               </div>
                             )}
@@ -591,22 +559,66 @@ export default function Product() {
                 )
               )}
             </div>
-            {/* Specifications ... same as before */}
+            {(() => {
+              const specs = [];
+              const activeAttrs = activeVariant?.attributes || {};
+              const currentSize = activeAttrs.Size || activeAttrs['المقاس'] || product.size;
+              const currentMaterial = activeAttrs.Material || activeAttrs['الخامة'] || product.material;
+              const currentWeight = activeAttrs.Weight || activeAttrs['الوزن'] || product.weight;
+              const currentStyle = activeAttrs.Style || activeAttrs['النمط'] || product.style;
+
+              if (currentSize) specs.push({ label: t('size'), value: localize(currentSize, language) });
+              if (currentMaterial) specs.push({ label: t('material'), value: localize(currentMaterial, language) });
+              if (currentWeight) specs.push({ label: t('weight'), value: localize(currentWeight, language) });
+              if (currentStyle) specs.push({ label: t('style'), value: localize(currentStyle, language) });
+
+              const benefits = (language === 'ar' && product.keyBenefitsAr?.length > 0) ? product.keyBenefitsAr : (product.keyBenefits || []);
+
+              if (specs.length === 0 && benefits.length === 0) return null;
+
+              return (
+                <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {specs.length > 0 && (
+                    <div style={{ padding: '16px', backgroundColor: 'var(--surface-container-low)', borderRadius: '12px', border: '1px solid var(--outline-variant)' }}>
+                      <h3 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '12px', color: 'var(--on-surface)' }}>{t('specifications')}</h3>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px' }}>
+                        {specs.map((s, idx) => (
+                          <div key={idx} style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontSize: '12px', color: 'var(--on-surface-variant)' }}>{s.label}</span>
+                            <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--on-surface)' }}>{s.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {benefits.length > 0 && (
+                    <div>
+                      <h3 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '8px', color: 'var(--on-surface)' }}>{t('keyBenefits')}</h3>
+                      <ul style={{ paddingInlineStart: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {benefits.map((b, idx) => (
+                          <li key={idx} style={{ fontSize: '14px', color: 'var(--on-surface-variant)' }}>{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             <div className="product-view-actions" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {cartQty > 0 ? (
                 <>
                   <div className="qty-control" style={{ opacity: currentStock === 0 ? 0.5 : 1, pointerEvents: currentStock === 0 ? 'none' : 'auto', width: '100%', height: '56px', padding: '0 8px', backgroundColor: 'var(--surface-container-low)' }}>
-                    <button className="qty-btn" type="button" style={{ width: '48px', height: '48px', fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQuantity(cartItem.cartItemId || cartItemId, cartQty - 1); }} aria-label="Decrease quantity" disabled={currentStock === 0}>-</button>
+                    <button className="qty-btn" type="button" style={{ width: '48px', height: '48px', fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQuantity(cartItem.cartItemId || cartItemId, cartQty - 1); }} aria-label={language === 'ar' ? 'تقليل الكمية' : 'Decrease quantity'} disabled={currentStock === 0}>-</button>
                     <span className="qty-value" style={{ fontSize: '18px', fontWeight: 'bold' }}>{cartQty}</span>
-                    <button className="qty-btn" type="button" style={{ width: '48px', height: '48px', fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQuantity(cartItem.cartItemId || cartItemId, Math.min(Number(currentStock) || 99, cartQty + 1)); }} aria-label="Increase quantity" disabled={currentStock === 0 || (currentStock > 0 && cartQty >= currentStock)}>+</button>
+                    <button className="qty-btn" type="button" style={{ width: '48px', height: '48px', fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQuantity(cartItem.cartItemId || cartItemId, Math.min(Number(currentStock) || 99, cartQty + 1)); }} aria-label={language === 'ar' ? 'زيادة الكمية' : 'Increase quantity'} disabled={currentStock === 0 || (currentStock > 0 && cartQty >= currentStock)}>+</button>
                   </div>
                   <Link 
                     to="/cart"
                     className="btn-add-cart" 
                     style={{ backgroundColor: 'var(--primary)', color: 'white', padding: '16px 24px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', textDecoration: 'none' }}
                   >
-                    <ShoppingBag size={20} style={{ marginRight: language === 'ar' ? '0' : '8px', marginLeft: language === 'ar' ? '8px' : '0' }} />
+                    <ShoppingBag size={20} style={{ marginInlineEnd: '8px' }} />
                     {language === 'ar' ? 'إتمام الطلب' : 'Proceed to Checkout'}
                   </Link>
                 </>
@@ -646,7 +658,7 @@ export default function Product() {
                       e.currentTarget.style.borderColor = 'var(--outline-variant)';
                     }}
                   >
-                    <ShoppingBag size={20} style={{ marginRight: language === 'ar' ? '0' : '8px', marginLeft: language === 'ar' ? '8px' : '0' }} />
+                    <ShoppingBag size={20} style={{ marginInlineEnd: '8px' }} />
                     {language === 'ar' ? 'إتمام الطلب' : 'Proceed to Checkout'}
                   </Link>
                 </>
@@ -683,11 +695,7 @@ export default function Product() {
               <Sparkles className="text-primary" size={28} />
               {language === 'ar' ? 'قد يعجبك أيضاً' : 'You May Also Like'}
             </h2>
-            <div className="product-grid" style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: '24px'
-            }}>
+            <div className="product-grid">
               {relatedProducts.map(p => (
                 <div key={p.id} style={{ animation: 'pageSlideUpIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
                   <ProductCard product={p} />

@@ -114,7 +114,7 @@ export default function OrderDetails() {
   const handleCopyForDriver = (overrideLang) => {
     const text = buildConfirmationText(overrideLang || lang);
     navigator.clipboard.writeText(text);
-    addToast('Order confirmation copied to clipboard!', 'success');
+    addToast(lang === 'ar' ? 'تم نسخ بيانات الطلب للحافظة!' : 'Order confirmation copied to clipboard!', 'success');
   };
 
   const openWhatsapp = (overrideLang) => {
@@ -200,10 +200,10 @@ export default function OrderDetails() {
     if (deleteInput.trim().toLowerCase() === 'delete') {
       try {
         await deleteOrder(id);
-        addToast('Order deleted successfully', 'success');
+        addToast(lang === 'ar' ? 'تم حذف الطلب بنجاح' : 'Order deleted successfully', 'success');
         navigate('/diaradmin26/orders');
       } catch (e) {
-        addToast('Failed to delete order', 'error');
+        addToast(lang === 'ar' ? 'فشل حذف الطلب' : 'Failed to delete order', 'error');
       }
     }
   };
@@ -392,7 +392,7 @@ export default function OrderDetails() {
             <option value="Cancelled">{t('cancelled') || 'Cancelled'}</option>
           </select>
           
-          <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={handleDelete} title="Delete Order">
+          <button className="icon-btn" style={{ color: 'var(--error)' }} onClick={handleDelete} title={lang === 'ar' ? 'حذف الطلب' : 'Delete Order'}>
             <Trash2 size={18} />
           </button>
         </div>,
@@ -411,9 +411,9 @@ export default function OrderDetails() {
               
               {!isEditingItems ? (
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                  <button className="icon-btn" onClick={() => setIsEditingItems(true)} title="Edit Items"><Edit size={16} /></button>
+                  <button className="icon-btn" onClick={() => setIsEditingItems(true)} title={lang === 'ar' ? 'تعديل المنتجات' : 'Edit Items'}><Edit size={16} /></button>
                   <div style={{ fontSize: '14px', color: '#475569', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                    Sort <ChevronRight size={14} style={{ transform: 'rotate(90deg)' }} />
+                    {lang === 'ar' ? 'ترتيب' : 'Sort'} <ChevronRight size={14} style={{ transform: 'rotate(90deg)' }} />
                   </div>
                 </div>
               ) : (
@@ -904,8 +904,14 @@ export default function OrderDetails() {
       {deleteModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
           <div className="card" style={{ padding: '24px', maxWidth: '400px', width: '100%', backgroundColor: 'var(--surface)' }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>Delete Order</h3>
-            <p style={{ margin: '0 0 16px 0', color: 'var(--on-surface-variant)' }}>Are you sure you want to delete this order? Type <strong>delete</strong> to confirm:</p>
+            <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>{lang === 'ar' ? 'حذف الطلب' : 'Delete Order'}</h3>
+            <p style={{ margin: '0 0 16px 0', color: 'var(--on-surface-variant)' }}>
+              {lang === 'ar' ? (
+                <>هل أنت متأكد من حذف هذا الطلب؟ اكتب <strong>delete</strong> للتأكيد:</>
+              ) : (
+                <>Are you sure you want to delete this order? Type <strong>delete</strong> to confirm:</>
+              )}
+            </p>
             <input 
               type="text" 
               className="input-field" 
@@ -916,8 +922,8 @@ export default function OrderDetails() {
               autoFocus
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-              <button className="btn btn-secondary" onClick={() => setDeleteModalOpen(false)}>Cancel</button>
-              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none', opacity: deleteInput.trim().toLowerCase() !== 'delete' ? 0.5 : 1 }} disabled={deleteInput.trim().toLowerCase() !== 'delete'} onClick={confirmDelete}>Delete</button>
+              <button className="btn btn-secondary" onClick={() => setDeleteModalOpen(false)}>{lang === 'ar' ? 'إلغاء' : 'Cancel'}</button>
+              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none', opacity: deleteInput.trim().toLowerCase() !== 'delete' ? 0.5 : 1 }} disabled={deleteInput.trim().toLowerCase() !== 'delete'} onClick={confirmDelete}>{lang === 'ar' ? 'حذف' : 'Delete'}</button>
             </div>
           </div>
         </div>

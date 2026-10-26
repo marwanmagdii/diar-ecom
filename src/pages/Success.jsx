@@ -21,7 +21,7 @@ export default function Success() {
       }
 
       const timer = setTimeout(() => {
-        navigate('/offers');
+        navigate('/shop');
       }, 5000);
       return () => clearTimeout(timer);
     }

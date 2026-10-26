@@ -6,7 +6,7 @@ import ImageCropperModal from '../../components/ImageCropperModal';
 import { compressImage } from '../../utils/imageCompression';
 
 export default function ReviewSettings() {
-  const { config, updateConfig } = useStore();
+  const { config, updateConfig, language, t } = useStore();
   const { addToast } = useStore();
   const fileInputRef = useRef(null);
 
@@ -52,7 +52,7 @@ export default function ReviewSettings() {
   const handleSave = () => {
     setIsSaving(true);
     updateConfig({ globalReviewImages: reviewImages });
-    addToast('Global reviews saved successfully!', 'success');
+    addToast(language === 'ar' ? 'تم حفظ التقييمات العامة بنجاح!' : 'Global reviews saved successfully!', 'success');
     setIsSaving(false);
   };
 

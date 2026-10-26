@@ -4,7 +4,7 @@ import { Home, Store, ShoppingBag, User } from 'lucide-react';
 import { useStore } from '../store';
 
 // Routes where the BottomNav must be hidden to avoid competing with page-level action bars
-const HIDDEN_ROUTES = ['/cart', '/checkout', '/success'];
+const HIDDEN_ROUTES = ['/cart', '/checkout', '/success', '/product'];
 
 export default function BottomNav() {
   const location = useLocation();
@@ -48,7 +48,7 @@ export default function BottomNav() {
         </div>
         <span>{t('cart')}</span>
       </Link>
-      <Link to="/page/contact" className={`bottom-nav-item ${isActive('/page/contact') ? 'active' : ''}`}>
+      <Link to="/contact" className={`bottom-nav-item ${isActive('/contact') ? 'active' : ''}`}>
         <div className="nav-icon-wrapper">
           <User size={22} />
         </div>

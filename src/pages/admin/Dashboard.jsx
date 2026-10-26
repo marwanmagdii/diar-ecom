@@ -124,11 +124,11 @@ export default function Dashboard() {
       label: language === 'ar' ? 'الحالة' : 'Status', 
       render: (order) => (
         <span className={`status-pill status-${order.status?.toLowerCase()}`}>
-          {order.status}
+          {language === 'ar' ? (order.status === 'Pending' ? 'قيد الانتظار' : order.status === 'Shipped' ? 'تم الشحن' : order.status === 'Delivered' ? 'تم التوصيل' : order.status === 'Cancelled' ? 'ملغي' : order.status) : order.status}
         </span>
       ) 
     },
-    { id: 'total', label: language === 'ar' ? 'المجموع' : 'Total', render: (order) => `${order.total?.toFixed(2)} EGP` },
+    { id: 'total', label: language === 'ar' ? 'المجموع' : 'Total', render: (order) => `${order.total?.toFixed(2)} ${language === 'ar' ? 'ج.م' : 'EGP'}` },
     {
       id: 'actions',
       label: '',
@@ -159,37 +159,37 @@ export default function Dashboard() {
         <div className="metric-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div className="metric-title">Total Revenue</div>
-              <div className="metric-value">{totalRevenue.toLocaleString()} EGP</div>
+              <div className="metric-title">{language === 'ar' ? 'إجمالي المبيعات' : 'Total Revenue'}</div>
+              <div className="metric-value">{totalRevenue.toLocaleString()} {language === 'ar' ? 'ج.م' : 'EGP'}</div>
             </div>
             <div style={{ padding: '8px', backgroundColor: 'var(--primary-container)', color: 'var(--on-primary-container)', borderRadius: '8px' }}>
               <DollarSign size={24} />
             </div>
           </div>
           <div style={{ marginTop: '16px', fontSize: '14px', color: 'var(--on-surface-variant)' }}>
-            Lifetime revenue
+            {language === 'ar' ? 'إجمالي المبيعات الكلي' : 'Lifetime revenue'}
           </div>
         </div>
 
         <div className="metric-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div className="metric-title">Average Order Value</div>
-              <div className="metric-value">{aov.toFixed(0)} EGP</div>
+              <div className="metric-title">{language === 'ar' ? 'متوسط قيمة الطلب' : 'Average Order Value'}</div>
+              <div className="metric-value">{aov.toFixed(0)} {language === 'ar' ? 'ج.م' : 'EGP'}</div>
             </div>
             <div style={{ padding: '8px', backgroundColor: 'var(--secondary-container)', color: 'var(--on-secondary-container)', borderRadius: '8px' }}>
               <BarChart2 size={24} />
             </div>
           </div>
           <div style={{ marginTop: '16px', fontSize: '14px', color: 'var(--on-surface-variant)' }}>
-            Across {totalOrders} total orders
+            {language === 'ar' ? `عبر ${totalOrders} طلب إجمالي` : `Across ${totalOrders} total orders`}
           </div>
         </div>
 
         <div className="metric-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div className="metric-title">Active Orders</div>
+              <div className="metric-title">{language === 'ar' ? 'الطلبات النشطة' : 'Active Orders'}</div>
               <div className="metric-value">{orders.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled').length}</div>
             </div>
             <div style={{ padding: '8px', backgroundColor: 'var(--primary-container)', color: 'var(--primary)', borderRadius: '8px' }}>
@@ -197,14 +197,14 @@ export default function Dashboard() {
             </div>
           </div>
           <div style={{ marginTop: '16px', fontSize: '14px', color: 'var(--on-surface-variant)' }}>
-            Pending or Shipped
+            {language === 'ar' ? 'قيد الانتظار أو تم الشحن' : 'Pending or Shipped'}
           </div>
         </div>
 
         <div className="metric-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div className="metric-title">Total Customers</div>
+              <div className="metric-title">{language === 'ar' ? 'إجمالي العملاء' : 'Total Customers'}</div>
               <div className="metric-value">{totalUsers}</div>
             </div>
             <div style={{ padding: '8px', backgroundColor: 'var(--secondary-container)', color: 'var(--secondary)', borderRadius: '8px' }}>
@@ -212,7 +212,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div style={{ marginTop: '16px', fontSize: '14px', color: 'var(--on-surface-variant)' }}>
-            Total registered
+            {language === 'ar' ? 'العملاء المسجلين' : 'Total registered'}
           </div>
         </div>
       </div>
@@ -250,14 +250,14 @@ export default function Dashboard() {
                   axisLine={false} 
                   tickLine={false} 
                   tick={{ fill: 'var(--on-surface-variant)', fontSize: 12 }}
-                  tickFormatter={(value) => `${value} EGP`}
+                  tickFormatter={(value) => `${value} ${language === 'ar' ? 'ج.م' : 'EGP'}`}
                   dx={-10}
                 />
                 <CartesianGrid vertical={false} stroke="var(--outline-variant)" strokeDasharray="3 3" />
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'var(--surface-container)', borderRadius: '8px', border: 'none', boxShadow: 'var(--elevation-2)', color: 'var(--on-surface)' }}
                   itemStyle={{ color: 'var(--primary)', fontWeight: 600 }}
-                  formatter={(value) => [`${value} EGP`, language === 'ar' ? 'الإيرادات' : 'Revenue']}
+                  formatter={(value) => [`${value} ${language === 'ar' ? 'ج.م' : 'EGP'}`, language === 'ar' ? 'الإيرادات' : 'Revenue']}
                   labelStyle={{ color: 'var(--on-surface-variant)', marginBottom: '4px' }}
                 />
                 <Area 

@@ -25,7 +25,7 @@ export default function Header() {
         <nav className="nav-links">
           {hasOffers && <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>{t('home')}</Link>}
           <Link to="/shop" className={`nav-link ${location.pathname === '/shop' ? 'active' : ''}`}>{t('shop')}</Link>
-          <Link to="/page/contact" className={`nav-link ${location.pathname === '/page/contact' ? 'active' : ''}`}>{t('contactUs')}</Link>
+          <Link to="/contact" className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}>{t('contactUs')}</Link>
         </nav>
 
 

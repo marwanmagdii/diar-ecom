@@ -15,9 +15,9 @@ export default function InfluencerDetails() {
   if (!influencer) {
     return (
       <div style={{ padding: '24px', textAlign: 'center' }}>
-        <h2>Influencer not found</h2>
+        <h2>{language === 'ar' ? 'المؤثر غير موجود' : 'Influencer not found'}</h2>
         <button className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers')}>
-          Back to Influencers
+          {language === 'ar' ? 'العودة للمؤثرين' : 'Back to Influencers'}
         </button>
       </div>
     );
@@ -44,8 +44,8 @@ export default function InfluencerDetails() {
     { id: 'id', label: language === 'ar' ? 'رقم الطلب' : 'Order ID', render: (order) => <span style={{ fontWeight: 600 }}>{order.id.slice(0, 8).toUpperCase()}</span> },
     { id: 'date', label: language === 'ar' ? 'التاريخ' : 'Date', render: (order) => order.createdAt instanceof Date ? order.createdAt.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US') : new Date(order.createdAt).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US') },
     { id: 'customer', label: language === 'ar' ? 'العميل' : 'Customer', render: (order) => <span style={{ whiteSpace: 'nowrap', fontWeight: 500, color: 'var(--on-surface)' }}>{order.customer}</span> },
-    { id: 'status', label: language === 'ar' ? 'الحالة' : 'Status', render: (order) => <span className={`status-pill status-${order.status?.toLowerCase()}`}>{order.status}</span> },
-    { id: 'total', label: language === 'ar' ? 'الإجمالي' : 'Total', align: 'right', render: (order) => <span style={{ fontWeight: 'bold', color: 'var(--primary)', whiteSpace: 'nowrap' }}>{order.total?.toFixed(2)} EGP</span> },
+    { id: 'status', label: language === 'ar' ? 'الحالة' : 'Status', render: (order) => <span className={`status-pill status-${order.status?.toLowerCase()}`}>{language === 'ar' ? (order.status === 'Pending' ? 'قيد الانتظار' : order.status === 'Shipped' ? 'تم الشحن' : order.status === 'Delivered' ? 'تم التوصيل' : order.status === 'Cancelled' ? 'ملغي' : order.status) : order.status}</span> },
+    { id: 'total', label: language === 'ar' ? 'الإجمالي' : 'Total', align: 'right', render: (order) => <span style={{ fontWeight: 'bold', color: 'var(--primary)', whiteSpace: 'nowrap' }}>{order.total?.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}</span> },
     { id: 'actions', label: language === 'ar' ? 'الإجراءات' : 'Actions', align: 'right', render: (order) => (
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
         <button 
@@ -109,7 +109,7 @@ export default function InfluencerDetails() {
             {language === 'ar' ? 'نسبة العمولة' : 'Commission Rate'}
           </h3>
           <div style={{ fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>
-            {influencer.commissionValue}{influencer.commissionType === 'percentage' ? '%' : ' EGP'}
+            {influencer.commissionValue}{influencer.commissionType === 'percentage' ? '%' : (language === 'ar' ? ' ج.م' : ' EGP')}
           </div>
         </div>
         <div 
@@ -134,7 +134,7 @@ export default function InfluencerDetails() {
             {language === 'ar' ? 'إجمالي المبيعات' : 'Sales Generated'}
           </h3>
           <div style={{ fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>
-            {dynamicSales.toFixed(2)} EGP
+            {dynamicSales.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}
           </div>
         </div>
         <div className="metric-card" style={{ padding: '24px', backgroundColor: '#ffffff', border: 'none', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
@@ -142,7 +142,7 @@ export default function InfluencerDetails() {
             {language === 'ar' ? 'إجمالي العمولات' : 'Total Earnings'}
           </h3>
           <div style={{ fontSize: '24px', fontWeight: 700, color: '#10b981' }}>
-            {dynamicCommission.toFixed(2)} EGP
+            {dynamicCommission.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}
           </div>
         </div>
       </div>

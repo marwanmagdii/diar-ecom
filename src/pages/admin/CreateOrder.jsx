@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingBag, Search, Filter, RefreshCw, X, Menu, Bell, Search as SearchIcon, ArrowLeft, ArrowUp, ArrowDown, ChevronRight, Plus, Download, Upload, Eye, Image as ImageIcon, CreditCard, Clock, MapPin, Truck, Settings as SettingsIcon, Package, User, Hash, Edit3, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Truck } from 'lucide-react';
 import SearchableSelect from '../../components/SearchableSelect';
 import { useStore } from '../../store';
 
 export default function CreateOrder() {
-  const { addOrder, products, config, language } = useStore();
+  const { addOrder, products, config, language, t, addToast } = useStore();
   const navigate = useNavigate();
 
   const getProductTitle = (item) => {
@@ -25,12 +25,18 @@ export default function CreateOrder() {
   const [orderItems, setOrderItems] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState('');
 
+  const activeGov = (config.locations || []).find(l => 
+    l.nameEn === deliveryData.governorate || 
+    l.nameAr === deliveryData.governorate || 
+    l.id === deliveryData.governorate
+  );
+  const availableDistricts = activeGov ? (activeGov.districts || []) : [];
+
   const handleAddItem = () => {
     if (!selectedProductId) return;
     const product = products.find(p => p.id.toString() === selectedProductId.toString());
     if (!product) return;
     
-    // Default to main variant or simple product
     const isLegacy = !product.options || product.options.length === 0;
     const mainVariant = !isLegacy && product.variants?.length > 0 ? product.variants[0] : null;
     
@@ -61,13 +67,13 @@ export default function CreateOrder() {
   };
 
   const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const shipping = Number(config?.shippingCost) || 35;
+  const shipping = config?.shippingActive ? (Number(config?.shippingCost) || 35) : 0;
   const total = subtotal > 0 ? subtotal + shipping : 0;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (orderItems.length === 0) {
-      alert("Please add at least one item to the order.");
+      addToast(language === 'ar' ? 'يرجى إضافة منتج واحد على الأقل للطلب.' : 'Please add at least one item to the order.', 'error');
       return;
     }
 
@@ -86,13 +92,12 @@ export default function CreateOrder() {
     };
     
     addOrder(newOrder);
+    addToast(language === 'ar' ? 'تم إنشاء الطلب بنجاح!' : 'Order created successfully!', 'success');
     navigate('/diaradmin26/orders');
   };
 
   return (
     <div style={{ width: '100%', color: '#1e293b' }}>
-      {/* Header and Breadcrumbs removed as they are now in the top navbar */}
-
       <form onSubmit={handleSubmit}>
         <div className="create-order-grid">
           
@@ -102,66 +107,141 @@ export default function CreateOrder() {
             {/* Delivery Details Form */}
             <div className="metric-card" style={{ padding: '32px', backgroundColor: '#ffffff', border: 'none', borderRadius: '12px' }}>
               <h3 style={{ fontSize: '20px', fontWeight: 700, margin: '0 0 24px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#8c3a3a' }}><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-                Delivery Details
+                <Truck size={24} color="var(--primary)" />
+                {t('deliveryDetails') || (language === 'ar' ? 'تفاصيل التوصيل' : 'Delivery Details')}
               </h3>
 
               <div className="form-row">
                 <div>
-                  <label htmlFor="delivery_first_name" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>First Name</label>
-                  <input type="text" id="delivery_first_name" name="firstName" className="input-field" required value={deliveryData.firstName} onChange={e => setDeliveryData({...deliveryData, firstName: e.target.value})} style={{ padding: '12px', borderRadius: '8px' }} placeholder="Jane" />
+                  <label htmlFor="delivery_first_name" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
+                    {t('firstName') || (language === 'ar' ? 'الاسم الأول' : 'First Name')}
+                  </label>
+                  <input 
+                    type="text" 
+                    id="delivery_first_name" 
+                    name="firstName" 
+                    className="input-field" 
+                    required 
+                    value={deliveryData.firstName} 
+                    onChange={e => setDeliveryData({...deliveryData, firstName: e.target.value})} 
+                    style={{ padding: '12px', borderRadius: '8px' }} 
+                    placeholder={language === 'ar' ? 'محمد' : 'Jane'} 
+                  />
                 </div>
                 <div>
-                  <label htmlFor="delivery_last_name" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>Last Name</label>
-                  <input type="text" id="delivery_last_name" name="lastName" className="input-field" required value={deliveryData.lastName} onChange={e => setDeliveryData({...deliveryData, lastName: e.target.value})} style={{ padding: '12px', borderRadius: '8px' }} placeholder="Doe" />
+                  <label htmlFor="delivery_last_name" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
+                    {t('lastName') || (language === 'ar' ? 'الاسم الأخير' : 'Last Name')}
+                  </label>
+                  <input 
+                    type="text" 
+                    id="delivery_last_name" 
+                    name="lastName" 
+                    className="input-field" 
+                    required 
+                    value={deliveryData.lastName} 
+                    onChange={e => setDeliveryData({...deliveryData, lastName: e.target.value})} 
+                    style={{ padding: '12px', borderRadius: '8px' }} 
+                    placeholder={language === 'ar' ? 'علي' : 'Doe'} 
+                  />
                 </div>
               </div>
 
               <div style={{ marginBottom: '24px' }}>
-                <label htmlFor="delivery_mobile" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>Mobile Number</label>
-                <input type="text" id="delivery_mobile" name="mobile" className="input-field" required value={deliveryData.mobile} onChange={e => {
-                  let sanitized = e.target.value.replace(/\D/g, '');
-                  if (sanitized.startsWith('00201') && sanitized.length >= 13) {
-                    sanitized = '0' + sanitized.slice(4);
-                  } else if (sanitized.startsWith('201') && sanitized.length >= 12) {
-                    sanitized = '0' + sanitized.slice(2);
-                  }
-                  sanitized = sanitized.slice(0, 11);
-                  setDeliveryData({...deliveryData, mobile: sanitized});
-                }} style={{ padding: '12px', borderRadius: '8px' }} placeholder="01X XXXX XXXX" />
+                <label htmlFor="delivery_mobile" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
+                  {t('mobileNumber') || (language === 'ar' ? 'رقم الهاتف' : 'Mobile Number')}
+                </label>
+                <input 
+                  type="text" 
+                  id="delivery_mobile" 
+                  name="mobile" 
+                  className="input-field" 
+                  required 
+                  value={deliveryData.mobile} 
+                  onChange={e => {
+                    let sanitized = e.target.value.replace(/\D/g, '');
+                    if (sanitized.startsWith('00201') && sanitized.length >= 13) {
+                      sanitized = '0' + sanitized.slice(4);
+                    } else if (sanitized.startsWith('201') && sanitized.length >= 12) {
+                      sanitized = '0' + sanitized.slice(2);
+                    }
+                    sanitized = sanitized.slice(0, 11);
+                    setDeliveryData({...deliveryData, mobile: sanitized});
+                  }} 
+                  style={{ padding: '12px', borderRadius: '8px' }} 
+                  placeholder="01X XXXX XXXX" 
+                />
               </div>
 
               <div className="form-row">
                 <div>
-                  <label htmlFor="delivery_governorate" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>Governorate</label>
-                  <select id="delivery_governorate" name="governorate" className="input-field" required style={{ padding: '12px', borderRadius: '8px' }} value={deliveryData.governorate} onChange={e => setDeliveryData({...deliveryData, governorate: e.target.value})}>
-                    <option value="">Search Governorate...</option>
-                    <option value="Cairo">Cairo</option>
-                    <option value="Giza">Giza</option>
-                    <option value="Alexandria">Alexandria</option>
+                  <label htmlFor="delivery_governorate" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
+                    {t('governorate') || (language === 'ar' ? 'المحافظة' : 'Governorate')}
+                  </label>
+                  <select 
+                    id="delivery_governorate" 
+                    name="governorate" 
+                    className="input-field" 
+                    required 
+                    style={{ padding: '12px', borderRadius: '8px' }} 
+                    value={deliveryData.governorate} 
+                    onChange={e => setDeliveryData({...deliveryData, governorate: e.target.value, district: ''})}
+                  >
+                    <option value="">{language === 'ar' ? 'اختر المحافظة...' : 'Select Governorate...'}</option>
+                    {(config.locations || []).filter(l => l.isActive !== false).map(gov => (
+                      <option key={gov.id} value={gov.nameEn}>
+                        {language === 'ar' && gov.nameAr ? gov.nameAr : gov.nameEn}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="delivery_district" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>District</label>
-                  <select id="delivery_district" name="district" className="input-field" required style={{ padding: '12px', borderRadius: '8px' }} value={deliveryData.district} onChange={e => setDeliveryData({...deliveryData, district: e.target.value})}>
-                    <option value="">Search District...</option>
-                    <option value="Maadi">Maadi</option>
-                    <option value="Nasr City">Nasr City</option>
-                    <option value="Zamalek">Zamalek</option>
+                  <label htmlFor="delivery_district" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
+                    {t('district') || (language === 'ar' ? 'المنطقة' : 'District')}
+                  </label>
+                  <select 
+                    id="delivery_district" 
+                    name="district" 
+                    className="input-field" 
+                    required 
+                    style={{ padding: '12px', borderRadius: '8px' }} 
+                    value={deliveryData.district} 
+                    onChange={e => setDeliveryData({...deliveryData, district: e.target.value})}
+                    disabled={!deliveryData.governorate}
+                  >
+                    <option value="">{language === 'ar' ? 'اختر المنطقة...' : 'Select District...'}</option>
+                    {availableDistricts.filter(d => d.isActive !== false).map(d => (
+                      <option key={d.id} value={d.nameEn}>
+                        {language === 'ar' && d.nameAr ? d.nameAr : d.nameEn}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="delivery_street_address" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>Street Address</label>
-                <input type="text" id="delivery_street_address" name="streetAddress" className="input-field" required value={deliveryData.streetAddress} onChange={e => setDeliveryData({...deliveryData, streetAddress: e.target.value})} style={{ padding: '12px', borderRadius: '8px' }} placeholder="Street Name, Building, Floor" />
+                <label htmlFor="delivery_street_address" style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
+                  {t('streetAddress') || (language === 'ar' ? 'عنوان الشارع' : 'Street Address')}
+                </label>
+                <input 
+                  type="text" 
+                  id="delivery_street_address" 
+                  name="streetAddress" 
+                  className="input-field" 
+                  required 
+                  value={deliveryData.streetAddress} 
+                  onChange={e => setDeliveryData({...deliveryData, streetAddress: e.target.value})} 
+                  style={{ padding: '12px', borderRadius: '8px' }} 
+                  placeholder={language === 'ar' ? 'اسم الشارع، العمارة، الدور' : 'Street Name, Building, Floor'} 
+                />
               </div>
             </div>
 
             {/* Order Items */}
             <div className="metric-card" style={{ padding: '24px', backgroundColor: '#ffffff', border: 'none', borderRadius: '12px' }}>
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', gap: '16px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>Add Products</h3>
+                <h3 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>
+                  {t('addProducts') || (language === 'ar' ? 'إضافة منتجات' : 'Add Products')}
+                </h3>
                 <div style={{ display: 'flex', flex: '1 1 auto', gap: '8px', justifyContent: 'flex-end' }}>
                   <div style={{ flex: 1, minWidth: '150px', maxWidth: '300px' }}>
                     <SearchableSelect 
@@ -171,7 +251,7 @@ export default function CreateOrder() {
                       placeholder={language === 'ar' ? "ابحث عن منتج..." : "Search a product..."}
                     />
                   </div>
-                  <button type="button" className="btn" onClick={handleAddItem} style={{ padding: '8px 12px' }} aria-label="Add Selected Product">
+                  <button type="button" className="btn btn-primary" onClick={handleAddItem} style={{ padding: '8px 12px' }} aria-label="Add Selected Product">
                     <Plus size={20} />
                   </button>
                 </div>
@@ -179,12 +259,14 @@ export default function CreateOrder() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {orderItems.length === 0 ? (
-                  <p style={{ textAlign: 'center', color: '#64748b', padding: '24px 0' }}>{language === 'ar' ? "لم تتم إضافة أي منتجات لهذا الطلب بعد." : "No products added to this order yet."}</p>
+                  <p style={{ textAlign: 'center', color: '#64748b', padding: '24px 0' }}>
+                    {language === 'ar' ? "لم تتم إضافة أي منتجات لهذا الطلب بعد." : "No products added to this order yet."}
+                  </p>
                 ) : (
                   orderItems.map((item, index) => (
-                    <div key={item.id} style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px' }}>
-                      <div style={{ width: '48px', height: '64px', backgroundColor: '#e2e8f0', borderRadius: '4px', marginRight: '16px', overflow: 'hidden' }}>
-                        <img src={item.image || 'https://via.placeholder.com/48'} alt={getProductTitle(item)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div key={`${item.id}-${index}`} style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px' }}>
+                      <div style={{ width: '48px', height: '64px', backgroundColor: '#e2e8f0', borderRadius: '4px', marginInlineEnd: '16px', overflow: 'hidden', flexShrink: 0 }}>
+                        <img src={item.image || 'https://placehold.co/48x64'} alt={getProductTitle(item)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
                       
                       <div style={{ flex: 2 }}>
@@ -200,7 +282,7 @@ export default function CreateOrder() {
                           aria-label={`Quantity for ${getProductTitle(item)}`}
                           min="1" 
                           value={item.qty} 
-                          onChange={(e) => updateItemQty(index, parseInt(e.target.value))}
+                          onChange={(e) => updateItemQty(index, parseInt(e.target.value) || 1)}
                           className="input-field"
                           style={{ width: '60px', padding: '6px', textAlign: 'center' }} 
                         />
@@ -221,22 +303,24 @@ export default function CreateOrder() {
             
             {/* Summary Card */}
             <div className="metric-card" style={{ padding: '24px', backgroundColor: '#ffffff', border: 'none', borderRadius: '12px' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, margin: '0 0 24px 0' }}>Cart Totals</h3>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, margin: '0 0 24px 0' }}>
+                {t('cartTotals') || (language === 'ar' ? 'إجمالي السلة' : 'Cart Totals')}
+              </h3>
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '16px', borderBottom: '1px solid #f1f5f9' }}>
-                <span style={{ color: '#64748b', fontSize: '14px' }}>Subtotal</span>
-                <span style={{ fontWeight: 600, fontSize: '14px' }}>{subtotal.toFixed(2)} EGP</span>
+                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('subtotal') || (language === 'ar' ? 'المجموع الفرعي' : 'Subtotal')}</span>
+                <span style={{ fontWeight: 600, fontSize: '14px' }}>{subtotal.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '16px', paddingBottom: '16px', borderBottom: '1px solid #f1f5f9' }}>
-                <span style={{ color: '#64748b', fontSize: '14px' }}>Shipping</span>
-                <span style={{ fontWeight: 600, fontSize: '14px' }}>{shipping.toFixed(2)} EGP</span>
+                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('shipping') || (language === 'ar' ? 'الشحن' : 'Shipping')}</span>
+                <span style={{ fontWeight: 600, fontSize: '14px' }}>{shipping.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '16px', marginBottom: '24px' }}>
-                <span style={{ fontWeight: 700, fontSize: '16px' }}>Total Amount</span>
-                <span style={{ fontWeight: 700, fontSize: '18px', color: '#ea580c' }}>{total.toFixed(2)} EGP</span>
+                <span style={{ fontWeight: 700, fontSize: '16px' }}>{t('totalAmount') || (language === 'ar' ? 'الإجمالي النهائي' : 'Total Amount')}</span>
+                <span style={{ fontWeight: 700, fontSize: '18px', color: '#ea580c' }}>{total.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}</span>
               </div>
 
-              <button type="submit" className="btn" style={{ width: '100%', padding: '12px', fontSize: '16px' }}>
-                Submit Order
+              <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '12px', fontSize: '16px' }}>
+                {t('createOrder') || (language === 'ar' ? 'إنشاء الطلب' : 'Submit Order')}
               </button>
             </div>
 

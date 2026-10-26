@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
+import { useStore } from '../store';
 
 export default function SearchableSelect({ options, placeholder, value, onChange, disabled }) {
+  const { language } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const wrapperRef = useRef(null);
@@ -29,7 +31,7 @@ export default function SearchableSelect({ options, placeholder, value, onChange
         onClick={() => { if (!disabled) setIsOpen(!isOpen); }}
         style={{ cursor: disabled ? 'not-allowed' : 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
       >
-        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingRight: '8px' }}>{selectedOption ? selectedOption.label : placeholder}</span>
+        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingInlineEnd: '8px' }}>{selectedOption ? selectedOption.label : placeholder}</span>
         <ChevronDown size={18} color="var(--on-surface-variant)" />
       </div>
 
@@ -41,8 +43,8 @@ export default function SearchableSelect({ options, placeholder, value, onChange
               type="text" 
               name="searchable_select_search"
               id="searchable_select_search"
-              aria-label="Search options"
-              placeholder="Search..." 
+              aria-label={language === 'ar' ? 'البحث في الخيارات' : 'Search options'}
+              placeholder={language === 'ar' ? 'بحث...' : 'Search...'} 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ border: 'none', outline: 'none', width: '100%', fontFamily: 'inherit', fontSize: '14px' }}
@@ -66,7 +68,7 @@ export default function SearchableSelect({ options, placeholder, value, onChange
               ))
             ) : (
               <div style={{ padding: '10px 16px', color: 'var(--on-surface-variant)', fontSize: '14px' }}>
-                No results found
+                {language === 'ar' ? 'لا توجد نتائج' : 'No results found'}
               </div>
             )}
           </div>

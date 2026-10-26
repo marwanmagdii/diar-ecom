@@ -47,7 +47,7 @@ export default function Users() {
           {user.name}
           {user.isInfluencer && (
             <span style={{ fontSize: '12px', padding: '2px 8px', backgroundColor: '#fef3c7', color: '#b45309', borderRadius: '100px', fontWeight: 700 }}>
-              Partner
+              {lang === 'ar' ? 'شريك' : 'Partner'}
             </span>
           )}
           {user.linkedAccounts && user.linkedAccounts.length > 0 && (
@@ -84,14 +84,14 @@ export default function Users() {
         </div>
       )
     },
-    { id: 'orders', label: lang === 'ar' ? 'الطلبات' : 'Orders', render: (user) => `${user.orderCount} order${user.orderCount !== 1 ? 's' : ''}` },
+    { id: 'orders', label: lang === 'ar' ? 'الطلبات' : 'Orders', render: (user) => `${user.orderCount} ${lang === 'ar' ? 'طلبات' : (user.orderCount === 1 ? 'order' : 'orders')}` },
     { 
       id: 'totalSpent', 
       label: lang === 'ar' ? 'إجمالي المدفوعات' : 'Total Spent', 
       align: 'right',
       render: (user) => (
         <span style={{ fontWeight: 600, color: user.isInfluencer ? '#b45309' : 'var(--primary)', whiteSpace: 'nowrap' }}>
-          {user.totalSpent?.toFixed(2)} EGP
+          {user.totalSpent?.toFixed(2)} {lang === 'ar' ? 'ج.م' : 'EGP'}
         </span>
       )
     },

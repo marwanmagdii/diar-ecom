@@ -2,32 +2,14 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2 } from 'lucide-react';
 import { useStore } from '../store';
+import { localize } from '../utils/i18n';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, cartTotal } = useStore();
   const { t, language } = useStore();
   const navigate = useNavigate();
 
-  const getLocalizedText = (text) => {
-    if (!text) return text;
-    if (String(text).includes(' / ')) {
-      const parts = String(text).split(' / ');
-      return language === 'ar' ? (parts[1]?.trim() || parts[0].trim()) : parts[0].trim();
-    }
-    if (language === 'ar') {
-      const dict = {
-        'color': 'اللون', 'size': 'المقاس', 'material': 'الخامة', 'weight': 'الوزن', 'style': 'الستايل',
-        'white': 'أبيض', 'black': 'أسود', 'red': 'أحمر', 'blue': 'أزرق', 'green': 'أخضر', 'yellow': 'أصفر',
-        'gray': 'رمادي', 'silver': 'فضي', 'gold': 'ذهبي', 'pink': 'وردي', 'purple': 'بنفسجي', 'brown': 'بني',
-        'navy': 'كحلي', 'beige': 'بيج', 'orange': 'برتقالي', 'maroon': 'عنابي', 'teal': 'تركواز',
-        'metal': 'معدن', 'plastic': 'بلاستيك', 'wood': 'خشب', 'glass': 'زجاج', 'leather': 'جلد', 'cotton': 'قطن',
-        'modern': 'حديث', 'classic': 'كلاسيكي', 'casual': 'كاجوال', 'formal': 'رسمي', 'sport': 'رياضي', 'sporty': 'رياضي', 'vintage': 'عتيق'
-      };
-      const lower = String(text).toLowerCase().trim();
-      if (dict[lower]) return dict[lower];
-    }
-    return text;
-  };
+  const getLocalizedText = (text) => localize(text, language);
 
   return (
     <main className="container pt-4 pb-4">
@@ -55,15 +37,15 @@ export default function Cart() {
                     <Link to={`/product/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                       <h3 className="cart-item-title" dir={language === 'ar' ? 'rtl' : 'ltr'}>{language === 'ar' && item.titleAr ? item.titleAr : item.title}</h3>
                     </Link>
-                      <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)', marginBottom: '4px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--on-surface-variant)', marginBottom: '4px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                         {item.selectedOptions ? (
                           Object.entries(item.selectedOptions).map(([key, val]) => (
-                            <span key={key} style={{ marginRight: '8px' }}>{getLocalizedText(key)}: {getLocalizedText(val)}</span>
+                            <span key={key} style={{ marginInlineEnd: '4px' }}>{getLocalizedText(key)}: <strong>{getLocalizedText(val)}</strong></span>
                           ))
                         ) : (
                           <>
-                            {(item.selectedColor || item.color) && <span style={{ marginRight: '8px' }}>{t('color')}: {item.selectedColor || item.color}</span>}
-                            {(item.selectedSize || item.size) && <span>{t('size')}: {item.selectedSize || item.size}</span>}
+                            {(item.selectedColor || item.color) && <span style={{ marginInlineEnd: '4px' }}>{t('color')}: <strong>{getLocalizedText(item.selectedColor || item.color)}</strong></span>}
+                            {(item.selectedSize || item.size) && <span>{t('size')}: <strong>{getLocalizedText(item.selectedSize || item.size)}</strong></span>}
                           </>
                         )}
                       </div>
@@ -72,7 +54,7 @@ export default function Cart() {
                       <div className="qty-control">
                         <button className="qty-btn" onClick={() => updateQuantity(item.cartItemId, item.qty - 1)}>-</button>
                         <span className="qty-value">{item.qty}</span>
-                        <button className="qty-btn" onClick={() => updateQuantity(item.cartItemId, item.qty + 1)}>+</button>
+                        <button className="qty-btn" onClick={() => updateQuantity(item.cartItemId, Math.min(Number(item.stock) || 99, item.qty + 1))} disabled={item.stock && item.qty >= item.stock}>+</button>
                       </div>
                       <button className="btn-remove" onClick={() => removeFromCart(item.cartItemId)}>
                         <Trash2 size={16} /> {t('remove')}

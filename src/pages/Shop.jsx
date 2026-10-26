@@ -4,6 +4,8 @@ import Skeleton from '../components/ui/Skeleton';
 import { Search, Filter, X, LayoutGrid, Smartphone, Shirt, Home as HomeIcon, Sparkles, Watch, Droplet, Tag } from 'lucide-react';
 import { useSearchParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useStore } from '../store';
+import { getColorHex } from '../utils/colors';
+import { localize, isColorOption } from '../utils/i18n';
 
 export default function Shop() {
   const { products, productsLoading: loading, productsError: error } = useStore();
@@ -14,38 +16,6 @@ export default function Shop() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    let touchStartY = 0;
-
-    const handleTouchStart = (e) => {
-      touchStartY = e.touches[0].clientY;
-    };
-
-    const handleTouchMove = (e) => {
-      if (window.scrollY <= 0) {
-        const touchY = e.touches[0].clientY;
-        if (touchY > touchStartY + 100) { // Swiped down
-          navigate('/', { state: { direction: 'down' } });
-        }
-      }
-    };
-
-    const handleWheel = (e) => {
-      if (window.scrollY <= 0 && e.deltaY < -50) { // Scrolled up
-        navigate('/', { state: { direction: 'down' } });
-      }
-    };
-
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove);
-    window.addEventListener('wheel', handleWheel);
-
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('wheel', handleWheel);
-    };
-  }, [navigate]);
   
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
@@ -77,7 +47,7 @@ export default function Shop() {
     
     // Extract colors
     let colors = [];
-    const colorOpt = p.options?.find(o => o.name.toLowerCase() === 'color' || o.name.toLowerCase() === 'لون');
+    const colorOpt = p.options?.find(o => isColorOption(o.name));
     if (colorOpt) colors = colorOpt.values;
     else if (p.color) colors = Array.isArray(p.color) ? p.color : [p.color];
     colors.forEach(c => validColors.add(c));
@@ -170,7 +140,7 @@ export default function Shop() {
       }
     }
 
-    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = (p.title || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (p.titleAr && p.titleAr.toLowerCase().includes(searchQuery.toLowerCase())) ||
                           (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
                           (p.descriptionAr && p.descriptionAr.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -179,7 +149,7 @@ export default function Shop() {
     let matchesColor = true;
     if (selectedColors.length > 0) {
       let pColors = [];
-      const colorOpt = p.options?.find(o => o.name.toLowerCase() === 'color' || o.name.toLowerCase() === 'لون');
+      const colorOpt = p.options?.find(o => isColorOption(o.name));
       if (colorOpt) pColors = colorOpt.values;
       else if (p.color) pColors = Array.isArray(p.color) ? p.color : [p.color];
       
@@ -269,21 +239,12 @@ export default function Shop() {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {Array.from(validColors).map((color, i) => {
                   const isChecked = selectedColors.includes(color);
-                  const colorMap = {
-                    'black': '#000000', 'white': '#ffffff', 'red': '#ef4444', 
-                    'blue': '#3b82f6', 'green': '#10b981', 'yellow': '#eab308',
-                    'gray': '#6b7280', 'silver': '#e5e7eb', 'gold': '#fbbf24',
-                    'pink': '#ec4899', 'purple': '#a855f7', 'brown': '#92400e',
-                    'أسود': '#000000', 'أبيض': '#ffffff', 'أحمر': '#ef4444',
-                    'أزرق': '#3b82f6', 'أخضر': '#10b981', 'أصفر': '#eab308',
-                    'رمادي': '#6b7280', 'فضي': '#e5e7eb', 'ذهبي': '#fbbf24'
-                  };
-                  const hex = colorMap[color.toLowerCase()] || color;
+                  const hex = getColorHex(color);
                   return (
-                    <label key={i} title={color} style={{ 
-                      width: '28px', height: '28px', borderRadius: '50%', 
+                    <label key={i} title={localize(color, language)} aria-label={localize(color, language)} style={{
+                      width: '32px', height: '32px', borderRadius: '50%',
                       backgroundColor: hex,
-                      border: hex === '#ffffff' || color.toLowerCase() === 'white' || color === 'أبيض' ? '1px solid #cbd5e1' : '1px solid rgba(0,0,0,0.1)',
+                      border: hex.toUpperCase() === '#FFFFFF' ? '1px solid #cbd5e1' : '1px solid rgba(0,0,0,0.1)',
                       boxShadow: isChecked ? '0 0 0 2px #ffffff, 0 0 0 4px var(--primary)' : 'none',
                       cursor: 'pointer',
                       display: 'block'
@@ -367,7 +328,7 @@ export default function Shop() {
 
           {/* Search Bar aligned with products */}
           <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '12px 16px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-            <Search size={20} color="#64748b" style={{ marginRight: '12px', marginLeft: language === 'ar' ? '12px' : '0' }} />
+            <Search size={20} color="#64748b" style={{ marginInlineEnd: '12px', flexShrink: 0 }} />
             <input 
               type="text" 
               placeholder={t('searchPlaceholder')} 
@@ -394,8 +355,8 @@ export default function Shop() {
               ))
             ) : error ? (
               <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '40px', backgroundColor: '#fef2f2', borderRadius: '12px', border: '1px solid #fecaca', color: '#ef4444' }}>
-                <p style={{ fontWeight: '500', marginBottom: '8px' }}>Oops! Could not load products.</p>
-                <p style={{ fontSize: '14px', color: '#b91c1c' }}>Please check your internet connection or try again later.</p>
+                <p style={{ fontWeight: '500', marginBottom: '8px' }}>{language === 'ar' ? 'تعذر تحميل المنتجات.' : 'Could not load products.'}</p>
+                <p style={{ fontSize: '14px', color: '#b91c1c' }}>{language === 'ar' ? 'تأكد من اتصالك بالإنترنت وحاول مرة أخرى.' : 'Please check your internet connection and try again.'}</p>
               </div>
             ) : filteredProducts.length > 0 ? (
               filteredProducts.map(p => <ProductCard key={p.id} product={p} />)

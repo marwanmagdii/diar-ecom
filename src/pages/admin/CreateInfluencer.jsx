@@ -4,9 +4,7 @@ import { ChevronRight, Save, X, Search, Trash2 } from 'lucide-react';
 import { useStore } from '../../store';
 
 export default function CreateInfluencer() {
-  const { config, updatePromoCodes } = useStore();
-  const { users } = useStore();
-  const { addToast } = useStore();
+  const { config, updatePromoCodes, users, addToast, language } = useStore();
   const navigate = useNavigate();
   const { id } = useParams(); // If editing
 
@@ -60,14 +58,14 @@ export default function CreateInfluencer() {
   const handleSave = (e) => {
     e.preventDefault();
     if (!formData.influencerName || !formData.code) {
-      addToast('Name and Promo Code are required.', 'error');
+      addToast(language === 'ar' ? 'الاسم وكود الخصم مطلوبان.' : 'Name and Promo Code are required.', 'error');
       return;
     }
 
     const uppercaseCode = formData.code.toUpperCase().trim();
     const isDuplicate = promos.some(p => p.code === uppercaseCode && p.id !== id);
     if (isDuplicate) {
-      addToast('This promo code is already in use.', 'error');
+      addToast(language === 'ar' ? 'كود الخصم هذا مستخدم بالفعل.' : 'This promo code is already in use.', 'error');
       return;
     }
 
@@ -86,7 +84,7 @@ export default function CreateInfluencer() {
         }
         return p;
       });
-      addToast('Influencer updated successfully!');
+      addToast(language === 'ar' ? 'تم تحديث بيانات المؤثر بنجاح!' : 'Influencer updated successfully!', 'success');
     } else {
       const newInfluencer = {
         id: Date.now().toString(),
@@ -99,7 +97,7 @@ export default function CreateInfluencer() {
         totalRevenue: 0
       };
       updatedPromos = [...promos, newInfluencer];
-      addToast('Influencer created successfully!');
+      addToast(language === 'ar' ? 'تم إنشاء المؤثر بنجاح!' : 'Influencer created successfully!', 'success');
     }
 
     updatePromoCodes(updatedPromos);
@@ -113,18 +111,22 @@ export default function CreateInfluencer() {
       <div className="metric-card" style={{ padding: '32px', backgroundColor: '#ffffff', borderRadius: '12px' }}>
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
-          <h3 style={{ fontSize: '18px', fontWeight: 600, borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', margin: 0 }}>Basic Profile</h3>
+          <h3 style={{ fontSize: '18px', fontWeight: 600, borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', margin: 0 }}>
+            {language === 'ar' ? 'الملف التعريفي الأساسي' : 'Basic Profile'}
+          </h3>
           
           <div style={{ position: 'relative' }}>
-            <label htmlFor="influencer_user_search" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Influencer Name / Map to Customer</label>
+            <label htmlFor="influencer_user_search" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+              {language === 'ar' ? 'اسم المؤثر / ربط بعميل' : 'Influencer Name / Map to Customer'}
+            </label>
             <div style={{ position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: '12px', top: '12px', color: '#94a3b8' }} />
+              <Search size={16} style={{ position: 'absolute', [language === 'ar' ? 'right' : 'left']: '12px', top: '12px', color: '#94a3b8' }} />
               <input 
                 type="text" 
                 id="influencer_user_search"
                 name="userSearch"
                 className="input-field"
-                placeholder="Search customers or type a name..."
+                placeholder={language === 'ar' ? 'ابحث عن عملاء أو اكتب اسماً...' : 'Search customers or type a name...'}
                 value={userSearch}
                 onChange={(e) => {
                   setUserSearch(e.target.value);
@@ -132,7 +134,7 @@ export default function CreateInfluencer() {
                   setShowDropdown(true);
                 }}
                 onFocus={() => setShowDropdown(true)}
-                style={{ paddingLeft: '36px' }}
+                style={{ [language === 'ar' ? 'paddingRight' : 'paddingLeft']: '36px' }}
                 required
               />
             </div>
@@ -144,25 +146,31 @@ export default function CreateInfluencer() {
                     <div style={{ fontSize: '12px', color: '#64748b' }}>{u.phone}</div>
                   </div>
                 )) : (
-                  <div style={{ padding: '12px 16px', color: '#64748b' }}>Use "{userSearch}" as a new name</div>
+                  <div style={{ padding: '12px 16px', color: '#64748b' }}>
+                    {language === 'ar' ? `استخدام "${userSearch}" كاسم جديد` : `Use "${userSearch}" as a new name`}
+                  </div>
                 )}
               </div>
             )}
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>Social Media Accounts</h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0 }}>
+              {language === 'ar' ? 'حسابات التواصل الاجتماعي' : 'Social Media Accounts'}
+            </h3>
             <button type="button" className="btn btn-outline" onClick={() => setFormData({...formData, socialAccounts: [...formData.socialAccounts, { platform: 'instagram', handle: '' }]})}>
-              + Add Account
+              {language === 'ar' ? '+ إضافة حساب' : '+ Add Account'}
             </button>
           </div>
           <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', marginBottom: '8px' }}></div>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {formData.socialAccounts.map((account, index) => (
-              <div key={index} style={{ display: 'flex', gap: '16px', alignItems: 'flex-end', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <div style={{ flex: 1 }}>
-                  <label htmlFor={`social_platform_${index}`} className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Platform</label>
+              <div key={index} style={{ display: 'flex', gap: '16px', alignItems: 'flex-end', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 180px' }}>
+                  <label htmlFor={`social_platform_${index}`} className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+                    {language === 'ar' ? 'المنصة' : 'Platform'}
+                  </label>
                   <select 
                     id={`social_platform_${index}`}
                     name={`socialPlatform_${index}`}
@@ -179,11 +187,13 @@ export default function CreateInfluencer() {
                     <option value="youtube">YouTube</option>
                     <option value="snapchat">Snapchat</option>
                     <option value="facebook">Facebook</option>
-                    <option value="other">Other</option>
+                    <option value="other">{language === 'ar' ? 'أخرى' : 'Other'}</option>
                   </select>
                 </div>
-                <div style={{ flex: 2 }}>
-                  <label htmlFor={`social_handle_${index}`} className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Handle / URL</label>
+                <div style={{ flex: '2 1 240px' }}>
+                  <label htmlFor={`social_handle_${index}`} className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+                    {language === 'ar' ? 'اسم الحساب / الرابط' : 'Handle / URL'}
+                  </label>
                   <input 
                     type="text" 
                     id={`social_handle_${index}`}
@@ -210,22 +220,30 @@ export default function CreateInfluencer() {
             ))}
           </div>
 
-          <h3 style={{ fontSize: '18px', fontWeight: 600, borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', margin: '16px 0 0 0' }}>Affiliate Configuration</h3>
+          <h3 style={{ fontSize: '18px', fontWeight: 600, borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', margin: '16px 0 0 0' }}>
+            {language === 'ar' ? 'إعدادات الإحالة والعمولة' : 'Affiliate Configuration'}
+          </h3>
           
-          <div style={{ display: 'flex', gap: '24px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+          <div style={{ display: 'flex', gap: '24px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', flexWrap: 'wrap' }}>
             <label htmlFor="affiliate_type_promo" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
               <input type="radio" id="affiliate_type_promo" name="affiliateType" value="promo" checked={formData.affiliateType === 'promo'} onChange={() => setFormData({...formData, affiliateType: 'promo'})} style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }} />
-              <span style={{ fontWeight: 500, color: '#334155' }}>Promo Code (Discount)</span>
+              <span style={{ fontWeight: 500, color: '#334155' }}>
+                {language === 'ar' ? 'كود خصم (تخفيض للعميل)' : 'Promo Code (Discount)'}
+              </span>
             </label>
             <label htmlFor="affiliate_type_link" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
               <input type="radio" id="affiliate_type_link" name="affiliateType" value="link" checked={formData.affiliateType === 'link'} onChange={() => setFormData({...formData, affiliateType: 'link'})} style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }} />
-              <span style={{ fontWeight: 500, color: '#334155' }}>Referral Link (No Discount)</span>
+              <span style={{ fontWeight: 500, color: '#334155' }}>
+                {language === 'ar' ? 'رابط إحالة (بدون تخفيض)' : 'Referral Link (No Discount)'}
+              </span>
             </label>
           </div>
           
           <div>
             <label htmlFor="influencer_code" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
-              {formData.affiliateType === 'link' ? 'Assigned Referral Code (Used to generate link)' : 'Assigned Promo Code'}
+              {formData.affiliateType === 'link' 
+                ? (language === 'ar' ? 'كود الإحالة (المستخدم في الرابط)' : 'Assigned Referral Code (Used to generate link)') 
+                : (language === 'ar' ? 'كود الخصم المحدد' : 'Assigned Promo Code')}
             </label>
             <input 
               type="text" 
@@ -242,27 +260,35 @@ export default function CreateInfluencer() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
             <div>
-              <label htmlFor="influencer_commission_type" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Commission Type</label>
+              <label htmlFor="influencer_commission_type" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+                {language === 'ar' ? 'نوع العمولة' : 'Commission Type'}
+              </label>
               <select id="influencer_commission_type" name="commissionType" className="input-field" value={formData.commissionType} onChange={(e) => setFormData({...formData, commissionType: e.target.value})}>
-                <option value="percentage">Percentage (%)</option>
-                <option value="fixed">Fixed Amount (EGP)</option>
+                <option value="percentage">{language === 'ar' ? 'نسبة مئوية (%)' : 'Percentage (%)'}</option>
+                <option value="fixed">{language === 'ar' ? 'مبلغ ثابت (ج.م)' : 'Fixed Amount (EGP)'}</option>
               </select>
             </div>
             <div>
-              <label htmlFor="influencer_commission_value" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Commission Value</label>
+              <label htmlFor="influencer_commission_value" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+                {language === 'ar' ? 'قيمة العمولة' : 'Commission Value'}
+              </label>
               <input type="number" id="influencer_commission_value" name="commissionValue" className="input-field" min="0" step="0.01" value={formData.commissionValue} onChange={(e) => setFormData({...formData, commissionValue: e.target.value})} required />
             </div>
             {formData.affiliateType === 'promo' && (
               <>
                 <div>
-                  <label htmlFor="influencer_discount_type" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Given to Customer</label>
+                  <label htmlFor="influencer_discount_type" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+                    {language === 'ar' ? 'نوع خصم العميل' : 'Discount Given to Customer'}
+                  </label>
                   <select id="influencer_discount_type" name="discountType" className="input-field" value={formData.discountType} onChange={(e) => setFormData({...formData, discountType: e.target.value})}>
-                    <option value="percentage">Percentage (%)</option>
-                    <option value="fixed">Fixed Amount (EGP)</option>
+                    <option value="percentage">{language === 'ar' ? 'نسبة مئوية (%)' : 'Percentage (%)'}</option>
+                    <option value="fixed">{language === 'ar' ? 'مبلغ ثابت (ج.م)' : 'Fixed Amount (EGP)'}</option>
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="influencer_discount_value" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>Discount Value</label>
+                  <label htmlFor="influencer_discount_value" className="label-md" style={{ display: 'block', marginBottom: '8px' }}>
+                    {language === 'ar' ? 'قيمة الخصم' : 'Discount Value'}
+                  </label>
                   <input type="number" id="influencer_discount_value" name="discountValue" className="input-field" min="0" step="0.01" value={formData.discountValue} onChange={(e) => setFormData({...formData, discountValue: e.target.value})} required />
                 </div>
               </>
@@ -271,8 +297,12 @@ export default function CreateInfluencer() {
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', marginTop: '8px' }}>
             <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 600 }}>Active Status</h4>
-              <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>If inactive, the promo code cannot be used at checkout.</p>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 600 }}>
+                {language === 'ar' ? 'حالة التفعيل' : 'Active Status'}
+              </h4>
+              <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>
+                {language === 'ar' ? 'في حال التعطيل، لن يمكن استخدام الكود عند الدفع.' : 'If inactive, the promo code cannot be used at checkout.'}
+              </p>
             </div>
             <label htmlFor="influencer_is_active" className="toggle-switch">
               <input type="checkbox" id="influencer_is_active" name="isActive" checked={formData.isActive} onChange={(e) => setFormData({...formData, isActive: e.target.checked})} />
@@ -280,12 +310,12 @@ export default function CreateInfluencer() {
             </label>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}>
-            <button type="button" className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers')}>
-              <X size={18} style={{ marginRight: '8px' }} /> Cancel
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px', flexWrap: 'wrap' }}>
+            <button type="button" className="btn btn-secondary" onClick={() => navigate('/diaradmin26/influencers')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <X size={18} /> {language === 'ar' ? 'إلغاء' : 'Cancel'}
             </button>
-            <button type="submit" className="btn btn-primary">
-              <Save size={18} style={{ marginRight: '8px' }} /> {id ? 'Save Changes' : 'Create Influencer'}
+            <button type="submit" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Save size={18} /> {id ? (language === 'ar' ? 'حفظ التعديلات' : 'Save Changes') : (language === 'ar' ? 'إنشاء المؤثر' : 'Create Influencer')}
             </button>
           </div>
 

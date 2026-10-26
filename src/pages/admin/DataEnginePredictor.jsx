@@ -17,7 +17,7 @@ import { useStore } from '../../store';
 import { Message, MessageContent, MessageAvatar } from '../../components/ui/message';
 import { BorderBeam } from '../../components/ui/border-beam';
 
-// â”€â”€â”€ PERSONA DEFINITIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── PERSONA DEFINITIONS ────────────────────────────────────────────────────
 const PERSONAS = [
     {
       id: 'analyst',
@@ -81,7 +81,7 @@ Apply these 7 tips: Tie text to visuals, tailor to specific segments, speak dire
 
 Your hooks are emotional, create FOMO, use social proof, and trigger urgency.
 Always write in Egyptian Arabic dialect when writing Arabic copy.
-Structure copy with: Hook â†’ Problem â†’ Solution â†’ CTA.
+Structure copy with: Hook → Problem → Solution → CTA.
 Give multiple variations (A, B, C) so the user can test.`
   },
   {
@@ -139,7 +139,7 @@ Give specific tier names, point values, redemption rules, and communication temp
   }
 ];
 
-// â”€â”€â”€ TABS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── TABS ────────────────────────────────────────────────────────────────────
 const TABS = [
   { id: 'chat',     label: 'AI Team',      icon: <Bot size={16} /> },
   { id: 'products', label: 'Products',     icon: <Package size={16} /> },
@@ -149,10 +149,10 @@ const TABS = [
   { id: 'reports',  label: 'Reports',      icon: <BarChart2 size={16} /> },
 ];
 
-// â”€â”€â”€ CHART COLORS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CHART COLORS ────────────────────────────────────────────────────────────
 const CHART_COLORS = ['#1877F2', '#7c3aed', '#e11d48', '#059669', '#d97706', '#0891b2'];
 
-// â”€â”€â”€ SIMPLE MARKDOWN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── SIMPLE MARKDOWN ─────────────────────────────────────────────────────────
 const SimpleMarkdown = ({ text }) => {
   if (!text) return null;
   const blocks = text.split('\n\n');
@@ -189,7 +189,7 @@ const formatInline = (text) => {
   return f;
 };
 
-// â”€â”€â”€ INLINE CHART PARSER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── INLINE CHART PARSER ─────────────────────────────────────────────────────
 const parseChartFromText = (text) => {
   if (!text) return null;
   const chartMatch = text.match(/```chart\n([\s\S]*?)```/);
@@ -296,13 +296,13 @@ const InlineChart = ({ chartData }) => {
   return null;
 };
 
-// â”€â”€â”€ LOYALTY PROGRAM COMPONENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── LOYALTY PROGRAM COMPONENT ───────────────────────────────────────────────
 const LoyaltyProgram = ({ allOrders }) => {
   const tiers = [
-    { name: 'Bronze', nameAr: 'Ø¨Ø±ÙˆÙ†Ø²ÙŠ', min: 0, max: 999, color: '#b45309', icon: 'ðŸ¥‰', perks: ['5% discount on next order', 'Birthday gift', 'Early sale access'] },
-    { name: 'Silver', nameAr: 'ÙØ¶ÙŠ', min: 1000, max: 2999, color: '#64748b', icon: 'ðŸ¥ˆ', perks: ['10% discount always', 'Free shipping', 'Priority customer service', 'Monthly exclusive deals'] },
-    { name: 'Gold', nameAr: 'Ø°Ù‡Ø¨ÙŠ', min: 3000, max: 5999, color: '#d97706', icon: 'ðŸ¥‡', perks: ['15% discount always', 'Free express shipping', 'Dedicated WhatsApp line', 'First access to new products'] },
-    { name: 'VIP Diamond', nameAr: 'Ù…Ø§Ø³ÙŠ', min: 6000, max: Infinity, color: '#7c3aed', icon: 'ðŸ’Ž', perks: ['20% discount always', 'Personal stylist', 'Free returns', 'Surprise monthly gift', 'Co-creation opportunities'] },
+    { name: 'Bronze', nameAr: 'برونزي', min: 0, max: 999, color: '#b45309', icon: '🥉', perks: ['5% discount on next order', 'Birthday gift', 'Early sale access'] },
+    { name: 'Silver', nameAr: 'فضي', min: 1000, max: 2999, color: '#64748b', icon: '🥈', perks: ['10% discount always', 'Free shipping', 'Priority customer service', 'Monthly exclusive deals'] },
+    { name: 'Gold', nameAr: 'ذهبي', min: 3000, max: 5999, color: '#d97706', icon: '🥇', perks: ['15% discount always', 'Free express shipping', 'Dedicated WhatsApp line', 'First access to new products'] },
+    { name: 'VIP Diamond', nameAr: 'ماسي', min: 6000, max: Infinity, color: '#7c3aed', icon: '💎', perks: ['20% discount always', 'Personal stylist', 'Free returns', 'Surprise monthly gift', 'Co-creation opportunities'] },
   ];
 
   // Calculate customer totals from orders
@@ -333,7 +333,7 @@ const LoyaltyProgram = ({ allOrders }) => {
           <Crown size={28} />
           <div>
             <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800 }}>Diar Loyalty Program</h2>
-            <p style={{ margin: 0, opacity: 0.8, fontSize: '14px' }}>Ø¨Ø±Ù†Ø§Ù…Ø¬ ÙˆÙ„Ø§Ø¡ Ø¯Ø§Ø± â€” Reward Your Best Customers</p>
+            <p style={{ margin: 0, opacity: 0.8, fontSize: '14px' }}>برنامج ولاء دار — Reward Your Best Customers</p>
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginTop: '16px' }}>
@@ -361,7 +361,7 @@ const LoyaltyProgram = ({ allOrders }) => {
               <div>
                 <p style={{ margin: 0, fontWeight: 800, fontSize: '16px', color: tier.color }}>{tier.name}</p>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--on-surface-variant)' }}>
-                  {tier.max === Infinity ? `${tier.min.toLocaleString()}+ EGP` : `${tier.min.toLocaleString()} â€“ ${tier.max.toLocaleString()} EGP`}
+                  {tier.max === Infinity ? `${tier.min.toLocaleString()}+ EGP` : `${tier.min.toLocaleString()} – ${tier.max.toLocaleString()} EGP`}
                 </p>
               </div>
               <div style={{ marginLeft: 'auto', background: tier.color + '20', color: tier.color, borderRadius: '20px', padding: '2px 10px', fontSize: '14px', fontWeight: 700 }}>
@@ -379,7 +379,7 @@ const LoyaltyProgram = ({ allOrders }) => {
 
       {/* Top customers by tier */}
       <div className="premium-card" style={{ padding: '20px' }}>
-        <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: 700 }}>ðŸ† Customer Rankings</h3>
+        <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: 700 }}>🏆 Customer Rankings</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {customers.slice(0, 10).map((c, i) => {
             const tier = getTier(c.total);
@@ -390,7 +390,7 @@ const LoyaltyProgram = ({ allOrders }) => {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ margin: 0, fontWeight: 600, fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.name}</p>
-                  <p style={{ margin: 0, fontSize: '12px', color: 'var(--on-surface-variant)' }}>{c.orders} orders Â· {c.phone}</p>
+                  <p style={{ margin: 0, fontSize: '12px', color: 'var(--on-surface-variant)' }}>{c.orders} orders · {c.phone}</p>
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <p style={{ margin: 0, fontWeight: 800, fontSize: '15px', color: tier.color }}>{c.total.toFixed(0)} EGP</p>
@@ -411,7 +411,7 @@ const LoyaltyProgram = ({ allOrders }) => {
   );
 };
 
-// â”€â”€â”€ ADS SPY COMPONENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── ADS SPY COMPONENT ────────────────────────────────────────────────────────
 const AdsSpy = ({ messages, setMessages, streamOllamaChat, loading, ollamaStatus, products }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -456,7 +456,7 @@ Based on your knowledge of Egyptian e-commerce and Meta Ads:
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div className="premium-card" style={{ padding: '20px' }}>
-        <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 700 }}>ðŸ” Competitor Ads Spy</h3>
+        <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 700 }}>🔍 Competitor Ads Spy</h3>
         <p style={{ margin: '0 0 16px', fontSize: '13px', color: 'var(--on-surface-variant)' }}>
           Search for competitor ads on Meta/Google and let AI analyze what's working
         </p>
@@ -509,7 +509,7 @@ Based on your knowledge of Egyptian e-commerce and Meta Ads:
       {/* Web results preview */}
       {webResults.length > 0 && (
         <div className="premium-card" style={{ padding: '20px' }}>
-          <p style={{ margin: '0 0 12px', fontSize: '13px', fontWeight: 600, color: 'var(--on-surface-variant)' }}>ðŸŒ WEB RESULTS FOUND ({webResults.length})</p>
+          <p style={{ margin: '0 0 12px', fontSize: '13px', fontWeight: 600, color: 'var(--on-surface-variant)' }}>🌐 WEB RESULTS FOUND ({webResults.length})</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {webResults.map((r, i) => (
               <a key={i} href={r.url} target="_blank" rel="noreferrer" style={{ display: 'block', padding: '10px', background: '#f8fafc', borderRadius: '8px', textDecoration: 'none', color: 'inherit' }}>
@@ -524,7 +524,7 @@ Based on your knowledge of Egyptian e-commerce and Meta Ads:
   );
 };
 
-// â”€â”€â”€ PRODUCTS TAB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── PRODUCTS TAB ─────────────────────────────────────────────────────────────
 const ProductsTab = ({ products, allOrders, messages, streamOllamaChat, loading, ollamaStatus }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [productMessages, setProductMessages] = useState({});
@@ -652,7 +652,7 @@ Tasks:
   );
 };
 
-// â”€â”€â”€ USERS TAB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── USERS TAB ─────────────────────────────────────────────────────────────────
 const UsersTab = ({ trackedCustomers, allOrders, messages, streamOllamaChat, loading, ollamaStatus }) => {
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -662,7 +662,7 @@ const UsersTab = ({ trackedCustomers, allOrders, messages, streamOllamaChat, loa
 
 **Customer:** ${user.customer || user.customerName || 'Unknown'}
 **Total Spent:** ${user.total} EGP
-**Events:** ${events.map(e => e.type + (e.details?.productName ? ` (${e.details.productName})` : '')).join(' â†’ ')}
+**Events:** ${events.map(e => e.type + (e.details?.productName ? ` (${e.details.productName})` : '')).join(' → ')}
 
 Tasks:
 1. Map this customer's full journey (where they went, what interested them, where they hesitated)
@@ -697,7 +697,7 @@ Tasks:
               </div>
               <div style={{ minWidth: 0 }}>
                 <p style={{ margin: 0, fontWeight: 600, fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.customer || 'Unknown'}</p>
-                <p style={{ margin: 0, fontSize: '11px', color: 'var(--on-surface-variant)' }}>{user.total} EGP Â· {user.trackingData?.events?.length || 0} events</p>
+                <p style={{ margin: 0, fontSize: '11px', color: 'var(--on-surface-variant)' }}>{user.total} EGP · {user.trackingData?.events?.length || 0} events</p>
               </div>
             </div>
           </div>
@@ -739,7 +739,7 @@ Tasks:
 };
 
 // ==========================================
-// ðŸŽ¨ GENERATIVE UI COMPONENTS
+// 🎨 GENERATIVE UI COMPONENTS
 // ==========================================
 
 const CustomerJourneyUI = ({ data }) => {
@@ -828,7 +828,7 @@ const WhatsAppMockUI = ({ messages }) => {
   );
 };
 
-// ðŸ¤– MAIN COMPONENT ðŸ¤–â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// 🤖 MAIN COMPONENT 🤖───────────────────────────────────────────────────────────
 export default function DataEnginePredictor({ trackedCustomers = [], allOrders = [] }) {
   const { products } = useStore();
 
@@ -1066,7 +1066,7 @@ export default function DataEnginePredictor({ trackedCustomers = [], allOrders =
     localStorage.removeItem('diar_ai_history_v2');
   };
 
-  // â”€â”€â”€ QUICK ACTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ─── QUICK ACTIONS ───────────────────────────────────────────────────────────
   const quickActions = [
     {
       label: 'Funnel Analysis',
@@ -1074,7 +1074,7 @@ export default function DataEnginePredictor({ trackedCustomers = [], allOrders =
       prompt: () => {
         const customers = trackedCustomers.slice(0, 10).map(c => ({
           name: c.customer, total: c.total,
-          events: c.trackingData?.events?.map(e => e.type).join(' â†’ ')
+          events: c.trackingData?.events?.map(e => e.type).join(' → ')
         }));
         return `Analyze our sales funnel and identify where customers drop off:\n${JSON.stringify(customers)}\n\nGive me:\n1. Drop-off rates at each stage with percentages\n2. Top 3 reasons customers abandon\n3. Specific fixes for each drop-off point\n4. Expected ROAS improvement if we fix the top issue`;
       }
@@ -1116,7 +1116,7 @@ export default function DataEnginePredictor({ trackedCustomers = [], allOrders =
     }
   };
 
-  // â”€â”€â”€ OLLAMA STATUS PILL â”€â”€â”€
+  // ─── OLLAMA STATUS PILL ───
   const StatusPill = () => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
       <button 
@@ -1143,7 +1143,7 @@ export default function DataEnginePredictor({ trackedCustomers = [], allOrders =
   return (
     <div dir="ltr" style={{ display: 'flex', flexDirection: 'column', gap: '0', height: '100%' }}>
 
-      {/* â”€â”€â”€ TOP BAR (Sleek Dropdowns) â”€â”€â”€ */}
+      {/* ─── TOP BAR (Sleek Dropdowns) ─── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 0 16px 0', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           
@@ -1197,7 +1197,7 @@ export default function DataEnginePredictor({ trackedCustomers = [], allOrders =
         <StatusPill />
       </div>
 
-      {/* â”€â”€â”€ TAB CONTENT â”€â”€â”€ */}
+      {/* ─── TAB CONTENT ─── */}
       {activeTab === 'chat' && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0, width: '100%' }}>
           
@@ -1355,7 +1355,7 @@ export default function DataEnginePredictor({ trackedCustomers = [], allOrders =
           {/* Show AI response for ads spy */}
           {messages.length > 0 && messages[messages.length - 1].role === 'assistant' && (
             <div className="premium-card" style={{ marginTop: '16px', padding: '20px' }}>
-              <p style={{ margin: '0 0 12px', fontSize: '12px', fontWeight: 600, color: 'var(--on-surface-variant)' }}>ðŸ¤– AI ANALYSIS</p>
+              <p style={{ margin: '0 0 12px', fontSize: '12px', fontWeight: 600, color: 'var(--on-surface-variant)' }}>🤖 AI ANALYSIS</p>
               <SimpleMarkdown text={messages[messages.length - 1].content} />
             </div>
           )}

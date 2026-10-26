@@ -243,8 +243,14 @@ export default function Products() {
       {deleteModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
           <div className="card" style={{ padding: '24px', maxWidth: '400px', width: '100%', backgroundColor: 'var(--surface)' }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>Delete Product</h3>
-            <p style={{ margin: '0 0 16px 0', color: 'var(--on-surface-variant)' }}>Are you sure you want to delete this product? Type <strong>delete</strong> to confirm:</p>
+            <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>{language === 'ar' ? 'حذف المنتج' : 'Delete Product'}</h3>
+            <p style={{ margin: '0 0 16px 0', color: 'var(--on-surface-variant)' }}>
+              {language === 'ar' ? (
+                <>هل أنت متأكد من حذف هذا المنتج؟ اكتب <strong>delete</strong> للتأكيد:</>
+              ) : (
+                <>Are you sure you want to delete this product? Type <strong>delete</strong> to confirm:</>
+              )}
+            </p>
             <input 
               type="text" 
               className="input-field" 
@@ -255,8 +261,8 @@ export default function Products() {
               autoFocus
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-              <button className="btn btn-secondary" onClick={cancelDelete}>Cancel</button>
-              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none', opacity: deleteInput.trim().toLowerCase() !== 'delete' ? 0.5 : 1 }} disabled={deleteInput.trim().toLowerCase() !== 'delete'} onClick={confirmDelete}>Delete</button>
+              <button className="btn btn-secondary" onClick={cancelDelete}>{language === 'ar' ? 'إلغاء' : 'Cancel'}</button>
+              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none', opacity: deleteInput.trim().toLowerCase() !== 'delete' ? 0.5 : 1 }} disabled={deleteInput.trim().toLowerCase() !== 'delete'} onClick={confirmDelete}>{language === 'ar' ? 'حذف' : 'Delete'}</button>
             </div>
           </div>
         </div>

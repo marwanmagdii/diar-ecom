@@ -125,7 +125,7 @@ export default function ProductAnalysis() {
           color: order.status === 'Delivered' ? '#166534' : order.status === 'Cancelled' ? '#991b1b' : '#854d0e', 
           padding: '4px 8px', borderRadius: '999px', fontSize: '12px', fontWeight: 600 
         }}>
-          {order.status}
+          {language === 'ar' ? (order.status === 'Delivered' ? 'تم التوصيل' : order.status === 'Cancelled' ? 'ملغي' : order.status === 'Shipped' ? 'تم الشحن' : order.status === 'Pending' ? 'قيد الانتظار' : order.status) : order.status}
         </span>
       )
     }
@@ -142,10 +142,10 @@ export default function ProductAnalysis() {
         value={timeRange}
         onChange={(e) => setTimeRange(e.target.value)}
       >
-        <option value="All Time">All Time</option>
-        <option value="Last 30 Days">Last 30 Days</option>
-        <option value="Last 90 Days">Last 90 Days</option>
-        <option value="This Year">This Year</option>
+        <option value="All Time">{language === 'ar' ? 'كل الأوقات' : 'All Time'}</option>
+        <option value="Last 30 Days">{language === 'ar' ? 'آخر 30 يوم' : 'Last 30 Days'}</option>
+        <option value="Last 90 Days">{language === 'ar' ? 'آخر 90 يوم' : 'Last 90 Days'}</option>
+        <option value="This Year">{language === 'ar' ? 'هذا العام' : 'This Year'}</option>
       </select>
     </div>
   );
@@ -165,11 +165,11 @@ export default function ProductAnalysis() {
           <div>
             <h2 className="headline-md m-0" style={{ marginBottom: '4px' }}>{language === 'ar' && product.titleAr ? product.titleAr : product.title}</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#64748b', fontSize: '14px' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Target size={16} /> Product Analytics Dashboard</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Target size={16} /> {language === 'ar' ? 'لوحة تحليلات أداء المنتج' : 'Product Analytics Dashboard'}</span>
               <span>•</span>
               <span style={{ color: product.isActive ? '#10b981' : '#64748b', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: product.isActive ? '#10b981' : '#cbd5e1' }}></span>
-                {product.isActive ? 'Active' : 'Draft'}
+                {product.isActive ? (language === 'ar' ? 'نشط' : 'Active') : (language === 'ar' ? 'مسودة' : 'Draft')}
               </span>
             </div>
           </div>
@@ -184,10 +184,10 @@ export default function ProductAnalysis() {
             <DollarSign size={24} />
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', color: '#64748b', fontSize: '14px', fontWeight: 500 }}>Total Revenue</p>
-            <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>{stats.revenue.toLocaleString()} EGP</h3>
+            <p style={{ margin: '0 0 4px 0', color: '#64748b', fontSize: '14px', fontWeight: 500 }}>{language === 'ar' ? 'إجمالي المبيعات' : 'Total Revenue'}</p>
+            <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>{stats.revenue.toLocaleString()} {language === 'ar' ? 'ج.م' : 'EGP'}</h3>
             <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              <TrendingUp size={14} /> +14.2% this month
+              <TrendingUp size={14} /> {language === 'ar' ? '+14.2% هذا الشهر' : '+14.2% this month'}
             </p>
           </div>
         </div>
@@ -197,10 +197,10 @@ export default function ProductAnalysis() {
             <ShoppingCart size={24} />
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', color: '#64748b', fontSize: '14px', fontWeight: 500 }}>Units Sold</p>
+            <p style={{ margin: '0 0 4px 0', color: '#64748b', fontSize: '14px', fontWeight: 500 }}>{language === 'ar' ? 'الوحدات المباعة' : 'Units Sold'}</p>
             <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>{stats.totalSales.toLocaleString()}</h3>
             <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              <TrendingUp size={14} /> +8.4% this month
+              <TrendingUp size={14} /> {language === 'ar' ? '+8.4% هذا الشهر' : '+8.4% this month'}
             </p>
           </div>
         </div>
@@ -210,10 +210,10 @@ export default function ProductAnalysis() {
             <Eye size={24} />
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', color: '#64748b', fontSize: '14px', fontWeight: 500 }}>Page Views</p>
+            <p style={{ margin: '0 0 4px 0', color: '#64748b', fontSize: '14px', fontWeight: 500 }}>{language === 'ar' ? 'مشاهدات الصفحة' : 'Page Views'}</p>
             <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>{stats.pageViews.toLocaleString()}</h3>
             <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 500 }}>
-              Avg time: {stats.avgTimeOnPage}
+              {language === 'ar' ? 'متوسط الوقت' : 'Avg time'}: {stats.avgTimeOnPage}
             </p>
           </div>
         </div>
@@ -223,10 +223,10 @@ export default function ProductAnalysis() {
             <Activity size={24} />
           </div>
           <div>
-            <p style={{ margin: '0 0 4px 0', color: '#64748b', fontSize: '14px', fontWeight: 500 }}>Conversion Rate</p>
+            <p style={{ margin: '0 0 4px 0', color: '#64748b', fontSize: '14px', fontWeight: 500 }}>{language === 'ar' ? 'معدل التحويل' : 'Conversion Rate'}</p>
             <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#0f172a' }}>{stats.conversionRate}%</h3>
             <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 500 }}>
-              Abandonment: {stats.cartAbandonment}%
+              {language === 'ar' ? 'التخلي عن السلة' : 'Abandonment'}: {stats.cartAbandonment}%
             </p>
           </div>
         </div>
@@ -234,12 +234,12 @@ export default function ProductAnalysis() {
       </div>
 
       {/* Charts & Details */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '24px' }}>
         
         {/* Main Chart Area */}
         <div className="premium-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>Sales Performance</h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: '#0f172a' }}>{language === 'ar' ? 'أداء المبيعات' : 'Sales Performance'}</h3>
             <select 
               className="premium-input" 
               style={{ width: 'auto', padding: '8px 16px', minHeight: 'auto', height: '40px' }}
@@ -277,7 +277,7 @@ export default function ProductAnalysis() {
 
         {/* Variant Performance */}
         <div className="premium-card">
-          <h3 style={{ fontSize: '18px', fontWeight: 600, margin: '0 0 24px 0', color: '#0f172a' }}>Top Variants</h3>
+          <h3 style={{ fontSize: '18px', fontWeight: 600, margin: '0 0 24px 0', color: '#0f172a' }}>{language === 'ar' ? 'أفضل الخيارات' : 'Top Variants'}</h3>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {product.variants && product.variants.length > 0 ? (
@@ -291,17 +291,17 @@ export default function ProductAnalysis() {
                       <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '14px' }}>
                         {Object.values(v.attributes || {}).join(' - ') || 'Default'}
                       </div>
-                      <div style={{ fontSize: '12px', color: '#64748b' }}>Stock: {v.stock}</div>
+                      <div style={{ fontSize: '12px', color: '#64748b' }}>{language === 'ar' ? 'المخزون:' : 'Stock:'} {v.stock}</div>
                     </div>
                   </div>
                   <div style={{ fontWeight: 700, color: 'var(--primary)' }}>
-                    {Math.floor(Math.random() * 300) + 50} sold
+                    {Math.floor(Math.random() * 300) + 50} {language === 'ar' ? 'مباع' : 'sold'}
                   </div>
                 </div>
               ))
             ) : (
               <div style={{ padding: '24px', textAlign: 'center', color: '#64748b', backgroundColor: '#f8fafc', borderRadius: '12px' }}>
-                No variants available for this product.
+                {language === 'ar' ? 'لا توجد خيارات فرعية لهذا المنتج.' : 'No variants available for this product.'}
               </div>
             )}
           </div>

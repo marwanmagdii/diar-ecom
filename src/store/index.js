@@ -143,6 +143,7 @@ export const useStore = create((set, get) => ({
 
   // ================= LANGUAGE SLICE =================
   language: typeof window !== 'undefined' ? (localStorage.getItem('storeLanguage') || 'ar') : 'ar',
+  lang: typeof window !== 'undefined' ? (localStorage.getItem('storeLanguage') || 'ar') : 'ar',
   setLanguage: (lang) => {
     if (typeof document !== 'undefined') {
       document.documentElement.lang = lang;
@@ -151,7 +152,7 @@ export const useStore = create((set, get) => ({
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('storeLanguage', lang);
     }
-    set({ language: lang });
+    set({ language: lang, lang });
   },
   toggleLanguage: () => {
     const newLang = get().language === 'en' ? 'ar' : 'en';

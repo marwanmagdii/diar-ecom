@@ -77,9 +77,9 @@ export default function PromoSettings() {
         const updated = promoCodes.filter(p => p.id !== promoToDelete);
         setPromoCodes(updated);
         updatePromoCodes(updated, `Deleted promo code ${promoObj ? promoObj.code : promoToDelete}`);
-        addToast('Promo code deleted successfully', 'success');
+        addToast(language === 'ar' ? 'تم حذف كود الخصم بنجاح' : 'Promo code deleted successfully', 'success');
       } catch (e) {
-        addToast('Failed to delete promo code', 'error');
+        addToast(language === 'ar' ? 'فشل حذف كود الخصم' : 'Failed to delete promo code', 'error');
       }
       setDeleteModalOpen(false);
       setPromoToDelete(null);
@@ -398,11 +398,13 @@ export default function PromoSettings() {
       {deleteModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
           <div className="card" style={{ padding: '24px', maxWidth: '400px', width: '100%', backgroundColor: 'var(--surface)' }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>Delete Promo Code</h3>
-            <p style={{ margin: '0 0 24px 0', color: 'var(--on-surface-variant)' }}>Are you sure you want to delete this promo code? This action cannot be undone.</p>
+            <h3 style={{ margin: '0 0 16px 0', color: 'var(--on-surface)' }}>{language === 'ar' ? 'حذف كود الخصم' : 'Delete Promo Code'}</h3>
+            <p style={{ margin: '0 0 24px 0', color: 'var(--on-surface-variant)' }}>
+              {language === 'ar' ? 'هل أنت متأكد من حذف كود الخصم هذا؟ لا يمكن التراجع عن هذا الإجراء.' : 'Are you sure you want to delete this promo code? This action cannot be undone.'}
+            </p>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-              <button className="btn btn-secondary" onClick={() => { setDeleteModalOpen(false); setPromoToDelete(null); }}>Cancel</button>
-              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none' }} onClick={confirmDelete}>Delete</button>
+              <button className="btn btn-secondary" onClick={() => { setDeleteModalOpen(false); setPromoToDelete(null); }}>{language === 'ar' ? 'إلغاء' : 'Cancel'}</button>
+              <button className="btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none' }} onClick={confirmDelete}>{language === 'ar' ? 'حذف' : 'Delete'}</button>
             </div>
           </div>
         </div>

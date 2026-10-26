@@ -194,7 +194,7 @@ export default function ActivityLogs() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <h2 className="title-md">{language === 'ar' ? `نشاطات ${activeTab}` : `${activeTab}'s Recent Activities`}</h2>
             <div style={{ position: 'relative' }}>
-              <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+              <Search size={18} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
               <input 
                 type="text" 
                 id="activity_logs_search"
@@ -203,7 +203,7 @@ export default function ActivityLogs() {
                 placeholder={language === 'ar' ? 'بحث...' : 'Search logs...'}
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                style={{ padding: '10px 10px 10px 36px', borderRadius: '8px', border: '1px solid #e2e8f0', outline: 'none' }}
+                style={{ paddingInlineStart: '36px', paddingInlineEnd: '10px', paddingTop: '10px', paddingBottom: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', outline: 'none' }}
               />
             </div>
           </div>

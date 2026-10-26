@@ -55,8 +55,7 @@ export default function CustomerReviewsMarquee({ reviews = [] }) {
     if (scrollRef.current) {
       const { clientWidth } = scrollRef.current;
       const scrollAmount = direction === 'left' ? -clientWidth / 2 : clientWidth / 2;
-      const finalScrollAmount = isRtl ? -scrollAmount : scrollAmount;
-      scrollRef.current.scrollBy({ left: finalScrollAmount, behavior: 'smooth' });
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
@@ -83,7 +82,7 @@ export default function CustomerReviewsMarquee({ reviews = [] }) {
             onClick={() => manualScroll('left')}
             style={{
               position: 'absolute',
-              left: '-16px',
+              insetInlineStart: '4px',
               zIndex: 2,
               background: 'var(--surface)',
               border: '1px solid var(--outline)',
@@ -145,7 +144,7 @@ export default function CustomerReviewsMarquee({ reviews = [] }) {
             onClick={() => manualScroll('right')}
             style={{
               position: 'absolute',
-              right: '-16px',
+              insetInlineEnd: '4px',
               zIndex: 2,
               background: 'var(--surface)',
               border: '1px solid var(--outline)',
@@ -172,7 +171,7 @@ export default function CustomerReviewsMarquee({ reviews = [] }) {
           images={lightboxData.images}
           currentIndex={lightboxData.currentIndex}
           onClose={() => setLightboxData({ ...lightboxData, isOpen: false })}
-          onNavigate={(newIndex) => setLightboxData(prev => ({ ...prev, currentIndex: newIndex }))}
+          onNavigate={(next) => setLightboxData(prev => ({ ...prev, currentIndex: typeof next === 'number' ? next : (next === 'prev' ? (prev.currentIndex - 1 + prev.images.length) % prev.images.length : (prev.currentIndex + 1) % prev.images.length) }))}
         />
       )}
     </>

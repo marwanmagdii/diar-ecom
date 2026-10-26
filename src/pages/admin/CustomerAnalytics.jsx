@@ -68,6 +68,16 @@ export default function CustomerAnalytics({ isEmbedded = false }) {
   };
 
   const formatEventName = (type) => {
+    if (language === 'ar') {
+      switch(type) {
+        case 'view_page': return 'زيارة صفحة';
+        case 'view_product': return 'عرض منتج';
+        case 'add_to_cart': return 'إضافة إلى السلة';
+        case 'remove_from_cart': return 'حذف من السلة';
+        case 'complete_checkout': return 'إتمام الطلب';
+        default: return type;
+      }
+    }
     switch(type) {
       case 'view_page': return 'Visited Page';
       case 'view_product': return 'Viewed Product';
@@ -173,10 +183,10 @@ export default function CustomerAnalytics({ isEmbedded = false }) {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: language === 'ar' ? 'right' : 'left' }}>
             <thead>
               <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                <th style={{ padding: '16px', fontWeight: 600, color: '#475569' }}>Customer</th>
-                <th style={{ padding: '16px', fontWeight: 600, color: '#475569' }}>Order Total</th>
-                <th style={{ padding: '16px', fontWeight: 600, color: '#475569' }}>Tracked Events</th>
-                <th style={{ padding: '16px', fontWeight: 600, color: '#475569' }}>Action</th>
+                <th style={{ padding: '16px', fontWeight: 600, color: '#475569' }}>{language === 'ar' ? 'العميل' : 'Customer'}</th>
+                <th style={{ padding: '16px', fontWeight: 600, color: '#475569' }}>{language === 'ar' ? 'إجمالي الطلب' : 'Order Total'}</th>
+                <th style={{ padding: '16px', fontWeight: 600, color: '#475569' }}>{language === 'ar' ? 'الأحداث المسجلة' : 'Tracked Events'}</th>
+                <th style={{ padding: '16px', fontWeight: 600, color: '#475569' }}>{language === 'ar' ? 'الإجراء' : 'Action'}</th>
               </tr>
             </thead>
             <tbody>
@@ -185,12 +195,14 @@ export default function CustomerAnalytics({ isEmbedded = false }) {
                   <td colSpan="4" style={{ padding: '48px', textAlign: 'center', color: '#64748b' }}>
                     <div style={{ margin: '0 auto 16px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }}></div>
                     <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                    Loading analytics...
+                    {language === 'ar' ? 'جاري تحميل التحليلات...' : 'Loading analytics...'}
                   </td>
                 </tr>
               ) : filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan="4" style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>No tracked customers found.</td>
+                  <td colSpan="4" style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>
+                    {language === 'ar' ? 'لم يتم العثور على عملاء مسجلين.' : 'No tracked customers found.'}
+                  </td>
                 </tr>
               ) : (
                 filteredCustomers.map(customer => (
@@ -208,10 +220,10 @@ export default function CustomerAnalytics({ isEmbedded = false }) {
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: '16px', fontWeight: 600, color: '#10b981' }}>{Math.round(customer.total)} EGP</td>
+                    <td style={{ padding: '16px', fontWeight: 600, color: '#10b981' }}>{Math.round(customer.total)} {language === 'ar' ? 'ج.م' : 'EGP'}</td>
                     <td style={{ padding: '16px' }}>
                       <span style={{ backgroundColor: '#f1f5f9', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, color: '#475569' }}>
-                        {customer.trackingData.events.length} events
+                        {customer.trackingData.events.length} {language === 'ar' ? 'حدث' : 'events'}
                       </span>
                     </td>
                     <td style={{ padding: '16px' }}>
@@ -220,7 +232,7 @@ export default function CustomerAnalytics({ isEmbedded = false }) {
                         className="btn btn-secondary"
                         style={{ padding: '6px 12px', fontSize: '13px', display: 'inline-block' }}
                       >
-                        View Journey
+                        {language === 'ar' ? 'عرض المسار' : 'View Journey'}
                       </button>
                     </td>
                   </tr>

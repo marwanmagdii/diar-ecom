@@ -194,12 +194,12 @@ export default function ProfitCalculator() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <span style={{ fontWeight: 600, color: '#334155' }}>{profile.name}</span>
                     <span style={{ backgroundColor: '#e2e8f0', color: '#475569', padding: '2px 8px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>
-                      {profile.type === 'percentage' ? `${profile.value}%` : `${profile.value} EGP`}
+                      {profile.type === 'percentage' ? `${profile.value}%` : `${profile.value} ${isAr ? 'ج.م' : 'EGP'}`}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <span style={{ fontWeight: 700, color: '#0f172a' }}>
-                      +{profile.type === 'percentage' ? ((parseFloat(costPrice) * profile.value) / 100).toFixed(2) : parseFloat(profile.value).toFixed(2)} EGP
+                      +{profile.type === 'percentage' ? ((parseFloat(costPrice) * profile.value) / 100).toFixed(2) : parseFloat(profile.value).toFixed(2)} {isAr ? 'ج.م' : 'EGP'}
                     </span>
                     <button 
                       onClick={() => removeProfile(profile.id)}
@@ -231,7 +231,7 @@ export default function ProfitCalculator() {
               <div>
                 <p style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#64748b' }}>{isAr ? 'إجمالي الإضافات/الربح' : 'Total Additions/Profit'}</p>
                 <div style={{ fontSize: '32px', fontWeight: 800, color: '#0f172a' }}>
-                  {netProfit} EGP
+                  {netProfit} {isAr ? 'ج.م' : 'EGP'}
                 </div>
               </div>
             </div>

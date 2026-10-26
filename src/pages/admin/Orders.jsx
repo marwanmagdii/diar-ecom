@@ -66,13 +66,13 @@ export default function Orders() {
       } 
     },
     { id: 'influencer', label: lang === 'ar' ? 'المؤثر' : 'Influencer', render: (order) => order.influencerName || '-' },
-    { id: 'total', label: t('total'), align: 'right', render: (order) => <span style={{ fontWeight: 'bold', color: 'var(--primary)', whiteSpace: 'nowrap' }}>{order.total?.toFixed(2)} EGP</span> },
+    { id: 'total', label: t('total'), align: 'right', render: (order) => <span style={{ fontWeight: 'bold', color: 'var(--primary)', whiteSpace: 'nowrap' }}>{order.total?.toFixed(2)} {lang === 'ar' ? 'ج.م' : 'EGP'}</span> },
     { id: 'actions', label: lang === 'ar' ? 'الإجراءات' : 'Actions', align: 'right', render: (order) => (
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
         <button 
           className="btn btn-secondary"
           style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          title="View Details" 
+          title={lang === 'ar' ? 'عرض التفاصيل' : 'View Details'} 
           onClick={(e) => {
             e.stopPropagation();
             navigate(`/diaradmin26/orders/${encodeURIComponent(order.id)}`);

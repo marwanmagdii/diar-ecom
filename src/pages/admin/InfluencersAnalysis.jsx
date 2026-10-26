@@ -172,18 +172,20 @@ export default function InfluencersAnalysis() {
                       </span>
                     </td>
                     <td style={{ fontWeight: 600 }}>{inf.usageCount || 0}</td>
-                    <td style={{ fontWeight: 600, color: '#10b981' }}>{(inf.totalRevenue || 0).toFixed(2)} EGP</td>
-                    <td style={{ fontWeight: 600 }}>{commission.toFixed(2)} EGP</td>
+                    <td style={{ fontWeight: 600, color: '#10b981' }}>{(inf.totalRevenue || 0).toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}</td>
+                    <td style={{ fontWeight: 600 }}>{commission.toFixed(2)} {language === 'ar' ? 'ج.م' : 'EGP'}</td>
                     <td>
                       <Link to={`/diaradmin26/influencers/edit/${inf.id}`} className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }}>
-                        Manage
+                        {language === 'ar' ? 'إدارة' : 'Manage'}
                       </Link>
                     </td>
                   </tr>
                 );
               }) : (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>No influencer data available.</td>
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>
+                    {language === 'ar' ? 'لا توجد بيانات للمؤثرين.' : 'No influencer data available.'}
+                  </td>
                 </tr>
               )}
             </tbody>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Geist:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Geist:wght@400;500;600;700&display=swap');
 
 :root {
   /* Colors */
@@ -36,8 +36,8 @@
   --on-error-container: #93000a;
 
   /* Typography — Geist (body) + Outfit (display) + system mono for prices */
-  --font-body: 'Geist', 'Outfit', system-ui, -apple-system, sans-serif;
-  --font-display: 'Outfit', 'Geist', system-ui, -apple-system, sans-serif;
+  --font-body: 'Geist', 'Cairo', 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-display: 'Cairo', 'Outfit', 'Geist', system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
 
   /* Spacing & Borders */
@@ -1260,7 +1260,7 @@ html[dir="rtl"] .variant-circle {
   min-width: 250px;
   flex-shrink: 0;
   background-color: var(--surface-container-low);
-  border-right: 1px solid var(--outline-variant);
+  border-inline-end: 1px solid var(--outline-variant);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -1374,7 +1374,7 @@ html[dir="rtl"] .variant-circle {
   border-collapse: collapse;
 }
 .admin-table th {
-  text-align: left;
+  text-align: start;
   padding: 16px 24px;
   background-color: var(--surface-container-low);
   color: var(--on-surface-variant);
@@ -1812,26 +1812,45 @@ html[dir="rtl"] .variant-circle {
 }
 
   .loc-district-row {
-    flex-direction: column;
-    align-items: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background: var(--surface-container);
     padding: 12px;
     border-radius: 8px;
-    gap: 8px;
+    gap: 12px;
   }
   
   .loc-district-inputs {
-    flex-direction: column;
-    width: 100%;
-    gap: 8px;
+    display: flex;
+    flex: 1;
+    gap: 12px;
   }
   
   .loc-district-actions {
-    width: 100%;
-    justify-content: flex-end;
-    margin-top: 4px;
-    border-top: 1px solid var(--outline);
-    padding-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .loc-district-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .loc-district-inputs {
+      flex-direction: column;
+      width: 100%;
+      gap: 8px;
+    }
+    .loc-district-actions {
+      width: 100%;
+      justify-content: flex-end;
+      margin-top: 4px;
+      border-top: 1px solid var(--outline);
+      padding-top: 8px;
+    }
   }
 
 /* --- Checkout Mobile Responsive Layout --- */
@@ -2263,7 +2282,7 @@ html[dir="rtl"] .variant-circle {
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 993px) {
   .desktop-hidden {
     display: none !important;
   }

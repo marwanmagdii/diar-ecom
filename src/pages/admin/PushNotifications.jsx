@@ -88,11 +88,11 @@ export default function PushNotifications() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!title || !body) {
-      addToast('Please enter a title and body.', 'error');
+      addToast(language === 'ar' ? 'يرجى إدخال عنوان ونص الإشعار.' : 'Please enter a title and body.', 'error');
       return;
     }
     if (totalTokens === 0) {
-      addToast('No users found with the selected filters.', 'error');
+      addToast(language === 'ar' ? 'لم يتم العثور على مستخدمين بالفلاتر المحددة.' : 'No users found with the selected filters.', 'error');
       return;
     }
 
@@ -119,7 +119,7 @@ export default function PushNotifications() {
       const result = await response.json();
       
       if (response.ok) {
-        addToast(`Successfully sent ${result.successCount} notifications!`, 'success');
+        addToast(language === 'ar' ? `تم إرسال ${result.successCount} إشعار بنجاح!` : `Successfully sent ${result.successCount} notifications!`, 'success');
         if (result.failureCount > 0) {
           const errorMessages = result.responses
             .filter(r => !r.success)
@@ -141,7 +141,7 @@ export default function PushNotifications() {
       console.error(error);
       addToast(error.message, 'error');
       if (error.message.includes('Service Account')) {
-        addToast('Please provide your Firebase Service Account JSON to the developer.', 'error');
+        addToast(language === 'ar' ? 'يرجى تزويد المطور بملف Firebase Service Account JSON.' : 'Please provide your Firebase Service Account JSON to the developer.', 'error');
       }
     } finally {
       setIsSending(false);

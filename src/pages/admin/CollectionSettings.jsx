@@ -79,7 +79,7 @@ export default function CollectionSettings() {
       if (c.id === collectionId) {
         const currentIds = c.productIds || [];
         if (currentIds.includes(productId)) {
-          addToast('Product is already in this collection.', 'error');
+          addToast(language === 'ar' ? 'المنتج موجود بالفعل في هذا القسم.' : 'Product is already in this collection.', 'error');
           return c;
         }
         if (currentIds.length >= (c.count || 10)) {
@@ -92,7 +92,7 @@ export default function CollectionSettings() {
     });
 
     if (error) {
-      addToast('Maximum displayed items reached. Increase the limit first.', 'error');
+      addToast(language === 'ar' ? 'تم الوصول للحد الأقصى لعدد المنتجات المعروضة.' : 'Maximum displayed items reached. Increase the limit first.', 'error');
     } else {
       setCollectionsForm(updated);
     }
@@ -162,7 +162,7 @@ export default function CollectionSettings() {
 
   const handleSaveAll = () => {
     updateCollections(collectionsForm);
-    addToast('Collection settings updated successfully!');
+    addToast(language === 'ar' ? 'تم حفظ إعدادات الأقسام بنجاح!' : 'Collection settings updated successfully!', 'success');
   };
 
   const openAddModal = (collectionId) => {
@@ -204,9 +204,9 @@ export default function CollectionSettings() {
     }));
     
     if (exceeded) {
-      addToast('Maximum displayed items reached. Some products were not added.', 'warning');
+      addToast(language === 'ar' ? 'تم الوصول للحد الأقصى. لم يتم إضافة بعض المنتجات.' : 'Maximum displayed items reached. Some products were not added.', 'warning');
     } else {
-      addToast(`Added ${modalSelectedProductIds.length} products successfully!`, 'success');
+      addToast(language === 'ar' ? `تمت إضافة ${modalSelectedProductIds.length} منتجات بنجاح!` : `Added ${modalSelectedProductIds.length} products successfully!`, 'success');
     }
     closeAddModal();
   };

@@ -67,17 +67,6 @@ export default function Home() {
   const location = useLocation();
   const bottomRef = useRef(null);
 
-  useEffect(() => {
-    if (!bottomRef.current || loading || error) return;
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        navigate('/shop', { state: { direction: 'up' } });
-        window.scrollTo(0, 0);
-      }
-    }, { threshold: 0.1 });
-    observer.observe(bottomRef.current);
-    return () => observer.disconnect();
-  }, [loading, error, navigate]);
 
   const flashSaleIds = new Set();
   if (config && config.collections && products) {
@@ -111,8 +100,8 @@ export default function Home() {
     return (
       <main className="container pt-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
         <div style={{ textAlign: 'center', padding: '40px', backgroundColor: '#fef2f2', borderRadius: '16px', border: '1px solid #fecaca', color: '#ef4444', maxWidth: '500px' }}>
-          <p style={{ fontWeight: '600', marginBottom: '8px', fontSize: '18px' }}>Oops! Could not load the store catalog.</p>
-          <p style={{ fontSize: '14px', color: '#b91c1c' }}>Please check your internet connection or try again later. ({error})</p>
+          <p style={{ fontWeight: '600', marginBottom: '8px', fontSize: '18px' }}>{language === 'ar' ? 'تعذر تحميل المتجر.' : 'Could not load the store catalog.'}</p>
+          <p style={{ fontSize: '14px', color: '#b91c1c' }}>{language === 'ar' ? 'تأكد من اتصالك بالإنترنت وحاول مرة أخرى.' : 'Please check your internet connection and try again.'}</p>
         </div>
       </main>
     );

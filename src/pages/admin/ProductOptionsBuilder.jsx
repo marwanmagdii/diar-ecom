@@ -441,8 +441,8 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
                 })}
               </div>
 
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-start' }}>
+                <div style={{ flex: '1 1 280px', minWidth: '240px' }}>
                   <label className="premium-label">{language === 'ar' ? 'الصور' : 'Images'}</label>
                   <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                     {(variant.images || []).map((img, idx) => (
@@ -459,7 +459,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
                         <button 
                           type="button" 
                           onClick={(e) => { e.stopPropagation(); handleRemoveVariantImage(variant.id, idx); }} 
-                          style={{ position: 'absolute', top: '8px', right: '8px', backgroundColor: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 2 }}
+                          style={{ position: 'absolute', top: '8px', insetInlineEnd: '8px', backgroundColor: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', zIndex: 2 }}
                         >
                           <Trash2 size={14} color="#dc2626" />
                         </button>
@@ -486,7 +486,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
                     >
                       <ImageIcon size={20} color={draggingVariant === variant.id ? 'var(--primary)' : '#94a3b8'} style={{ marginBottom: '4px' }} />
                       <span style={{ fontSize: '10px', color: draggingVariant === variant.id ? 'var(--primary)' : '#64748b' }}>
-                        {draggingVariant === variant.id ? 'Drop!' : 'Add Image'}
+                        {draggingVariant === variant.id ? (language === 'ar' ? 'أفلت هنا!' : 'Drop!') : (language === 'ar' ? 'إضافة صورة' : 'Add Image')}
                       </span>
                       <input 
                         type="file" 
@@ -502,7 +502,7 @@ export default function ProductOptionsBuilder({ formData, setFormData, globalOpt
                   </div>
                 </div>
 
-                <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div style={{ flex: '1 1 240px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '16px' }}>
                   <div>
                     <label htmlFor={`variant_price_${variant.id}`} className="premium-label">{language === 'ar' ? 'السعر (اختياري)' : 'Price (Optional)'}</label>
                     <input 

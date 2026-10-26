@@ -59,6 +59,16 @@ export default function CustomerJourneyDetail({ orderId, onBack }) {
   };
 
   const formatEventName = (type) => {
+    if (language === 'ar') {
+      switch(type) {
+        case 'view_page': return 'زيارة صفحة';
+        case 'view_product': return 'عرض منتج';
+        case 'add_to_cart': return 'إضافة إلى السلة';
+        case 'remove_from_cart': return 'حذف من السلة';
+        case 'complete_checkout': return 'إتمام الطلب';
+        default: return type;
+      }
+    }
     switch(type) {
       case 'view_page': return 'Visited Page';
       case 'view_product': return 'Viewed Product';
@@ -70,7 +80,7 @@ export default function CustomerJourneyDetail({ orderId, onBack }) {
   };
 
   if (!selectedCustomer) {
-    return <div style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>;
+    return <div style={{ padding: '40px', textAlign: 'center' }}>{language === 'ar' ? 'جاري التحميل...' : 'Loading...'}</div>;
   }
 
   if (selectedCustomer === 'not_found') {
@@ -153,7 +163,7 @@ export default function CustomerJourneyDetail({ orderId, onBack }) {
                     )}
                   </td>
                   <td style={{ padding: '16px 24px', color: '#10b981', fontWeight: 600 }}>
-                    {event.details?.price ? `${Math.round(event.details.price)} EGP` : '-'}
+                    {event.details?.price ? `${Math.round(event.details.price)} ${language === 'ar' ? 'ج.م' : 'EGP'}` : '-'}
                   </td>
                 </tr>
               ))}

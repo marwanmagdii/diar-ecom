@@ -26,7 +26,7 @@ export default function LocationSettings() {
       shippingCost: Number(shippingCost),
       shippingActive
     });
-    addToast('Settings updated successfully', 'success');
+    addToast(language === 'ar' ? 'تم تحديث الإعدادات بنجاح!' : 'Settings updated successfully', 'success');
   };
 
   const addGovernorate = () => {
